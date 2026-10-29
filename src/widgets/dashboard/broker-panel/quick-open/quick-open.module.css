@@ -1,0 +1,35 @@
+.row {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--mantine-radius-md);
+    transition: background-color 120ms ease;
+}
+
+.row:hover,
+.row:focus-visible {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.tile {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--mantine-radius-md);
+    background-color: rgba(255, 255, 255, 0.02);
+    transition:
+        background-color 120ms ease,
+        border-color 120ms ease;
+}
+
+.tile:hover,
+.tile:focus-visible {
+    border-color: rgba(255, 255, 255, 0.12);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.shortcuts {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+}

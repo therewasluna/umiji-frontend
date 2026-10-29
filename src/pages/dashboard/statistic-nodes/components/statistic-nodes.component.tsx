@@ -1,0 +1,221 @@
+import { ActionIcon, Select, SimpleGrid, Stack } from '@mantine/core'
+import { DatePickerInput, DatesRangeValue } from '@mantine/dates'
+import { NodesStatisticBarchartWidget } from '@widgets/dashboard/nodes-statistic/statistic-barchart'
+import { NodesStatisticSparklineCardWidget } from '@widgets/dashboard/nodes-statistic/statistic-sparkline-card'
+import dayjs from 'dayjs'
+import { TFunction } from 'i18next'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { HiChartPie } from 'react-icons/hi'
+import { TbCalendar, TbRefresh, TbServer2 } from 'react-icons/tb'
+
+import { useGetStatsNodesUsage } from '@shared/api/hooks'
+import { Page, PageHeaderShared } from '@shared/ui'
+import { CountryFlag } from '@shared/ui/get-country-flag'
+import { TopLeaderboardCardShared } from '@shared/ui/leaderboard-item-card'
+import { getDefaultDateRange } from '@shared/utils/time-utils'
+
+const getTopNodesLimitOptions = (t: TFunction) => [
+    { value: '5', label: t('statistic-nodes.top-limit', { count: 5 }) },
+    { value: '10', label: t('statistic-nodes.top-limit', { count: 10 }) },
+    { value: '20', label: t('statistic-nodes.top-limit', { count: 20 }) },
+    { value: '30', label: t('statistic-nodes.top-limit', { count: 30 }) },
+    { value: '40', label: t('statistic-nodes.top-limit', { count: 40 }) },
+    { value: '50', label: t('statistic-nodes.top-limit', { count: 50 }) },
+    { value: '60', label: t('statistic-nodes.top-limit', { count: 60 }) },
+    { value: '70', label: t('statistic-nodes.top-limit', { count: 70 }) },
+    { value: '80', label: t('statistic-nodes.top-limit', { count: 80 }) },
+    { value: '90', label: t('statistic-nodes.top-limit', { count: 90 }) },
+    { value: '100', label: t('statistic-nodes.top-limit', { count: 100 }) }
+]
+
+const DEFAULT_TOP_NODES_LIMIT = 20
+
+export const StatisticNodesPage = () => {
+    const { t, i18n } = useTranslation()
+    const defaultRange = getDefaultDateRange()
+
+    const [rawRange, setRawRange] = useState<[null | string, null | string]>([
+        defaultRange.start,
+        defaultRange.end
+    ])
+
+    const [topNodesLimit, setTopNodesLimit] = useState<number>(DEFAULT_TOP_NODES_LIMIT)
+    const [queryRange, setQueryRange] = useState<{ end: string; start: string }>(defaultRange)
+
+    const {
+        data: nodesStats,
+        isLoading,
+        refetch,
+        isRefetching
+    } = useGetStatsNodesUsage({
+        query: {
+            start: queryRange.start,
+            end: queryRange.end,
+            topNodesLimit
+        },
+        rQueryParams: {
+            enabled: Boolean(queryRange.start && queryRange.end)
+        }
+    })
+
+    const handleDateRangeChange = (value: DatesRangeValue<string>) => {
+        if (value[0] === null && value[1] === null) {
+            setRawRange([defaultRange.start, defaultRange.end])
+            setQueryRange(defaultRange)
+            return
+        }
+
+        setRawRange(value)
+        if (!value[0] || !value[1]) return
+
+        const startDate = value[0]
+        const endDate = value[1]
+
+        if (!dayjs(startDate).isValid() || !dayjs(endDate).isValid()) return
+
+        const startISO = dayjs(startDate).format('YYYY-MM-DD')
+        const endISO = dayjs(endDate).format('YYYY-MM-DD')
+
+        setQueryRange({ start: startISO, end: endISO })
+    }
+
+    return (
+        <Page title={t('constants.nodes-statistics')}>
+            <PageHeaderShared
+                actions={
+                    <>
+                        <Select
+                            allowDeselect={false}
+                            data={getTopNodesLimitOptions(t)}
+                            leftSection={<TbServer2 size="20px" />}
+                            onChange={(value) => setTopNodesLimit(Number(value))}
+                            size="md"
+                            value={String(topNodesLimit)}
+                            w={150}
+                        />
+                        <DatePickerInput
+                            allowSingleDateInRange
+                            dropdownType="modal"
+                            headerControlsOrder={['previous', 'next', 'level']}
+                            leftSection={<TbCalendar size="24px" />}
+                            locale={i18n.language}
+                            maxDate={new Date()}
+                            onChange={handleDateRangeChange}
+                            presets={[
+                                {
+                                    label: t('statistic-nodes.component.current-month'),
+                                    value: [
+                                        dayjs().startOf('month').format('YYYY-MM-DD'),
+                                        dayjs().format('YYYY-MM-DD')
+                                    ]
+                                },
+                                {
+                                    label: t('statistic-nodes.component.3-days'),
+                                    value: [
+                                        dayjs().subtract(2, 'day').format('YYYY-MM-DD'),
+                                        dayjs().format('YYYY-MM-DD')
+                                    ]
+                                },
+                                {
+                                    label: t('statistic-nodes.component.7-days'),
+                                    value: [
+                                        dayjs().subtract(6, 'day').format('YYYY-MM-DD'),
+                                        dayjs().format('YYYY-MM-DD')
+                                    ]
+                                },
+                                {
+                                    label: t('statistic-nodes.component.14-days'),
+                                    value: [
+                                        dayjs().subtract(13, 'day').format('YYYY-MM-DD'),
+                                        dayjs().format('YYYY-MM-DD')
+                                    ]
+                                },
+                                {
+                                    label: t('statistic-nodes.component.30-days'),
+                                    value: [
+                                        dayjs().subtract(29, 'day').format('YYYY-MM-DD'),
+                                        dayjs().format('YYYY-MM-DD')
+                                    ]
+                                },
+                                {
+                                    label: t('statistic-nodes.component.60-days'),
+                                    value: [
+                                        dayjs().subtract(59, 'day').format('YYYY-MM-DD'),
+                                        dayjs().format('YYYY-MM-DD')
+                                    ]
+                                },
+                                {
+                                    label: t('statistic-nodes.component.90-days'),
+                                    value: [
+                                        dayjs().subtract(89, 'day').format('YYYY-MM-DD'),
+                                        dayjs().format('YYYY-MM-DD')
+                                    ]
+                                },
+                                {
+                                    label: t('statistic-nodes.component.180-days'),
+                                    value: [
+                                        dayjs().subtract(179, 'day').format('YYYY-MM-DD'),
+                                        dayjs().format('YYYY-MM-DD')
+                                    ]
+                                }
+                            ]}
+                            size="md"
+                            styles={{
+                                calendarHeaderLevel: {
+                                    justifyContent: 'flex-end'
+                                },
+                                presetsList: {
+                                    justifyContent: 'center'
+                                }
+                            }}
+                            type="range"
+                            value={rawRange}
+                            valueFormat="DD MMM, YYYY"
+                        />
+
+                        <ActionIcon
+                            loading={isRefetching}
+                            onClick={() => refetch()}
+                            size="input-md"
+                            variant="soft"
+                        >
+                            <TbRefresh size="24px" />
+                        </ActionIcon>
+                    </>
+                }
+                icon={<HiChartPie size={24} />}
+                title={t('constants.nodes-statistics')}
+                wrapActions
+            />
+
+            <Stack gap="md">
+                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+                    <NodesStatisticSparklineCardWidget
+                        isLoading={isLoading}
+                        sparklineData={nodesStats?.sparklineData}
+                    />
+
+                    <TopLeaderboardCardShared
+                        emptyText={t('common.message.no-data-available')}
+                        isLoading={isLoading}
+                        items={nodesStats?.topNodes?.map((node) => ({
+                            color: node.color,
+                            countryCode: node.countryCode,
+                            name: node.name,
+                            total: node.total
+                        }))}
+                        maxHeight={230}
+                        renderCountryFlag={(item) => <CountryFlag countryCode={item.countryCode} />}
+                    />
+                </SimpleGrid>
+
+                <NodesStatisticBarchartWidget
+                    categories={nodesStats?.categories}
+                    isLoading={isLoading}
+                    series={nodesStats?.series}
+                />
+            </Stack>
+        </Page>
+    )
+}

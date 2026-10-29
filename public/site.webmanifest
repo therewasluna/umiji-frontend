@@ -1,0 +1,42 @@
+{
+    "name": "Umiji",
+    "short_name": "Umiji",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#161B23",
+    "lang": "en",
+    "id": "/",
+    "orientation": "any",
+    "scope": "/",
+    "description": "Umiji Dashboard",
+    "theme_color": "#161B23",
+    "icons": [
+        {
+            "src": "/favicons/favicon-64x64.png",
+            "sizes": "64x64",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicons/favicon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicons/favicon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicons/favicon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/favicons/favicon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

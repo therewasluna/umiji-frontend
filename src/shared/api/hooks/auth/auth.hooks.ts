@@ -1,0 +1,104 @@
+import { notifications } from '@mantine/notifications'
+import {
+    LoginCommand,
+    OAuth2AuthorizeCommand,
+    OAuth2CallbackCommand,
+    RegisterCommand,
+    VerifyPasskeyAuthenticationCommand
+} from '@umiji/backend-contract'
+import { t } from 'i18next'
+
+import { setToken } from '@entities/auth/session-store'
+
+import { createMutationHook } from '../../tsq-helpers'
+
+export const AUTH_QUERY_KEY = 'auth'
+
+export const useLogin = createMutationHook({
+    endpoint: LoginCommand.TSQ_url,
+    bodySchema: LoginCommand.RequestBodySchema,
+    responseSchema: LoginCommand.ResponseSchema,
+    requestMethod: LoginCommand.endpointDetails.REQUEST_METHOD,
+    rMutationParams: {
+        onSuccess: (data) => {
+            setToken({ token: data.accessToken })
+        },
+        onError: (error) => {
+            notifications.show({
+                title: t('auth.login'),
+                message: error.message,
+                color: 'red'
+            })
+        }
+    }
+})
+
+export const useRegister = createMutationHook({
+    endpoint: RegisterCommand.TSQ_url,
+    bodySchema: RegisterCommand.RequestBodySchema,
+    responseSchema: RegisterCommand.ResponseSchema,
+    requestMethod: RegisterCommand.endpointDetails.REQUEST_METHOD,
+    rMutationParams: {
+        onSuccess: (data) => {
+            notifications.show({
+                title: t('auth.register'),
+                message: t('auth.user-registered-successfully'),
+                color: 'teal'
+            })
+            setToken({ token: data.accessToken })
+        },
+        onError: (error) => {
+            notifications.show({
+                title: t('auth.register'),
+                message: error.message,
+                color: 'red'
+            })
+        }
+    }
+})
+
+export const useOauth2Callback = createMutationHook({
+    endpoint: OAuth2CallbackCommand.TSQ_url,
+    bodySchema: OAuth2CallbackCommand.RequestBodySchema,
+    responseSchema: OAuth2CallbackCommand.ResponseSchema,
+    requestMethod: OAuth2CallbackCommand.endpointDetails.REQUEST_METHOD,
+    rMutationParams: {
+        onSuccess: (data) => {
+            setToken({ token: data.accessToken })
+        }
+    }
+})
+
+export const useOAuth2Authorize = createMutationHook({
+    endpoint: OAuth2AuthorizeCommand.TSQ_url,
+    bodySchema: OAuth2AuthorizeCommand.RequestBodySchema,
+    responseSchema: OAuth2AuthorizeCommand.ResponseSchema,
+    requestMethod: OAuth2AuthorizeCommand.endpointDetails.REQUEST_METHOD,
+    rMutationParams: {
+        onError: (error) => {
+            notifications.show({
+                title: t('auth.oauth2-authorize'),
+                message: error.message,
+                color: 'red'
+            })
+        }
+    }
+})
+
+export const usePasskeyAuthenticationVerify = createMutationHook({
+    endpoint: VerifyPasskeyAuthenticationCommand.TSQ_url,
+    bodySchema: VerifyPasskeyAuthenticationCommand.RequestBodySchema,
+    responseSchema: VerifyPasskeyAuthenticationCommand.ResponseSchema,
+    requestMethod: VerifyPasskeyAuthenticationCommand.endpointDetails.REQUEST_METHOD,
+    rMutationParams: {
+        onSuccess: (data) => {
+            notifications.show({
+                title: t('auth.passkey-verified'),
+                message: t('auth.passkey-authenticated-successfully'),
+                color: 'teal'
+            })
+
+            setToken({ token: data.accessToken })
+        }
+    }
+})

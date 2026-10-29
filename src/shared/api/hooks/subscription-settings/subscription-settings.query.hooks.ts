@@ -1,0 +1,25 @@
+import { createQueryKeys } from '@lukemorales/query-key-factory'
+import { GetSubscriptionSettingsCommand } from '@umiji/backend-contract'
+import { t } from 'i18next'
+
+import { sToMs } from '@shared/utils/time-utils'
+
+import { createGetQueryHook, errorHandler } from '../../tsq-helpers'
+
+export const subscriptionSettingsQueryKeys = createQueryKeys('subscriptionSettings', {
+    getSubscriptionSettings: {
+        queryKey: null
+    }
+})
+
+export const useGetSubscriptionSettings = createGetQueryHook({
+    endpoint: GetSubscriptionSettingsCommand.TSQ_url,
+    responseSchema: GetSubscriptionSettingsCommand.ResponseSchema,
+    getQueryKey: () => subscriptionSettingsQueryKeys.getSubscriptionSettings.queryKey,
+    rQueryParams: {
+        refetchOnMount: false,
+        staleTime: sToMs(30)
+    },
+    errorHandler: (error) =>
+        errorHandler(error, t('subscription-settings.get-subscription-settings'))
+})

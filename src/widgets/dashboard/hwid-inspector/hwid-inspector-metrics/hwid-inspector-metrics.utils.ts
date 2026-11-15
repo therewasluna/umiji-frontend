@@ -4,9 +4,9 @@ import { formatInt, formatPercentage } from '@shared/utils/misc'
 
 import {
     APP_MIN_SHARE,
-    CHART_COLORS,
     MAX_APPS,
-    MAX_PLATFORMS
+    MAX_PLATFORMS,
+    PLATFORM_BAR_COLOR
 } from './hwid-inspector-metrics.constants'
 import { IPlatformApp, IPlatformDatum } from './hwid-inspector-metrics.types'
 
@@ -22,7 +22,7 @@ export function buildPlatformData(
     return byPlatform
         .filter((platform) => platform.count > 0)
         .slice(0, MAX_PLATFORMS)
-        .map((platform, index) => {
+        .map((platform) => {
             const allApps = platform.byApp.map((app) => ({
                 app: app.app || t('hwid-inspector-metrics.unknown'),
                 count: app.count
@@ -37,7 +37,7 @@ export function buildPlatformData(
             return {
                 name: platform.platform || t('hwid-inspector-metrics.unknown'),
                 value: platform.count,
-                color: CHART_COLORS[index % CHART_COLORS.length],
+                color: PLATFORM_BAR_COLOR,
                 apps,
                 allApps
             }

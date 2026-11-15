@@ -7,7 +7,7 @@ import { UpdateSubscriptionSettingsCommand } from '@umiji/backend-contract'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PiClockCountdown, PiClockUser, PiListChecks, PiProhibit } from 'react-icons/pi'
-import { TbDevices2, TbListLetters, TbX } from 'react-icons/tb'
+import { TbDevices2, TbX } from 'react-icons/tb'
 import Masonry from 'react-layout-masonry'
 
 import { queryClient } from '@shared/api'
@@ -86,9 +86,7 @@ export const SubscriptionUserRemarksCardWidget = (props: IProps) => {
                         size: 'auto',
                         title: (
                             <BaseOverlayHeader
-                                iconColor="red"
                                 IconComponent={TbX}
-                                iconVariant="soft"
                                 title={t('subscription-settings.widget.validation-error')}
                             />
                         ),
@@ -162,9 +160,6 @@ export const SubscriptionUserRemarksCardWidget = (props: IProps) => {
                             )}
                         </>
                     }
-                    icon={<TbListLetters size={24} />}
-                    iconColor="cyan"
-                    iconVariant="soft"
                     title={t('subscription-settings.widget.custom-remarks')}
                 />
 

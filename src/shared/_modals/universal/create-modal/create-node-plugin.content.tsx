@@ -1,4 +1,4 @@
-import { Stack, TextInput, Group, Button } from '@mantine/core'
+import { Stack, TextInput, Button } from '@mantine/core'
 import { useField } from '@mantine/form'
 import { CreateNodePluginCommand } from '@umiji/backend-contract'
 import { useTranslation } from 'react-i18next'
@@ -8,6 +8,7 @@ import { queryClient } from '@shared/api'
 import { useCreateNodePlugin } from '@shared/api/hooks'
 import { QueryKeys } from '@shared/api/hooks/keys-factory'
 import { ROUTES } from '@shared/constants/routes'
+import { ModalFooter } from '@shared/ui/modal-footer'
 
 interface IProps {
     onClose: () => void
@@ -69,16 +70,16 @@ export const CreateNodePluginContent = (props: IProps) => {
                     required
                     {...nameField.getInputProps()}
                 />
-                <Group justify="flex-end">
-                    <Button color="gray" onClick={onClose} variant="light">
-                        {t('common.action.cancel')}
-                    </Button>
-
-                    <Button color="teal" loading={isPending} type="submit">
-                        {t('common.action.create')}
-                    </Button>
-                </Group>
             </Stack>
+            <ModalFooter>
+                <Button color="gray" onClick={onClose} variant="soft">
+                    {t('common.action.cancel')}
+                </Button>
+
+                <Button color="teal" loading={isPending} type="submit">
+                    {t('common.action.create')}
+                </Button>
+            </ModalFooter>
         </form>
     )
 }

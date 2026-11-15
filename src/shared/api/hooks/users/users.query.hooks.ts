@@ -1,4 +1,5 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
+import { keepPreviousData } from '@tanstack/react-query'
 import {
     GetUsersTagsCommand,
     GetUsersCommand,
@@ -7,9 +8,9 @@ import {
     GetUserByIdCommand,
     GetUserMetadataCommand,
     GetUserSubscriptionRequestHistoryCommand,
-    GetRawSubscriptionByShortUuidCommand
+    GetRawSubscriptionByShortUuidCommand,
+    GetTelegramLinksByUserIdCommand
 } from '@umiji/backend-contract'
-import { keepPreviousData } from '@tanstack/react-query'
 import { t } from 'i18next'
 
 import { sToMs } from '@shared/utils/time-utils'
@@ -27,6 +28,9 @@ export const usersQueryKeys = createQueryKeys('users', {
         queryKey: [route]
     }),
     getRawSubscription: (route: GetRawSubscriptionByShortUuidCommand.RequestParam) => ({
+        queryKey: [route]
+    }),
+    getTelegramLinksByUserId: (route: GetTelegramLinksByUserIdCommand.RequestParam) => ({
         queryKey: [route]
     }),
     getUserTags: {
@@ -102,6 +106,17 @@ export const useGetUserSubscriptionRequestHistory = createGetQueryHook({
         staleTime: sToMs(60)
     },
     errorHandler: (error) => errorHandler(error, t('users.get-user-subscription-request-history'))
+})
+
+export const useGetTelegramLinksByUserId = createGetQueryHook({
+    endpoint: GetTelegramLinksByUserIdCommand.TSQ_url,
+    responseSchema: GetTelegramLinksByUserIdCommand.ResponseSchema,
+    routeParamsSchema: GetTelegramLinksByUserIdCommand.RequestParamSchema,
+    getQueryKey: ({ route }) => usersQueryKeys.getTelegramLinksByUserId(route!).queryKey,
+    rQueryParams: {
+        staleTime: sToMs(4)
+    },
+    errorHandler: (error) => errorHandler(error, 'Telegram proxy links')
 })
 
 export const useGetConnectionKeysByUserId = createGetQueryHook({

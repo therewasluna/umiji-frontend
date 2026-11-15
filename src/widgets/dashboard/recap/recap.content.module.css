@@ -2,11 +2,11 @@
     width: 380px;
     padding: 36px 32px;
     border-radius: 14px;
-    background: #08080f;
+    background: var(--mantine-color-dark-9);
     position: relative;
     user-select: none;
     overflow: hidden;
-    font-family: 'Unbounded', sans-serif;
+    font-family: 'Unbounded', Vazirmatn, sans-serif;
 }
 
 .controlPanel {
@@ -69,7 +69,7 @@
     font-size: 16px;
     font-weight: 700;
     letter-spacing: 3px;
-    font-family: 'Unbounded', sans-serif;
+    font-family: 'Unbounded', Vazirmatn, sans-serif;
     color: rgba(255, 255, 255, 0.85);
 }
 
@@ -239,7 +239,7 @@
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #08080f;
+    color: var(--mantine-color-dark-9);
     z-index: 2;
     pointer-events: none;
 }

@@ -1,15 +1,5 @@
-export const CHART_COLORS = [
-    'teal.5',
-    'blue.5',
-    'cyan.5',
-    'grape.5',
-    'violet.5',
-    'green.7',
-    'yellow.6',
-    'orange.6',
-    'pink.5',
-    'indigo.5'
-]
+// One hue for every platform: the bars compare amounts, they don't encode categories.
+export const PLATFORM_BAR_COLOR = 'rose.6'
 
 export const MAX_PLATFORMS = 8
 export const MAX_APPS = 5

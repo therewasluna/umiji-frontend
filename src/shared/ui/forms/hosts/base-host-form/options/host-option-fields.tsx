@@ -3,6 +3,7 @@ import { ParseKeys } from 'i18next'
 import { ComponentType } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { THostForm } from '../host-form.types'
 import * as Controls from './fields'
 import { DimmedText, HelpPopover } from './fields/help'
 import { useHostFormData } from './host-form-data.context'
@@ -335,6 +336,15 @@ export const HOST_OPTION_FIELDS: IHostOptionField[] = [
     }
 ]
 
+// A tg:// link carries the address, port and secret and nothing else, so only panel-side options apply.
+export const TELEGRAM_HOST_OPTIONS = new Set([
+    'tags',
+    'nodes',
+    'internalSquads',
+    'isHidden',
+    'shuffleHost'
+])
+
 export const HOST_OPTION_GROUPS: THostOptionGroup[] = [
     'group-assignment',
     'group-security',
@@ -384,4 +394,19 @@ export function isOptionSet(
     }
 
     return true
+}
+
+// Whatever an earlier inbound left in the form would be refused on save, and its field is hidden.
+export function clearTelegramUnsupportedOptions(form: THostForm) {
+    const values = form.getValues() as Record<string, unknown>
+
+    for (const field of HOST_OPTION_FIELDS) {
+        if (TELEGRAM_HOST_OPTIONS.has(field.name)) continue
+
+        for (const formKey of field.fields) {
+            if (isOptionSet(values[formKey.key], formKey)) {
+                form.setFieldValue(formKey.key, formKey.emptyValue)
+            }
+        }
+    }
 }

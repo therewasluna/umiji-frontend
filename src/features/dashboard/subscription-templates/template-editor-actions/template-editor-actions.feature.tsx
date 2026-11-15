@@ -3,8 +3,8 @@ import type { editor } from 'monaco-editor'
 import { ActionIcon, Button, Group, Menu } from '@mantine/core'
 import { useClipboard, useDisclosure } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
-import { GetSubscriptionTemplateCommand } from '@umiji/backend-contract'
 import { encode } from '@stablelib/base64'
+import { GetSubscriptionTemplateCommand } from '@umiji/backend-contract'
 import { RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PiCheckSquareOffset, PiFloppyDisk } from 'react-icons/pi'
@@ -172,7 +172,7 @@ export function TemplateEditorActionsFeature(props: Props) {
                     onClose={() => handlers.close()}
                     onOpen={() => handlers.open()}
                     shadow="md"
-                    trigger="click-hover"
+                    trigger="click"
                     withinPortal
                 >
                     <Menu.Target>

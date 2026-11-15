@@ -2,7 +2,7 @@ import { Badge, Box, CopyButton, Divider, Group, Loader, Menu, Text, Tooltip } f
 import { modals } from '@mantine/modals'
 import { notifications } from '@mantine/notifications'
 import { GetConfigProfilesCommand } from '@umiji/backend-contract'
-import { githubDarkTheme, JsonEditor } from 'json-edit-react'
+import { JsonEditor } from 'json-edit-react'
 import { useTranslation } from 'react-i18next'
 import { PiCheck, PiCopy, PiCpu, PiPencil, PiTag, PiTrashDuotone } from 'react-icons/pi'
 import { TbCheck, TbCpu2, TbDownload, TbEye, TbTags } from 'react-icons/tb'
@@ -11,6 +11,7 @@ import { generatePath, useNavigate } from 'react-router'
 import { showModal } from '@shared/_modals/show-modal'
 import { useGetComputedConfigProfile } from '@shared/api/hooks/config-profiles/config-profiles.query.hooks'
 import { ROUTES } from '@shared/constants'
+import { JSON_VIEWER_THEME } from '@shared/constants/theme/json-viewer-theme'
 import { WithDndSortable } from '@shared/hocs/with-dnd-sortable'
 import { EntityCardShared } from '@shared/ui/entity-card'
 import { XrayLogo } from '@shared/ui/logos'
@@ -92,7 +93,7 @@ export function ConfigProfileCardWidget(props: IProps) {
                             indent={4}
                             maxWidth="100%"
                             rootName=""
-                            theme={githubDarkTheme}
+                            theme={JSON_VIEWER_THEME}
                             viewOnly
                         />
                     </>
@@ -111,9 +112,7 @@ export function ConfigProfileCardWidget(props: IProps) {
                 size: 'xl',
                 title: (
                     <BaseOverlayHeader
-                        iconColor="teal"
                         IconComponent={TbEye}
-                        iconVariant="soft"
                         title={computedConfigProfile.data.name}
                         titleOrder={5}
                     />
@@ -218,16 +217,14 @@ export function ConfigProfileCardWidget(props: IProps) {
                                                 indent={4}
                                                 maxWidth="100%"
                                                 rootName=""
-                                                theme={githubDarkTheme}
+                                                theme={JSON_VIEWER_THEME}
                                                 viewOnly
                                             />
                                         </Box>
                                     ),
                                     title: (
                                         <BaseOverlayHeader
-                                            iconColor="teal"
                                             IconComponent={TbEye}
-                                            iconVariant="soft"
                                             title={configProfile.name}
                                             titleOrder={5}
                                         />

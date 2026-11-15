@@ -1,44 +1,33 @@
-import { Box, Divider, Group, Stack, Text, ThemeIcon, ThemeIconProps, Title } from '@mantine/core'
+import { Box, Divider, Group, Text, Title } from '@mantine/core'
 import { ReactNode } from 'react'
 
 interface SettingsCardHeaderProps {
+    actions?: ReactNode
     description: ReactNode | string
-    icon: ReactNode
-    iconColor: ThemeIconProps['color']
-    iconVariant: ThemeIconProps['variant']
     title: string
 }
 
-export function SettingsCardHeader({
-    description,
-    icon,
-    iconColor,
-    iconVariant,
-    title
-}: SettingsCardHeaderProps) {
+export function SettingsCardHeader({ actions, description, title }: SettingsCardHeaderProps) {
     return (
         <Box>
-            <Group align="flex-start" justify="space-between">
-                <Group align="flex-start" gap="md" wrap="nowrap">
-                    <ThemeIcon color={iconColor} size="xl" variant={iconVariant}>
-                        {icon}
-                    </ThemeIcon>
-
-                    <Stack gap={0}>
-                        <Title order={4}>{title}</Title>
-                        <Text c="dimmed" size="sm">
-                            {description}
-                        </Text>
-                    </Stack>
-                </Group>
+            {/* Wraps so the actions drop under the description on a phone instead of squeezing it. */}
+            <Group align="flex-start" gap="md" justify="space-between">
+                <Box miw={0}>
+                    <Title fw={600} fz={17} order={2}>
+                        {title}
+                    </Title>
+                    <Text c="dimmed" size="sm">
+                        {description}
+                    </Text>
+                </Box>
+                {actions && (
+                    <Group gap="xs" style={{ flexShrink: 0 }} wrap="nowrap">
+                        {actions}
+                    </Group>
+                )}
             </Group>
 
-            <Divider
-                my="md"
-                style={{
-                    opacity: 0.3
-                }}
-            />
+            <Divider color="rgba(255, 255, 255, 0.07)" mt="md" />
         </Box>
     )
 }

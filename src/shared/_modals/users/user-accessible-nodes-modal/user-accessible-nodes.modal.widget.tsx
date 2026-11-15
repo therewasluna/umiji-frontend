@@ -37,9 +37,7 @@ export const UserAccessibleNodesModal = NiceModal.create((props: IProps) => {
             size="800px"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbServer}
-                    iconVariant="soft"
                     title={t('user-accessible-nodes.modal.widget.user-accessible-nodes')}
                 />
             }

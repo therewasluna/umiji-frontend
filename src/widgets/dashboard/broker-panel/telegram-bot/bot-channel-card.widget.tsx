@@ -3,7 +3,7 @@ import { schemaResolver, useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { BrokerBotTelegramLinkSchema, GetBrokerBotCommand } from '@umiji/backend-contract'
 import { useTranslation } from 'react-i18next'
-import { TbLink, TbSpeakerphone } from 'react-icons/tb'
+import { TbLink } from 'react-icons/tb'
 import { z } from 'zod'
 
 import { useUpdateBrokerBotSettings } from '@shared/api/hooks'
@@ -42,9 +42,6 @@ export function BotChannelCardWidget({ bot }: IProps) {
             <SettingsCardShared.Container>
                 <SettingsCardShared.Header
                     description={t('broker-bot.channel.description')}
-                    icon={<TbSpeakerphone size={24} />}
-                    iconColor="grape"
-                    iconVariant="soft"
                     title={t('broker-bot.channel.title')}
                 />
 

@@ -1,11 +1,14 @@
 .item {
     display: flex;
     align-items: center;
-    border-radius: var(--mantine-radius-md);
-    border: 1px solid var(--mantine-color-dark-5);
-    padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
-    margin-bottom: var(--mantine-spacing-xs);
-    background: #1b1f26;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 14px var(--mantine-spacing-md);
+    margin-bottom: 8px;
+    background: var(--mantine-color-dark-7);
+    transition:
+        border-color 150ms ease,
+        background-color 150ms ease;
 }
 
 .mobileItem {
@@ -15,24 +18,26 @@
     border-radius: var(--mantine-radius-lg);
     transition: all 0.2s ease;
     height: 190px;
-    background: #1b1f26;
+    background: var(--mantine-color-dark-7);
 }
 
 .mobileItem:active {
     transform: scale(0.98);
-    background: #1b1f26;
+    background: var(--mantine-color-dark-6);
 }
 
 .filteredItem {
     opacity: 0.5 !important;
 }
 
+/* Ticked for a bulk action: a neutral lift; the checkbox carries the rose. */
 .selectedItem {
-    border: 1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-blue-5));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--mantine-color-dark-6);
 }
 
 .highlightedItem {
-    border: 1px solid light-dark(var(--mantine-color-indigo-5), var(--mantine-color-indigo-5));
+    border: 1px solid var(--mantine-color-rose-4);
 }
 
 .danglingItem {
@@ -40,14 +45,14 @@
 }
 
 .itemDragging {
-    border: 1px solid light-dark(var(--mantine-color-blue-5), var(--mantine-color-teal-5));
-    box-shadow: var(--mantine-shadow-xl);
+    border: 1px solid var(--mantine-color-dark-5);
+    background: var(--mantine-color-dark-6);
     z-index: 1000;
 }
 
 /* DragOverlay styles */
 .item[data-drag-overlay='true'] {
-    border-color: var(--mantine-color-blue-4);
+    border-color: var(--mantine-primary-color-4);
     z-index: 9999;
     background: var(--mantine-color-dark-6);
 }
@@ -74,8 +79,7 @@
 }
 
 .label {
-    font-family: var(--mantine-font-family-monospace);
-    font-weight: bold;
+    font-weight: 600;
     font-size: var(--mantine-font-size-sm);
     line-height: 1.3;
     color: var(--mantine-color-bright);
@@ -198,12 +202,11 @@
 }
 
 [data-mantine-color-scheme='dark'] .itemDragging {
-    border-color: var(--mantine-color-blue-4);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    border-color: var(--mantine-color-dark-5);
 }
 
 [data-mantine-color-scheme='dark'] .dragHandle {
-    color: var(--mantine-color-dark-2);
+    color: var(--mantine-color-dark-3);
 }
 
 [data-mantine-color-scheme='dark'] .dragHandle:hover {
@@ -212,7 +215,22 @@
 }
 
 [data-mantine-color-scheme='dark'] .item[data-drag-overlay='true'] {
-    border-color: var(--mantine-color-blue-4);
+    border-color: var(--mantine-primary-color-4);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
     background: var(--mantine-color-dark-6);
+}
+
+/* Host state: a green dot when shown, a quiet glyph when hidden or disabled. */
+.statusDot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    margin-inline: 4px;
+    border-radius: 50%;
+    background: var(--mantine-color-teal-5);
+}
+
+.statusIcon {
+    flex: none;
+    color: var(--mantine-color-dark-2);
 }

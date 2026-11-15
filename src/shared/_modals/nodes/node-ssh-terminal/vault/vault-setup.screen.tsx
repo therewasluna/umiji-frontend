@@ -29,9 +29,7 @@ export const VaultSetupScreen = (props: IProps) => {
             <SectionCard.Section>
                 {step === 0 && (
                     <BaseOverlayHeader
-                        iconColor="orange"
                         IconComponent={TbShieldLock}
-                        iconVariant="soft"
                         subtitle={t('node-ssh.seed-warning')}
                         title={t('node-ssh.vault-setup-title')}
                         titleOrder={5}
@@ -40,9 +38,7 @@ export const VaultSetupScreen = (props: IProps) => {
 
                 {step === 1 && (
                     <BaseOverlayHeader
-                        iconColor="blue"
                         IconComponent={TbLock}
-                        iconVariant="soft"
                         subtitle={t('node-ssh.passcode-description')}
                         title={t('node-ssh.passcode-title')}
                         titleOrder={5}

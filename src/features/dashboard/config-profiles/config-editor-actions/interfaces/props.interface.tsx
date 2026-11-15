@@ -8,6 +8,7 @@ export interface Props {
     editorRef: RefObject<editor.IStandaloneCodeEditor | null>
     hasUnsavedChanges: boolean
     isConfigValid: boolean
+    isVisual?: boolean
     originalValue: string
     setHasUnsavedChanges: (value: boolean) => void
     setIsConfigValid: (value: boolean) => void

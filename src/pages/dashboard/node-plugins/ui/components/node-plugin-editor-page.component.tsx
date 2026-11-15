@@ -2,7 +2,7 @@ import { ActionIcon, ActionIconGroup, Box, Flex, Group, Tooltip } from '@mantine
 import { GetNodePluginCommand } from '@umiji/backend-contract'
 import { NodePluginEditorWidget } from '@widgets/dashboard/node-plugins/node-plugin-editor'
 import { useTranslation } from 'react-i18next'
-import { TbArrowBackUp, TbBook, TbList, TbPackage } from 'react-icons/tb'
+import { TbArrowBackUp, TbBook, TbList } from 'react-icons/tb'
 import { useNavigate } from 'react-router'
 
 import { showModal } from '@shared/_modals/show-modal'
@@ -72,7 +72,6 @@ export const NodePluginEditorPageComponent = (props: Props) => {
                     </Group>
                 }
                 description={plugin.uuid}
-                icon={<TbPackage size={24} />}
                 title={plugin.name}
             />
             <Flex gap="md">

@@ -13,12 +13,7 @@ export function RecapControl() {
     const handleClick = () => {
         modals.open({
             title: (
-                <BaseOverlayHeader
-                    iconColor="indigo"
-                    IconComponent={TbSparkles}
-                    iconVariant="soft"
-                    title={t('recap-control.recap')}
-                />
+                <BaseOverlayHeader IconComponent={TbSparkles} title={t('recap-control.recap')} />
             ),
             centered: true,
             size: '980px',

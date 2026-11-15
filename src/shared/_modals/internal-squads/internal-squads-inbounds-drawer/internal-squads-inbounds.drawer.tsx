@@ -4,6 +4,7 @@ import {
     ActionIcon,
     Badge,
     Box,
+    Button,
     CopyButton,
     Drawer,
     Group,
@@ -229,8 +230,8 @@ export const InternalSquadsInboundsDrawer = NiceModal.create((props: IProps) => 
                     p="md"
                     shadow="sm"
                     style={{
-                        border: '1px solid rgb(255, 255, 255, 0.08)',
-                        background: 'rgb(255, 255, 255, 0.02)'
+                        border: '1px solid rgba(255, 255, 255, 0.07)',
+                        background: 'var(--mantine-color-dark-7)'
                     }}
                 >
                     <Stack gap="md">
@@ -254,7 +255,6 @@ export const InternalSquadsInboundsDrawer = NiceModal.create((props: IProps) => 
 
                             <Stack gap={6} style={{ flex: 1, minWidth: 0 }}>
                                 <Text
-                                    ff="monospace"
                                     fw={700}
                                     lineClamp={2}
                                     size="lg"
@@ -273,7 +273,6 @@ export const InternalSquadsInboundsDrawer = NiceModal.create((props: IProps) => 
                                                     ? 'teal'
                                                     : 'gray'
                                             }
-                                            ff="monospace"
                                             leftSection={<PiUsers size={12} />}
                                             size="lg"
                                             variant="light"
@@ -285,8 +284,7 @@ export const InternalSquadsInboundsDrawer = NiceModal.create((props: IProps) => 
                                     </Tooltip>
                                     <Tooltip label={t('common.field.inbounds')}>
                                         <Badge
-                                            color="blue"
-                                            ff="monospace"
+                                            color="gray"
                                             leftSection={<PiTag size={12} />}
                                             size="lg"
                                             variant="light"
@@ -316,19 +314,15 @@ export const InternalSquadsInboundsDrawer = NiceModal.create((props: IProps) => 
                                 </Group>
                             </Stack>
 
-                            <ActionIcon
+                            <Button
                                 color="teal"
                                 disabled={selectedInbounds.size === 0}
+                                leftSection={<TbDeviceFloppy size={18} />}
                                 loading={isUpdatingInternalSquad}
                                 onClick={handleUpdateInternalSquad}
-                                size="xl"
-                                style={{
-                                    transition: 'color 0.2s ease'
-                                }}
-                                variant="soft"
                             >
-                                <TbDeviceFloppy size={24} />
-                            </ActionIcon>
+                                {t('common.action.save')}
+                            </Button>
                         </Group>
                     </Stack>
                 </Paper>
@@ -458,16 +452,14 @@ export const InternalSquadsInboundsDrawer = NiceModal.create((props: IProps) => 
             size="500px"
             styles={{
                 body: {
-                    height: 'calc(100% - 60px)',
+                    height: 'calc(100% - 64px)',
                     display: 'flex',
                     flexDirection: 'column'
                 }
             }}
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbCirclesRelation}
-                    iconVariant="soft"
                     title={t('internal-squads.drawer.widget.edit-internal-squad')}
                     openEntity={{ entity: OPEN_ENTITY.INTERNAL_SQUAD, id: squadUuid }}
                 />

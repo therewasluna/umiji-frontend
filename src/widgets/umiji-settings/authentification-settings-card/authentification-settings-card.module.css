@@ -1,0 +1,152 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    container-type: inline-size;
+}
+
+.groupLabel {
+    margin: 0;
+    padding-block: 4px 8px;
+    font-size: var(--mantine-font-size-sm);
+    font-weight: 600;
+
+    &:not(:first-child) {
+        padding-top: 24px;
+    }
+}
+
+.method {
+    border-bottom: 1px solid
+        color-mix(in srgb, var(--mantine-color-default-border) 45%, transparent);
+
+    &:last-child,
+    &:has(+ .groupLabel) {
+        border-bottom: 0;
+    }
+}
+
+.head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 72px;
+    padding-block: 8px;
+}
+
+.summary {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+    gap: 12px;
+}
+
+.providerIcon {
+    display: flex;
+    flex: 0 0 28px;
+    align-items: center;
+    justify-content: center;
+    color: var(--mantine-color-text);
+}
+
+.identity {
+    min-width: 0;
+}
+
+.title {
+    font-size: var(--mantine-font-size-sm);
+    font-weight: 600;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.status {
+    margin-top: 2px;
+    color: var(--mantine-color-dimmed);
+    font-size: var(--mantine-font-size-xs);
+    line-height: 1.5;
+}
+
+.method[data-enabled] .status {
+    color: var(--mantine-color-rose-light-color);
+}
+
+.configure {
+    flex: none;
+}
+
+.chevron {
+    flex: none;
+    transition: transform 160ms ease;
+}
+
+.method[data-open] .chevron {
+    transform: rotate(180deg);
+}
+
+.switchRoot {
+    flex: none;
+}
+
+.switchBody {
+    align-items: center;
+    min-height: 44px;
+    cursor: pointer;
+}
+
+.panel {
+    padding-block: 12px 24px;
+    padding-inline-start: 40px;
+}
+
+.help {
+    min-height: 44px;
+    padding-inline: 0 12px;
+}
+
+.checkboxBody {
+    align-items: center;
+    min-height: 44px;
+
+    & input:focus-visible {
+        outline: 2px solid var(--mantine-color-rose-4);
+        outline-offset: 2px;
+    }
+}
+
+.configure,
+.help {
+    &:focus-visible {
+        outline: 2px solid var(--mantine-color-rose-4);
+        outline-offset: 2px;
+    }
+}
+
+@container (max-width: 380px) {
+    .panel {
+        padding-inline-start: 0;
+    }
+}
+
+.footer {
+    min-height: 44px;
+
+    & > button {
+        flex: none;
+    }
+}
+
+.unsaved {
+    min-width: 0;
+    color: var(--mantine-color-rose-3);
+
+    & > svg {
+        flex: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .chevron {
+        transition: none;
+    }
+}

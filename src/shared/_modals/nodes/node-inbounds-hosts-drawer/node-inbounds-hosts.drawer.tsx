@@ -75,9 +75,7 @@ export const NodeInboundsHostsDrawer = NiceModal.create((props: IProps) => {
             size="800px"
             title={
                 <BaseOverlayHeader
-                    iconColor="cyan"
                     IconComponent={TbSitemap}
-                    iconVariant="soft"
                     title={t('common.field.inbounds-hosts')}
                 />
             }

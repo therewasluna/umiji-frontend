@@ -1,3 +1,35 @@
+:root {
+    --font-sans-latin:
+        Montserrat, Vazirmatn, Apple Color Emoji, Noto Sans SC, Twemoji Country Flags, sans-serif;
+    --font-sans: var(--font-sans-latin);
+}
+
+/* Persian shows Persian digits by swapping glyphs, not text: what's on the page, in the forms and on
+   the clipboard stays 0-9, so nothing that parses, saves or copies a number can break.
+   The font is Montserrat's Basic Latin plus Vazirmatn's Persian digits: a lone digit draws Persian, one
+   touching a Latin letter stays Latin, so OAuth2 and v2rayNG are right with no markup.
+   Built by frontend/tools/build-persian-digits-font.py; the panel and sub page carry the same file.
+   Licences in fonts/OFL-*.txt. unicode-range and the rtl-only stack mean only Persian ever downloads it. */
+@font-face {
+    font-family: 'Umiji Persian Digits';
+    src: url('./fonts/umiji-persian-digits.woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: swap;
+    unicode-range: U+20-7E, U+6F0-6F9;
+}
+
+:root[dir='rtl'] {
+    --font-sans: 'Umiji Persian Digits', var(--font-sans-latin);
+}
+
+/* Free-text fields hold domains, tokens and URLs: their digits stay as they'd be typed and pasted.
+   Number fields and read-only ones, like a dropdown's chosen value, follow the page.
+   Monospace text is a separate font stack, so UUIDs, IPs and commands stay Latin too. */
+:root[dir='rtl']
+    :is(input:not([inputmode='decimal'], [inputmode='numeric'], [readonly]), textarea) {
+    font-family: var(--font-sans-latin);
+}
+
 html,
 body {
     min-height: 100vh;
@@ -68,7 +100,7 @@ body {
         bottom: 0px;
         width: 100%;
         height: 4px;
-        background: #161b23;
+        background: var(--mantine-color-dark-7);
         z-index: 0;
     }
 }
@@ -125,25 +157,51 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(22, 27, 35, 0.6);
+    background: color-mix(in srgb, var(--mantine-color-dark-7) 60%, transparent);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #0d9488 0%, #06b6d4 100%);
+    background: var(--mantine-color-dark-4);
     border-radius: 4px;
-    border: 1px solid rgba(22, 27, 35, 0.8);
+    border: 1px solid color-mix(in srgb, var(--mantine-color-dark-7) 80%, transparent);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #14b8a6 0%, #22d3ee 100%);
+    background: var(--mantine-primary-color-8);
 }
 
 ::-webkit-scrollbar-corner {
-    background: rgba(22, 27, 35, 0.6);
+    background: color-mix(in srgb, var(--mantine-color-dark-7) 60%, transparent);
 }
 
 * {
     scrollbar-width: thin;
-    scrollbar-color: #0d9488 rgba(22, 27, 35, 0.6);
+    scrollbar-color: var(--mantine-color-dark-4)
+        color-mix(in srgb, var(--mantine-color-dark-7) 60%, transparent);
+}
+
+/* Table column resize handles: a quiet hairline until hovered (hover keeps the library's rose). */
+.mrt-table-head-cell-resize-handle {
+    --resize-handle-thickness: 2px;
+    background: var(--mantine-color-dark-5);
+}
+
+/* mantine-datatable (HWID leaderboard, hosts/nodes table views, user modals) in the Umiji look:
+   one quiet panel, hairline rows, no column rules, rose for the current page. */
+.mantine-datatable {
+    --mantine-datatable-background-color-dark: var(--mantine-color-dark-7);
+    --mantine-datatable-row-background-color-dark: transparent;
+    --mantine-datatable-border-color-dark: rgba(255, 255, 255, 0.07);
+    --mantine-datatable-highlight-on-hover-color-dark: var(--mantine-color-dark-6);
+    --mantine-datatable-pagination-active-background-color-dark: var(--mantine-color-rose-8);
+    --mantine-datatable-pagination-active-text-color-dark: var(--mantine-color-white);
+    --table-border-color: rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+}
+
+.mantine-datatable-header th {
+    color: var(--mantine-color-dark-2);
+    font-size: 12px;
+    font-weight: 500;
 }

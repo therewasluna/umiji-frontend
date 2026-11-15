@@ -1,14 +1,11 @@
 import { TemplatesHeaderActionButtonsFeature } from '@features/ui/dashboard/templates/header-action-buttons'
-import {
-    GetSubscriptionTemplatesCommand,
-    TSubscriptionTemplateType
-} from '@umiji/backend-contract'
+import { GetSubscriptionTemplatesCommand, TSubscriptionTemplateType } from '@umiji/backend-contract'
 import { TemplatesGridWidget } from '@widgets/dashboard/templates/templates-grid/templates-grid.widget'
 import { TemplatesSpotlightWidget } from '@widgets/dashboard/templates/templates-spotlight'
 import { motion } from 'motion/react'
+import { useTranslation } from 'react-i18next'
 
 import { Page, PageHeaderShared } from '@shared/ui'
-import { getCoreLogoFromType } from '@shared/ui/get-core-logo-from-type'
 
 interface Props {
     templates: GetSubscriptionTemplatesCommand.Response['response']['templates']
@@ -18,12 +15,13 @@ interface Props {
 
 export const TemplateBasePageComponent = (props: Props) => {
     const { templates, title, type } = props
+    const { t } = useTranslation()
 
     return (
         <Page title={title}>
             <PageHeaderShared
                 actions={<TemplatesHeaderActionButtonsFeature templateType={type} />}
-                icon={getCoreLogoFromType({ type })}
+                description={t('page-descriptions.templates')}
                 title={title}
             />
 

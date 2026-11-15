@@ -28,7 +28,7 @@ export const RequirementsWidget = () => {
                     </Text>
                 </Group>
                 <CodeHighlight
-                    background="rgba(22, 27, 35)"
+                    background="var(--mantine-color-dark-7)"
                     code={DOCKER_SNIPPET}
                     language="yaml"
                     radius="md"

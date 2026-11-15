@@ -12,17 +12,17 @@ import { hostsQueryKeys } from './hosts/hosts.query.hooks'
 import { hwidUserDevicesQueryKeys } from './hwid-user-devices/hwid-user-devices.query.hooks'
 import { infraBillingQueryKeys } from './infra-billing/infra-billing.query.hooks'
 import { internalSquadsQueryKeys } from './internal-squads/internal-squads.query.hooks'
-import { nodeIntegrationsQueryKeys } from './node-integrations/node-integrations.query.hooks'
+import { nodeInstallQueryKeys } from './node-install/node-install.hooks'
 import { nodePluginsQueryKeys } from './node-plugins/node-plugins.query.hooks'
 import { nodesQueryKeys } from './nodes/nodes.query.hooks'
 import { passkeysQueryKeys } from './passkeys/passkeys.query.hooks'
-import { umijiSettingsQueryKeys } from './umiji-settings/umiji-settings.query.hooks'
 import { snippetsQueryKeys } from './snippets/snippets.query.hooks'
 import { subpageConfigsQueryKeys } from './subpage-configs/subpage-configs.query.hooks'
 import { subscriptionRequestHistoryQueryKeys } from './subscription-request-history/subscription-request-history.query.hooks'
 import { subscriptionSettingsQueryKeys } from './subscription-settings/subscription-settings.query.hooks'
 import { subscriptionTemplateQueryKeys } from './subscription-template/subscription-template.query.hooks'
 import { systemQueryKeys } from './system/system.query.hooks'
+import { umijiSettingsQueryKeys } from './umiji-settings/umiji-settings.query.hooks'
 import { usersQueryKeys } from './users/users.query.hooks'
 
 export const QueryKeys = mergeQueryKeys(
@@ -30,6 +30,7 @@ export const QueryKeys = mergeQueryKeys(
     systemQueryKeys,
     hostsQueryKeys,
     nodesQueryKeys,
+    nodeInstallQueryKeys,
     apiTokensQueryKeys,
     authQueryKeys,
     subscriptionTemplateQueryKeys,
@@ -47,7 +48,6 @@ export const QueryKeys = mergeQueryKeys(
     bandwidthStatsQueryKeys,
     connectionsQueryKeys,
     nodePluginsQueryKeys,
-    nodeIntegrationsQueryKeys,
     brokersQueryKeys,
     brokerBotQueryKeys
 )

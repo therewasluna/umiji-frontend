@@ -32,8 +32,8 @@ export const IpStatsWidget = ({ users }: IProps) => {
     return (
         <Group gap="xs" grow>
             <Paper
-                bd="1px solid rgba(45, 212, 191, 0.2)"
-                bg="rgba(45, 212, 191, 0.08)"
+                bd="1px solid rgba(255, 255, 255, 0.07)"
+                bg="rgba(255, 255, 255, 0.03)"
                 p="xs"
                 radius="md"
             >
@@ -46,8 +46,8 @@ export const IpStatsWidget = ({ users }: IProps) => {
             </Paper>
 
             <Paper
-                bd="1px solid rgba(251, 191, 36, 0.2)"
-                bg="rgba(251, 191, 36, 0.08)"
+                bd="1px solid color-mix(in srgb, var(--mantine-color-yellow-4) 45%, transparent)"
+                bg="transparent"
                 p="xs"
                 radius="md"
             >

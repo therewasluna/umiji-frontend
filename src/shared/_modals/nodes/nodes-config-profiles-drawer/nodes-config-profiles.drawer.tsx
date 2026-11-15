@@ -157,16 +157,14 @@ export const NodesConfigProfilesDrawer = NiceModal.create((props: IProps) => {
             size="480px"
             styles={{
                 body: {
-                    height: 'calc(100% - 60px)',
+                    height: 'calc(100% - 64px)',
                     display: 'flex',
                     flexDirection: 'column'
                 }
             }}
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={XrayLogo}
-                    iconVariant="soft"
                     title={t('config-profiles.drawer.widget.config-profiles')}
                 />
             }
@@ -187,8 +185,7 @@ export const NodesConfigProfilesDrawer = NiceModal.create((props: IProps) => {
                                     <Text fw={700} size="sm">
                                         {filteredProfiles.find(
                                             (p) => p.uuid === selectedProfileUuid
-                                        )?.name ||
-                                            t('common.message.no-profile-selected')}
+                                        )?.name || t('common.message.no-profile-selected')}
                                     </Text>
                                     <Text c="dimmed" size="xs">
                                         {t('internal-squads.drawer.widget.selected-inbounds', {

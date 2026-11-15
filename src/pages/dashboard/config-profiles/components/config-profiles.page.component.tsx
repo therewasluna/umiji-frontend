@@ -3,7 +3,6 @@ import { ConfigProfilesGridWidget } from '@widgets/dashboard/config-profiles/con
 import { ConfigProfilesSpotlightWidget } from '@widgets/dashboard/config-profiles/config-profiles-spotlight/config-profiles-spotlight'
 import { useTranslation } from 'react-i18next'
 
-import { XrayLogo } from '@shared/ui/logos'
 import { Page } from '@shared/ui/page'
 import { PageHeaderShared } from '@shared/ui/page-header/page-header.shared'
 
@@ -23,7 +22,7 @@ export const ConfigPageComponent = (props: Props) => {
                         configProfileCount={configProfileCount}
                     />
                 }
-                icon={<XrayLogo size={24} />}
+                description={t('page-descriptions.config-profiles')}
                 title={t('constants.config-profiles')}
             />
 

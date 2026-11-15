@@ -9,8 +9,8 @@ import {
     Tooltip
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { TSubscriptionPageSvgLibrary } from '@umiji/subscription-page-types'
 import { IconCheck, IconPhoto, IconX } from '@tabler/icons-react'
+import { TSubscriptionPageSvgLibrary } from '@umiji/subscription-page-types'
 import isSvg from 'is-svg'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'

@@ -40,8 +40,9 @@ export function SectionCardRoot({
             radius={radius}
             ref={ref}
             style={{
-                background: 'rgba(255, 255, 255, 0.02)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
+                background: 'var(--mantine-color-dark-7)',
+                border: '1px solid rgba(255, 255, 255, 0.07)',
+                borderRadius: 12,
                 ...style
             }}
             {...props}

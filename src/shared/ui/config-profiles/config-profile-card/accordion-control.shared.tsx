@@ -9,9 +9,10 @@ import {
 } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { GetConfigProfilesCommand } from '@umiji/backend-contract'
-import { githubDarkTheme, JsonEditor } from 'json-edit-react'
+import { JsonEditor } from 'json-edit-react'
 import { PiCheckBold, PiXBold } from 'react-icons/pi'
 
+import { JSON_VIEWER_THEME } from '@shared/constants/theme/json-viewer-theme'
 import { XrayLogo } from '@shared/ui/logos'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 
@@ -39,19 +40,12 @@ export const AccordionControlShared = (props: IProps) => {
                         indent={4}
                         maxWidth="100%"
                         rootName=""
-                        theme={githubDarkTheme}
+                        theme={JSON_VIEWER_THEME}
                         viewOnly
                     />
                 </Box>
             ),
-            title: (
-                <BaseOverlayHeader
-                    iconColor="teal"
-                    IconComponent={XrayLogo}
-                    iconVariant="soft"
-                    title={profile.name}
-                />
-            ),
+            title: <BaseOverlayHeader IconComponent={XrayLogo} title={profile.name} />,
             size: 'xl'
         })
     }

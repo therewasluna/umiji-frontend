@@ -21,7 +21,10 @@ export interface ISshSessionStatus {
     target: ISshTarget
 }
 
+export type TTerminalKey = 'down' | 'esc' | 'left' | 'right' | 'tab' | 'up'
+
 export interface ISshSessionHandle {
+    sendKey: (key: TTerminalKey) => void
     showSettings: () => void
     write: (data: string) => void
 }

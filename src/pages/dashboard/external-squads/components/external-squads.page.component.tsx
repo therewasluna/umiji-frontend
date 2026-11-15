@@ -3,7 +3,6 @@ import { ExternalSquadsGridWidget } from '@widgets/dashboard/external-squads/ext
 import { ExternalSquadsSpotlightWidget } from '@widgets/dashboard/external-squads/external-squads-spotlight/external-squads-spotlight'
 import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
-import { TbWebhook } from 'react-icons/tb'
 
 import { Page } from '@shared/ui/page'
 import { PageHeaderShared } from '@shared/ui/page-header/page-header.shared'
@@ -22,7 +21,7 @@ export const ExternalSquadsPageComponent = (props: Props) => {
                         externalSquadCount={externalSquads.length}
                     />
                 }
-                icon={<TbWebhook size={24} />}
+                description={t('page-descriptions.external-squads')}
                 title={t('constants.external-squads')}
             />
 

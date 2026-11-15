@@ -36,6 +36,7 @@ import {
     HostOptionsSection,
     IHostFormData
 } from './options'
+import { clearTelegramUnsupportedOptions } from './options/host-option-fields'
 
 export const BaseHostForm = <
     T extends
@@ -74,6 +75,15 @@ export const BaseHostForm = <
 
     form.watch('internalSquads.mode', watchInternalSquadsMode)
 
+    // The form is uncontrolled, so this is what re-renders it when the inbound changes.
+    const [, setSelectedInbound] = useState<unknown>()
+    const watchSelectedInbound = useCallback(
+        ({ value }: { value: unknown }) => setSelectedInbound(value),
+        []
+    )
+
+    form.watch('inbound.configProfileInboundUuid', watchSelectedInbound)
+
     const isAllowOnlyInternalSquads = internalSquadsMode === INTERNAL_SQUADS_MODE.ALLOW_ONLY
     const { error: _internalSquadsModeError, ...internalSquadsModeProps } =
         form.getInputProps('internalSquads.mode')
@@ -99,6 +109,9 @@ export const BaseHostForm = <
                 (profileInbound) => profileInbound.uuid === inbound.configProfileInboundUuid
             )?.rawInbound
     }
+
+    const isTelegram =
+        (resolveSelectedRawInbound() as { protocol?: string } | undefined)?.protocol === 'mtproto'
 
     const isXhttpExtraButtonDisabled = () => {
         const { inbound } = form.getValues()
@@ -231,9 +244,12 @@ export const BaseHostForm = <
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form
+            onSubmit={handleSubmit}
+            onSubmitCapture={() => isTelegram && clearTelegramUnsupportedOptions(form)}
+        >
             <HostFormDataProvider value={hostFormData}>
-                <HostOptionsProvider form={form} isBulkEdit={isBulkEdit}>
+                <HostOptionsProvider form={form} isBulkEdit={isBulkEdit} isTelegram={isTelegram}>
                     <Stack>
                         <SectionCard.Root>
                             <SectionCard.Section>

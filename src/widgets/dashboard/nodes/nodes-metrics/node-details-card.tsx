@@ -163,8 +163,8 @@ export const NodeDetailsCard = memo(
                             <Card
                                 p="md"
                                 style={{
-                                    background: 'rgba(16, 185, 129, 0.05)',
-                                    border: '1px solid rgba(16, 185, 129, 0.15)'
+                                    background: 'rgba(255, 255, 255, 0.03)',
+                                    border: '1px solid rgba(255, 255, 255, 0.07)'
                                 }}
                             >
                                 <Group align="center" gap="xs" mb="xs" wrap="nowrap">
@@ -213,7 +213,6 @@ export const NodeDetailsCard = memo(
                                                             fw={500}
                                                             lh={1}
                                                             size="9px"
-                                                            tt="uppercase"
                                                         >
                                                             {t('node-details-card.up')}
                                                         </Text>
@@ -236,7 +235,6 @@ export const NodeDetailsCard = memo(
                                                             fw={500}
                                                             lh={1}
                                                             size="9px"
-                                                            tt="uppercase"
                                                         >
                                                             {t('node-details-card.down')}
                                                         </Text>
@@ -268,8 +266,8 @@ export const NodeDetailsCard = memo(
                             <Card
                                 p="md"
                                 style={{
-                                    background: 'rgba(59, 130, 246, 0.05)',
-                                    border: '1px solid rgba(59, 130, 246, 0.15)'
+                                    background: 'rgba(255, 255, 255, 0.03)',
+                                    border: '1px solid rgba(255, 255, 255, 0.07)'
                                 }}
                             >
                                 <Group align="center" gap="xs" mb="xs" wrap="nowrap">
@@ -317,7 +315,6 @@ export const NodeDetailsCard = memo(
                                                             fw={500}
                                                             lh={1}
                                                             size="9px"
-                                                            tt="uppercase"
                                                         >
                                                             {t('node-details-card.up')}
                                                         </Text>
@@ -340,7 +337,6 @@ export const NodeDetailsCard = memo(
                                                             fw={500}
                                                             lh={1}
                                                             size="9px"
-                                                            tt="uppercase"
                                                         >
                                                             {t('node-details-card.down')}
                                                         </Text>

@@ -6,6 +6,7 @@ import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 
 import { useIsMobile, usePreventTableBackScroll } from '@shared/hooks'
+import { PageHeaderShared } from '@shared/ui'
 import { Page } from '@shared/ui/page'
 
 export const InfraBillingPageComponent = () => {
@@ -16,6 +17,11 @@ export const InfraBillingPageComponent = () => {
 
     return (
         <Page title={t('constants.infra-billing')}>
+            <PageHeaderShared
+                description={t('page-descriptions.infra-billing')}
+                title={t('constants.infra-billing')}
+            />
+
             <motion.div
                 animate={{ opacity: 1 }}
                 initial={{ opacity: 0 }}

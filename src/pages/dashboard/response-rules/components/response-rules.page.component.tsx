@@ -1,11 +1,7 @@
 import { Box, Flex } from '@mantine/core'
-import {
-    GetSubscriptionSettingsCommand,
-    TSubscriptionTemplateType
-} from '@umiji/backend-contract'
+import { GetSubscriptionSettingsCommand, TSubscriptionTemplateType } from '@umiji/backend-contract'
 import { ResponseRulesEditorWidget } from '@widgets/dashboard/response-rules/response-rules-editor'
 import { useTranslation } from 'react-i18next'
-import { TbRoute } from 'react-icons/tb'
 
 import { Page, PageHeaderShared } from '@shared/ui'
 import { SrrAdvancedWarningOverlay } from '@shared/ui/srr-advanced-warning-overlay/srr-advanced-warning-overlay'
@@ -23,7 +19,10 @@ export const ResponseRulesPageComponent = (props: Props) => {
 
     return (
         <Page title={t('constants.response-rules')}>
-            <PageHeaderShared icon={<TbRoute size={24} />} title={t('constants.response-rules')} />
+            <PageHeaderShared
+                description={t('page-descriptions.response-rules')}
+                title={t('constants.response-rules')}
+            />
 
             <SrrAdvancedWarningOverlay />
 

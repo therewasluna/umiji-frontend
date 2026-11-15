@@ -1,0 +1,598 @@
+/* Visual config editor. Surfaces follow the settings cards: dark-7, hairline borders, rose only for focus/active. */
+
+.layout {
+    display: grid;
+    grid-template-columns: 216px minmax(0, 1fr);
+    gap: var(--mantine-spacing-lg);
+    align-items: start;
+}
+
+.railWrap {
+    position: sticky;
+    top: var(--mantine-spacing-md);
+    min-width: 0;
+}
+
+.rail {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+    background: var(--mantine-color-dark-7);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+}
+
+.railItem {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    color: var(--mantine-color-dark-1);
+    font-size: var(--mantine-font-size-sm);
+    font-weight: 500;
+    white-space: nowrap;
+    transition:
+        background-color 140ms ease,
+        color 140ms ease;
+}
+
+.railItem:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--mantine-color-dark-0);
+}
+
+.railItem[data-active] {
+    background: var(--mantine-color-rose-light);
+    color: var(--mantine-color-rose-light-color);
+}
+
+.railItem:focus-visible {
+    outline: 2px solid var(--mantine-primary-color-filled);
+    outline-offset: -2px;
+}
+
+.railLabel {
+    flex: 1;
+}
+
+.railCount {
+    min-width: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 11px;
+    line-height: 18px;
+    text-align: center;
+}
+
+.railItem[data-active] .railCount {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 64em) {
+    .layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--mantine-spacing-md);
+    }
+
+    .railWrap {
+        position: relative;
+        top: auto;
+    }
+
+    .rail {
+        flex-direction: row;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding: 6px;
+    }
+
+    .rail::-webkit-scrollbar {
+        display: none;
+    }
+
+    .railItem {
+        flex-shrink: 0;
+    }
+}
+
+.sectionHead {
+    display: flex;
+    flex: 1 1 320px;
+    min-width: 0;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: var(--mantine-spacing-md);
+}
+
+.listHeader .sectionHead {
+    margin-bottom: 0;
+}
+
+.sectionIcon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 13px;
+    background: var(--mantine-color-rose-light);
+    color: var(--mantine-color-rose-light-color);
+}
+
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-lg);
+}
+
+.panel {
+    padding: var(--mantine-spacing-lg);
+    background: var(--mantine-color-dark-7);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+}
+
+.note {
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--mantine-color-dark-1);
+}
+
+/* Entity cards */
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.entity {
+    background: var(--mantine-color-dark-7);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    transition: border-color 160ms ease;
+}
+
+.entity[data-open] {
+    border-color: color-mix(in srgb, var(--mantine-color-rose-5) 38%, transparent);
+}
+
+.entityHead {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-inline-end: 10px;
+}
+
+.entityToggle {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 6px 12px 14px;
+    border-radius: 14px;
+}
+
+.entityToggle:focus-visible {
+    outline: 2px solid var(--mantine-primary-color-filled);
+    outline-offset: -2px;
+}
+
+.entityActions {
+    opacity: 0.5;
+    transition: opacity 140ms ease;
+}
+
+.entity:hover .entityActions,
+.entity:focus-within .entityActions,
+.entity[data-open] .entityActions {
+    opacity: 1;
+}
+
+@media (hover: none) {
+    .entityActions {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 40em) {
+    .entityHead {
+        flex-wrap: wrap;
+        padding-bottom: 6px;
+    }
+
+    .entityActions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+.tile {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 11px;
+    background: var(--mantine-color-dark-6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--mantine-color-dark-0);
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transition:
+        background-color 160ms ease,
+        color 160ms ease;
+}
+
+.entity[data-open] .tile {
+    background: var(--mantine-color-rose-light);
+    border-color: transparent;
+    color: var(--mantine-color-rose-light-color);
+}
+
+.entityTitle {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.chip {
+    padding: 1px 7px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--mantine-color-dark-1);
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 11.5px;
+    line-height: 18px;
+}
+
+.chevron {
+    flex-shrink: 0;
+    color: var(--mantine-color-dark-2);
+    transition: transform 180ms ease;
+}
+
+[dir='rtl'] .chevron {
+    transform: scaleX(-1);
+}
+
+.entity[data-open] > .entityHead .chevron,
+.group[data-open] > .groupHeader .chevron {
+    transform: rotate(90deg);
+}
+
+.entityBody {
+    padding: 4px 16px 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 28px 16px;
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    color: var(--mantine-color-dark-1);
+    transition:
+        border-color 140ms ease,
+        color 140ms ease;
+}
+
+.empty:hover {
+    border-color: color-mix(in srgb, var(--mantine-color-rose-5) 50%, transparent);
+    color: var(--mantine-color-rose-light-color);
+}
+
+/* Tabs inside an entity */
+
+.tabWrap {
+    position: relative;
+    margin-top: 12px;
+}
+
+.tabList {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 4px;
+}
+
+.tabList::-webkit-scrollbar {
+    display: none;
+}
+
+.tab {
+    flex-shrink: 0;
+    font-weight: 500;
+    color: var(--mantine-color-dark-1);
+}
+
+.tab:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.tab[data-active],
+.tab[data-active]:hover {
+    background: var(--mantine-color-rose-light);
+    color: var(--mantine-color-rose-light-color);
+}
+
+/* Overflow hints for the section rail and entity tabs: a fade plus an arrow on whichever side has more. */
+
+.edge {
+    position: absolute;
+    inset-block: 1px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    width: 84px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+    --edge-bg: var(--mantine-color-dark-7);
+}
+
+.edge[data-visible] {
+    opacity: 1;
+}
+
+.edge[data-side='start'] {
+    inset-inline-start: 1px;
+    padding-inline-start: 6px;
+    border-start-start-radius: 15px;
+    border-end-start-radius: 15px;
+    background: linear-gradient(to right, var(--edge-bg) 45%, transparent);
+}
+
+.edge[data-side='end'] {
+    inset-inline-end: 1px;
+    justify-content: flex-end;
+    padding-inline-end: 6px;
+    border-start-end-radius: 15px;
+    border-end-end-radius: 15px;
+    background: linear-gradient(to left, var(--edge-bg) 45%, transparent);
+}
+
+[dir='rtl'] .edge[data-side='start'] {
+    background: linear-gradient(to left, var(--edge-bg) 45%, transparent);
+}
+
+[dir='rtl'] .edge[data-side='end'] {
+    background: linear-gradient(to right, var(--edge-bg) 45%, transparent);
+}
+
+.edgeButton {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--mantine-color-dark-6);
+    color: var(--mantine-color-dark-0);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+    transition:
+        color 140ms ease,
+        border-color 140ms ease,
+        background-color 140ms ease;
+}
+
+.edge[data-visible] .edgeButton {
+    pointer-events: auto;
+}
+
+.edgeButton:hover {
+    border-color: color-mix(in srgb, var(--mantine-color-rose-5) 50%, transparent);
+    background: color-mix(in srgb, var(--mantine-color-rose-9) 22%, var(--mantine-color-dark-6));
+    color: var(--mantine-color-rose-light-color);
+}
+
+[dir='rtl'] .edgeButton svg {
+    transform: scaleX(-1);
+}
+
+/* Fields */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px 16px;
+    align-items: start;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+/* Toggles get rows of their own and match heights within a row, so they never sit beside an input. */
+.grid > :not([data-kind='bool']) + [data-kind='bool'] {
+    grid-column-start: 1;
+}
+
+.grid > [data-kind='bool'] {
+    align-self: stretch;
+}
+
+/* Mantine's 100px minimum pushes the typing field onto a second line after a few tags. */
+.tagsField {
+    min-width: 48px;
+}
+
+.label {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 8px;
+}
+
+.key {
+    color: var(--mantine-color-dark-2);
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.mono {
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 12.5px;
+}
+
+.toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: 100%;
+    min-height: 60px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.015);
+    font-size: var(--mantine-font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.toggle:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.group {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.012);
+    font-size: var(--mantine-font-size-sm);
+    font-weight: 500;
+}
+
+.groupHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.groupHeader:focus-visible {
+    outline: 2px solid var(--mantine-primary-color-filled);
+    outline-offset: 2px;
+}
+
+.count {
+    padding: 0 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--mantine-color-dark-1);
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 11px;
+    line-height: 18px;
+}
+
+.listItem {
+    padding: 10px 12px 14px;
+    border-radius: 10px;
+    border: 1px dashed rgba(255, 255, 255, 0.09);
+}
+
+.itemTitle {
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+.managed {
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--mantine-color-dark-0);
+}
+
+/* Protocol picker */
+
+.protocolCard {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: var(--mantine-color-dark-7);
+    transition:
+        border-color 140ms ease,
+        background-color 140ms ease;
+}
+
+.protocolCard:hover,
+.protocolCard:focus-visible {
+    border-color: color-mix(in srgb, var(--mantine-color-rose-5) 45%, transparent);
+    background: color-mix(in srgb, var(--mantine-color-rose-9) 12%, var(--mantine-color-dark-7));
+    outline: none;
+}
+
+.protocolCard:hover .tile,
+.protocolCard:focus-visible .tile {
+    background: var(--mantine-color-rose-light);
+    border-color: transparent;
+    color: var(--mantine-color-rose-light-color);
+}
+
+/* Validation: red leads the way to an empty required field (section → card → tab → group → input). */
+
+.dot {
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: var(--mantine-color-error);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mantine-color-error) 22%, transparent);
+}
+
+.entity[data-invalid] {
+    border-color: color-mix(in srgb, var(--mantine-color-error) 45%, transparent);
+}
+
+.group[data-invalid],
+.listItem[data-invalid] {
+    border-color: color-mix(in srgb, var(--mantine-color-error) 40%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .chevron,
+    .tile,
+    .entity,
+    .railItem,
+    .edge,
+    .edgeButton {
+        transition: none;
+    }
+}
+
+.entityActions [data-disabled],
+.listItem [data-disabled] {
+    background: transparent;
+    opacity: 0.3;
+}

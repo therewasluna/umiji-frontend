@@ -1,7 +1,7 @@
 import { Center, Loader, Stack, Text, Title, Transition } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { TOAuth2ProvidersKeys } from '@umiji/backend-contract'
 import { IconCheck } from '@tabler/icons-react'
+import { TOAuth2ProvidersKeys } from '@umiji/backend-contract'
 import { CSSProperties, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams, useSearchParams } from 'react-router'

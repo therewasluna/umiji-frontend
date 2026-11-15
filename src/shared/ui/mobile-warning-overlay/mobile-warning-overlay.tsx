@@ -87,16 +87,16 @@ export function MobileWarningOverlay() {
                         </Group>
                     </Stack>
 
-                    <Divider color="cyan.4" mb={0} opacity={0.3} pb={0} variant="dashed" w="100%" />
+                    <Divider color="dark.4" mb={0} pb={0} variant="dashed" w="100%" />
 
                     <Stack gap="sm" w="100%">
                         <Group gap="md" justify="center">
                             <Group gap="xs">
                                 <PiMonitor
-                                    color="var(--mantine-color-blue-4)"
+                                    color="var(--mantine-color-gray-4)"
                                     size={px('1.2rem')}
                                 />
-                                <Text c="blue.4" size="xs">
+                                <Text c="gray.4" size="xs">
                                     {t('mobile-warning-overlay.desktop-recommended')}
                                 </Text>
                             </Group>
@@ -107,10 +107,10 @@ export function MobileWarningOverlay() {
 
                             <Group gap="xs">
                                 <TbRotate2
-                                    color="var(--mantine-color-teal-4)"
+                                    color="var(--mantine-color-gray-4)"
                                     size={px('1.2rem')}
                                 />
-                                <Text c="teal.4" size="xs">
+                                <Text c="gray.4" size="xs">
                                     {t('mobile-warning-overlay.rotate-device')}
                                 </Text>
                             </Group>

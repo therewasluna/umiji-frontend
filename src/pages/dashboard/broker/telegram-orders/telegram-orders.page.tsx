@@ -6,6 +6,7 @@ import {
     Code,
     Group,
     Image,
+    NumberInput,
     Pagination,
     Paper,
     SimpleGrid,
@@ -19,7 +20,7 @@ import { GetBrokerBotOrdersCommand } from '@umiji/backend-contract'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbCheck, TbInfoCircle, TbReceipt, TbX } from 'react-icons/tb'
+import { TbCheck, TbInfoCircle, TbX } from 'react-icons/tb'
 
 import {
     useDecideBrokerBotOrder,
@@ -118,7 +119,7 @@ function PendingReceipt({ order }: { order: TOrder }) {
     }
 
     return (
-        <Card p="md" radius="md" withBorder>
+        <Card p="lg" radius="md" withBorder>
             <Stack gap="sm">
                 <Group justify="space-between" wrap="nowrap">
                     <Stack gap={0} miw={0}>
@@ -170,6 +171,69 @@ function PendingReceipt({ order }: { order: TOrder }) {
     )
 }
 
+function PendingPlanRecovery({ order }: { order: TOrder }) {
+    const { t } = useTranslation()
+    const { mutate: decide, isPending } = useDecideBrokerBotOrder()
+
+    const recover = () => {
+        let userId: number | string = ''
+        modals.openConfirmModal({
+            title: t('broker-bot.orders.recover-purchase'),
+            children: (
+                <Stack gap="sm">
+                    <Text size="sm">{t('broker-bot.orders.recover-user-hint')}</Text>
+                    <NumberInput
+                        allowDecimal={false}
+                        allowNegative={false}
+                        label={t('broker-bot.orders.recover-user-id')}
+                        max={Number.MAX_SAFE_INTEGER}
+                        min={1}
+                        onChange={(value) => {
+                            userId = value
+                        }}
+                    />
+                </Stack>
+            ),
+            labels: {
+                confirm: t('broker-bot.orders.recover-purchase'),
+                cancel: t('common.action.cancel')
+            },
+            centered: true,
+            onConfirm: () => {
+                const id = Number(userId)
+                if (!Number.isSafeInteger(id) || id < 1) return
+                decide({ route: { id: order.id }, variables: { decision: 'approve', userId: id } })
+            }
+        })
+    }
+
+    const refund = () =>
+        modals.openConfirmModal({
+            title: t('broker-bot.orders.refund-purchase'),
+            children: t('broker-bot.orders.refund-purchase-confirm', {
+                amount: formatTomanUtil(order.amount, t)
+            }),
+            labels: {
+                confirm: t('broker-bot.orders.refund-purchase'),
+                cancel: t('common.action.cancel')
+            },
+            confirmProps: { color: 'red', variant: 'soft' },
+            centered: true,
+            onConfirm: () => decide({ route: { id: order.id }, variables: { decision: 'reject' } })
+        })
+
+    return (
+        <Group gap="xs">
+            <Button loading={isPending} onClick={recover} size="xs" variant="light">
+                {t('broker-bot.orders.recover-purchase')}
+            </Button>
+            <Button color="red" loading={isPending} onClick={refund} size="xs" variant="light">
+                {t('broker-bot.orders.refund-purchase')}
+            </Button>
+        </Group>
+    )
+}
+
 export function BrokerTelegramOrdersPage() {
     const { t } = useTranslation()
     const [page, setPage] = useState(1)
@@ -187,7 +251,6 @@ export function BrokerTelegramOrdersPage() {
         <Page title={t('broker-bot.orders.title')}>
             <PageHeaderShared
                 description={t('broker-bot.orders.description')}
-                icon={<TbReceipt size={24} />}
                 title={t('broker-bot.orders.title')}
             />
 
@@ -219,7 +282,7 @@ export function BrokerTelegramOrdersPage() {
                     ) : (
                         <SimpleGrid
                             cols={{ base: 1, md: 2, xl: 3 }}
-                            spacing="sm"
+                            spacing="md"
                             style={{ alignItems: 'start' }}
                         >
                             {data.pending.map((order) => (
@@ -250,9 +313,11 @@ export function BrokerTelegramOrdersPage() {
                                                 {customerName(order)}
                                             </Text>
                                             <Text c="dimmed" size="xs">
-                                                {order.kind === 'topup'
-                                                    ? `${t('broker-bot.orders.topup')} · ${formatTomanUtil(order.amount, t)}`
-                                                    : `${order.planTitle ?? '—'} · ${formatTomanUtil(order.amount, t)}`}{' '}
+                                                {`${
+                                                    order.kind === 'plan'
+                                                        ? (order.planTitle ?? '—')
+                                                        : t(`broker-bot.orders.${order.kind}`)
+                                                } · ${formatTomanUtil(order.amount, t)}`}{' '}
                                                 · {formatDate(order.createdAt)}
                                             </Text>
                                             {order.status === 'rejected' && order.rejectReason && (
@@ -261,9 +326,18 @@ export function BrokerTelegramOrdersPage() {
                                                 </Text>
                                             )}
                                         </Stack>
-                                        <Badge color={STATUS_COLOR[order.status]} variant="soft">
-                                            {t(`broker-bot.orders.status-${order.status}`)}
-                                        </Badge>
+                                        <Group gap="xs">
+                                            {order.kind === 'plan' &&
+                                                order.status === 'pending' && (
+                                                    <PendingPlanRecovery order={order} />
+                                                )}
+                                            <Badge
+                                                color={STATUS_COLOR[order.status]}
+                                                variant="soft"
+                                            >
+                                                {t(`broker-bot.orders.status-${order.status}`)}
+                                            </Badge>
+                                        </Group>
                                     </Group>
                                 </Paper>
                             ))}

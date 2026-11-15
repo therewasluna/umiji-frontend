@@ -14,7 +14,7 @@ export function DrawerFooter(props: IProps) {
     const isMobile = useIsMobile()
 
     return (
-        <Box className={styles.footer} component="footer">
+        <Box className={styles.footer} component="footer" data-drawer-footer>
             <Group
                 gap="md"
                 grow={!!isMobile}

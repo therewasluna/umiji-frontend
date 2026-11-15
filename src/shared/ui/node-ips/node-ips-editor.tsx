@@ -127,9 +127,7 @@ export const NodeIpsEditor = <
             <SectionCard.Section>
                 <Group gap="sm" justify="space-between" wrap="nowrap">
                     <BaseOverlayHeader
-                        iconColor="cyan"
                         IconComponent={TbNetwork}
-                        iconVariant="soft"
                         title={t('common.field.ip-addresses')}
                         titleOrder={5}
                     />

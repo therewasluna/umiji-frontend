@@ -18,12 +18,12 @@ import { OptionsEmptyState } from './options-empty-state'
 import classes from './Options.module.css'
 
 export function HostOptionsSection() {
-    const { inactiveFields } = useHostOptions()
+    const { isActive } = useHostOptions()
     const { t } = useTranslation()
 
     const headerRef = useDrawerStickyOffset()
 
-    const isEmpty = inactiveFields.length === HOST_OPTION_FIELDS.length
+    const isEmpty = HOST_OPTION_FIELDS.every((field) => !isActive(field.name))
 
     return (
         <SectionCard.Root allDividers={false} style={{ overflow: 'visible' }}>
@@ -31,9 +31,7 @@ export function HostOptionsSection() {
                 <Stack gap="md">
                     <Group gap="sm" justify="space-between">
                         <BaseOverlayHeader
-                            iconColor="teal"
                             IconComponent={PiListChecks}
-                            iconVariant="soft"
                             title={t('base-host-form.options')}
                             titleOrder={5}
                         />

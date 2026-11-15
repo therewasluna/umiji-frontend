@@ -14,7 +14,7 @@ import { BROKER_BOT_BROADCAST_MAX_IMAGE_BYTES } from '@umiji/backend-contract'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbHistory, TbPhoto, TbSend, TbSpeakerphone } from 'react-icons/tb'
+import { TbPhoto, TbSend } from 'react-icons/tb'
 
 import { useCreateBrokerBotBroadcast, useGetBrokerBotBroadcasts } from '@shared/api/hooks'
 import { LoadingScreen, Page, PageHeaderShared } from '@shared/ui'
@@ -88,7 +88,6 @@ export function BrokerBroadcastPage() {
         <Page title={t('broker-bot.broadcast.title')}>
             <PageHeaderShared
                 description={t('broker-bot.broadcast.description')}
-                icon={<TbSpeakerphone size={24} />}
                 title={t('broker-bot.broadcast.title')}
             />
 
@@ -96,9 +95,6 @@ export function BrokerBroadcastPage() {
                 <SettingsCardShared.Container>
                     <SettingsCardShared.Header
                         description={t('broker-bot.broadcast.audience', { count: data.audience })}
-                        icon={<TbSend size={24} />}
-                        iconColor="teal"
-                        iconVariant="soft"
                         title={t('broker-bot.broadcast.new')}
                     />
                     <SettingsCardShared.Content>
@@ -148,9 +144,6 @@ export function BrokerBroadcastPage() {
                 <SettingsCardShared.Container>
                     <SettingsCardShared.Header
                         description={t('broker-bot.broadcast.recent-description')}
-                        icon={<TbHistory size={24} />}
-                        iconColor="gray"
-                        iconVariant="soft"
                         title={t('broker-bot.broadcast.recent')}
                     />
                     <SettingsCardShared.Content>

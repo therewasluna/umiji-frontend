@@ -46,9 +46,7 @@ export const ViewUserModal = NiceModal.create((props: IProps) => {
             size="1000px"
             title={
                 <BaseOverlayHeader
-                    iconColor="cyan"
                     IconComponent={IconUser}
-                    iconVariant="soft"
                     openEntity={{ entity: OPEN_ENTITY.USER, id: userId }}
                     title={user?.username ?? t('view-user-modal.widget.edit-user-headline')}
                 />

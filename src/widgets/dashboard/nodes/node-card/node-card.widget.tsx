@@ -1,6 +1,6 @@
 import { OptimisticSortingPlugin } from '@dnd-kit/dom/sortable'
 import { useSortable } from '@dnd-kit/react/sortable'
-import { Avatar, Badge, Box, Flex, Progress, Stack, Text, Tooltip } from '@mantine/core'
+import { Avatar, Badge, Box, Progress, Stack, Text, Tooltip } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
 import clsx from 'clsx'
@@ -8,16 +8,15 @@ import { CSSProperties, memo, useMemo } from 'react'
 import ReactCountryFlag from 'react-country-flag'
 import { useTranslation } from 'react-i18next'
 import {
-    PiArrowDownDuotone,
+    PiArrowDown,
     PiArrowsCounterClockwise,
-    PiArrowUpDuotone,
-    PiCpuDuotone,
+    PiArrowUp,
+    PiCpu,
     PiDotsSixVertical,
-    PiGlobeSimple,
-    PiMemoryDuotone,
-    PiUsersDuotone
+    PiMemory,
+    PiUsers
 } from 'react-icons/pi'
-import { TbAlertCircle, TbPackage, TbPlugConnected } from 'react-icons/tb'
+import { TbAlertCircle, TbPackage } from 'react-icons/tb'
 
 import { Logo } from '@shared/ui/logo'
 import { XrayLogo } from '@shared/ui/logos'
@@ -25,44 +24,21 @@ import { prettifyBytesUtil, prettySiRealtimeBytesUtil } from '@shared/utils/byte
 import { faviconResolver } from '@shared/utils/misc'
 import { getNodeResetDaysUtil, getXrayUptimeUtil } from '@shared/utils/time-utils'
 
-import { NodeStatusBadgeWidget } from '../node-status-badge'
 import { IProps } from './interfaces'
 import classes from './NodeCard.module.css'
 
-const getNodeColors = (node: IProps['node']) => {
-    if (node.isDisabled) {
-        return {
-            backgroundColor: 'rgba(107, 114, 128, 0.15)',
-            borderColor: 'rgba(107, 114, 128, 0.3)',
-            boxShadow: 'rgba(107, 114, 128, 0.2)'
-        }
-    }
-    if (node.isConnected) {
-        return {
-            backgroundColor: 'rgba(45, 212, 191, 0.15)',
-            borderColor: 'rgba(45, 212, 191, 0.3)',
-            boxShadow: 'rgba(45, 212, 191, 0.2)'
-        }
-    }
-    if (node.isConnecting) {
-        return {
-            backgroundColor: 'rgba(245, 158, 11, 0.15)',
-            borderColor: 'rgba(245, 158, 11, 0.3)',
-            boxShadow: 'rgba(245, 158, 11, 0.2)'
-        }
-    }
-    return {
-        backgroundColor: 'rgba(239, 68, 68, 0.15)',
-        borderColor: 'rgba(239, 68, 68, 0.3)',
-        boxShadow: 'rgba(239, 68, 68, 0.2)'
-    }
+// Rose while there is room, coral near the limit, red at it.
+const getTrafficColor = (percentage: number) => {
+    if (percentage > 95) return 'red'
+    if (percentage > 80) return 'yellow'
+    return 'rose'
 }
 
-const getProgressColor = (percentage: number, fallback: boolean) => {
-    if (fallback) return 'teal.6'
-    if (percentage > 95) return 'red.6'
-    if (percentage > 80) return 'yellow.6'
-    return 'teal.6'
+const getLoadColor = (load: number, cpus: number) => {
+    const ratio = load / cpus
+    if (ratio > 1) return 'red'
+    if (ratio > 0.7) return 'yellow'
+    return undefined
 }
 
 export const NodeCardWidget = memo((props: IProps) => {
@@ -72,9 +48,7 @@ export const NodeCardWidget = memo((props: IProps) => {
         node,
         index,
         isDragOverlay = false,
-        isMobile,
         disableReordering = false,
-        integrationsNames,
         pluginsName
     } = props
 
@@ -95,69 +69,60 @@ export const NodeCardWidget = memo((props: IProps) => {
         zIndex: isDragging ? 1000 : 'auto'
     }
 
+    const isTracking = node.isTrafficTrackingActive && (node.trafficLimitBytes ?? 0) > 0
+    const percentage = isTracking
+        ? Math.floor(((node.trafficUsedBytes ?? 0) * 100) / (node.trafficLimitBytes ?? 1))
+        : 0
     const prettyUsedData = prettifyBytesUtil(node.trafficUsedBytes || 0) || '0 B'
-    const maxData = node.isTrafficTrackingActive
-        ? prettifyBytesUtil(node.trafficLimitBytes || 0) || '∞'
-        : '∞'
-
-    const calcPercentage = () => {
-        if (!node.isTrafficTrackingActive) return 0
-        if (node.trafficLimitBytes === 0) return 100
-        return Math.floor(((node.trafficUsedBytes ?? 0) * 100) / (node.trafficLimitBytes ?? 0))
-    }
-    const percentage = calcPercentage()
-    const fallbackProgress = node.isTrafficTrackingActive && node.trafficLimitBytes === 0
+    const maxData = isTracking ? prettifyBytesUtil(node.trafficLimitBytes || 0) || '∞' : '∞'
 
     const isOnline = node.isConnected && node.xrayUptime !== 0 && !node.isDisabled
     const isConfigMissing =
         node.configProfile.activeConfigProfileUuid === null ||
         node.configProfile.activeInbounds.length === 0
-    const { backgroundColor, borderColor, boxShadow } = getNodeColors(node)
-    const progressColor = getProgressColor(percentage, fallbackProgress)
 
-    const { ramPercentage, ramColor, rxSpeed, txSpeed, loadAvg, cpus } = useMemo(() => {
-        if (!node.system)
+    // One state, shown as a dot and a word: up, connecting, disabled or down.
+    const state = useMemo(() => {
+        if (node.isDisabled) {
             return {
-                ramPercentage: null,
-                ramColor: 'teal',
-                rxSpeed: null,
-                txSpeed: null,
-                loadAvg: null,
-                cpus: 1
+                color: 'var(--mantine-color-dark-4)',
+                label: t('node-status-badge.widget.disabled')
             }
-        const { memoryTotal, cpus } = node.system.info
-        const { memoryUsed, loadAvg } = node.system.stats
+        }
+        if (node.isConnected) {
+            return {
+                color: 'var(--mantine-color-teal-5)',
+                label: isOnline
+                    ? getXrayUptimeUtil(node.xrayUptime)
+                    : t('node-status-badge.widget.connected')
+            }
+        }
+        if (node.isConnecting) {
+            return {
+                color: 'var(--mantine-color-yellow-5)',
+                label: t('node-status-badge.widget.connecting')
+            }
+        }
+        return { color: 'var(--mantine-color-red-5)', label: t('node-card.offline') }
+    }, [node.isDisabled, node.isConnected, node.isConnecting, node.xrayUptime, isOnline, t])
 
+    const { ramPercentage, rxSpeed, txSpeed, loadAvg, cpus } = useMemo(() => {
+        if (!node.system) {
+            return { ramPercentage: null, rxSpeed: null, txSpeed: null, loadAvg: null, cpus: 1 }
+        }
+        const { memoryTotal } = node.system.info
+        const { memoryUsed, loadAvg, interface: iface } = node.system.stats
         const ramPercentage = Math.round((memoryUsed / memoryTotal) * 100)
 
-        let ramColor = 'teal'
-        if (ramPercentage > 90) ramColor = 'red'
-        if (ramPercentage > 70) ramColor = 'yellow'
-
-        if (!node.system.stats.interface)
-            return {
-                ramPercentage,
-                ramColor,
-                rxSpeed: null,
-                txSpeed: null,
-                loadAvg: null,
-                cpus: 1
-            }
+        if (!iface) {
+            return { ramPercentage, rxSpeed: null, txSpeed: null, loadAvg: null, cpus: 1 }
+        }
         return {
             ramPercentage,
-            ramColor,
-            rxSpeed: prettySiRealtimeBytesUtil(
-                node.system.stats.interface.rxBytesPerSec,
-                true,
-                true
-            ),
-            txSpeed: prettySiRealtimeBytesUtil(
-                node.system.stats.interface.txBytesPerSec,
-                true,
-                true
-            ),
+            rxSpeed: prettySiRealtimeBytesUtil(iface.rxBytesPerSec, true, true),
+            txSpeed: prettySiRealtimeBytesUtil(iface.txBytesPerSec, true, true),
             loadAvg,
-            cpus
+            cpus: node.system.info.cpus
         }
     }, [node.system])
 
@@ -171,31 +136,14 @@ export const NodeCardWidget = memo((props: IProps) => {
         })
     }
 
-    const getLoadColor = (load: number, cpus: number) => {
-        const ratio = load / cpus
-        if (ratio > 1) return 'red'
-        if (ratio > 0.7) return 'yellow'
-        return 'dimmed'
-    }
-
     return (
         <Box
-            className={clsx(classes.nodeRow, {
-                [classes.nodeRowDragging]: isDragging
-            })}
+            className={clsx(classes.nodeRow, { [classes.nodeRowDragging]: isDragging })}
             data-drag-overlay={isDragOverlay}
+            data-disabled={node.isDisabled || undefined}
             onClick={() => handleViewNode(node.uuid)}
             ref={isDragOverlay ? undefined : ref}
-            style={{
-                ...style,
-                background: `linear-gradient(
-                    135deg,
-                    ${backgroundColor} 0%,
-                    var(--mantine-color-dark-7) 100%
-                )`,
-                borderColor,
-                boxShadow
-            }}
+            style={style}
         >
             {!disableReordering && (
                 <Box
@@ -204,486 +152,170 @@ export const NodeCardWidget = memo((props: IProps) => {
                     })}
                     ref={isDragOverlay ? undefined : handleRef}
                 >
-                    <PiDotsSixVertical color="white" size="24px" />
+                    <PiDotsSixVertical size={20} />
                 </Box>
             )}
 
-            {!isMobile && (
-                <>
-                    <div className={classes.desktopGrid}>
-                        <div>
-                            <Flex align="center" gap="sm">
-                                {isConfigMissing ? (
-                                    <Badge
-                                        color="red"
-                                        leftSection={<TbAlertCircle size={14} />}
-                                        size="lg"
-                                        variant="light"
-                                    >
-                                        {t('node-card.dangling')}
-                                    </Badge>
-                                ) : (
-                                    <>
-                                        <NodeStatusBadgeWidget node={node} withText={false} />
-                                        <Badge
-                                            color={node.usersOnline! > 0 ? 'teal' : 'gray'}
-                                            leftSection={<PiUsersDuotone size={14} />}
-                                            miw="7ch"
-                                            size="lg"
-                                            variant="outline"
-                                        >
-                                            {node.usersOnline}
-                                        </Badge>
-                                    </>
-                                )}
-
-                                <Flex align="center" className={classes.nameContainer} gap="xs">
-                                    {node.countryCode && node.countryCode !== 'XX' && (
-                                        <ReactCountryFlag
-                                            countryCode={node.countryCode}
-                                            style={{
-                                                fontSize: '1.6em',
-                                                borderRadius: '2px'
-                                            }}
-                                        />
-                                    )}
-                                    <Text className={classes.nodeName} fw={600} size="md">
-                                        {node.name}
-                                    </Text>
-                                </Flex>
-
-                                <Flex align="center" gap="xs">
-                                    {node.provider && (
-                                        <Badge
-                                            color="gray"
-                                            leftSection={
-                                                <Avatar
-                                                    alt={node.provider.name}
-                                                    color="initials"
-                                                    imageProps={{
-                                                        decoding: 'async',
-                                                        loading: 'lazy'
-                                                    }}
-                                                    name={node.provider.name}
-                                                    onLoad={(event) => {
-                                                        const img = event.target as HTMLImageElement
-                                                        if (
-                                                            img.naturalWidth <= 16 &&
-                                                            img.naturalHeight <= 16
-                                                        ) {
-                                                            img.src = ''
-                                                        }
-                                                    }}
-                                                    radius="sm"
-                                                    size={16}
-                                                    src={faviconResolver(node.provider.faviconLink)}
-                                                />
-                                            }
-                                            size="lg"
-                                            style={{
-                                                maxWidth: '20ch',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap',
-                                                cursor: 'pointer'
-                                            }}
-                                            variant="light"
-                                        >
-                                            {node.provider.name}
-                                        </Badge>
-                                    )}
-                                </Flex>
-                            </Flex>
-                        </div>
-
-                        <div>
-                            <Flex align="center" gap="xs">
-                                <PiGlobeSimple className={classes.icon} size={14} />
-                                <Text
-                                    c="dimmed"
-                                    className={classes.addressText}
-                                    onClick={handleCopy}
-                                    size="sm"
-                                >
-                                    {node.address}
-                                </Text>
-                            </Flex>
-                        </div>
-
-                        <div>
-                            <Box>
-                                <Flex direction="column" gap={4}>
-                                    <Flex align="center" justify="space-between">
-                                        <Text c="dimmed" ff="monospace" fw={600} size="sm" truncate>
-                                            {prettyUsedData}
-                                        </Text>
-                                        <Text c="dimmed" size="xs" truncate>
-                                            {maxData}
-                                        </Text>
-                                    </Flex>
-                                    <Progress
-                                        color={
-                                            node.isTrafficTrackingActive ? progressColor : 'teal'
-                                        }
-                                        radius="sm"
-                                        size="sm"
-                                        value={node.isTrafficTrackingActive ? percentage : 100}
-                                    />
-                                </Flex>
-                            </Box>
-                        </div>
-
-                        <div>
-                            <Flex align="center" gap="xs" justify="space-between">
-                                {node.isTrafficTrackingActive ? (
-                                    <Flex align="center" gap={4}>
-                                        <PiArrowsCounterClockwise
-                                            className={classes.icon}
-                                            size={14}
-                                        />
-                                        <Text c="dimmed" size="sm">
-                                            {getNodeResetDaysUtil(node.trafficResetDay ?? 1)}
-                                        </Text>
-                                    </Flex>
-                                ) : (
-                                    <Box />
-                                )}
-
-                                {isOnline && (
-                                    <Flex align="center" gap={4}>
-                                        <XrayLogo size={14} />
-                                        <Text
-                                            c={isOnline ? 'teal' : 'red'}
-                                            fw={isOnline ? 600 : 500}
-                                            size="sm"
-                                            truncate
-                                        >
-                                            {getXrayUptimeUtil(node.xrayUptime)}
-                                        </Text>
-                                    </Flex>
-                                )}
-                            </Flex>
-                        </div>
-                    </div>
-
-                    <Flex align="center" gap="md" mt={8}>
-                        <Flex align="center" gap={6} style={{ flex: 1, maxWidth: 200 }}>
-                            <PiMemoryDuotone className={classes.icon} size={14} />
-                            <Progress
-                                color={ramColor}
-                                radius="sm"
-                                size="xs"
-                                style={{ flex: 1 }}
-                                value={ramPercentage ?? 0}
-                            />
-                            <Text c="dimmed" ff="monospace" size="xs">
-                                {ramPercentage !== null ? `${ramPercentage}%` : '—'}
-                            </Text>
-                        </Flex>
-                        <Tooltip
-                            label={
-                                loadAvg ? (
-                                    <Stack gap={0}>
-                                        <Text fw={600} size="xs">
-                                            {t('node-card.load-average', { count: cpus })}
-                                        </Text>
-                                        <Text size="xs">
-                                            {t('node-card.load-average-minutes', {
-                                                count: 1,
-                                                load: loadAvg[0].toFixed(2),
-                                                percent: Math.round((loadAvg[0] / cpus) * 100)
-                                            })}
-                                        </Text>
-                                        <Text size="xs">
-                                            {t('node-card.load-average-minutes', {
-                                                count: 5,
-                                                load: loadAvg[1].toFixed(2),
-                                                percent: Math.round((loadAvg[1] / cpus) * 100)
-                                            })}
-                                        </Text>
-                                        <Text size="xs">
-                                            {t('node-card.load-average-minutes', {
-                                                count: 15,
-                                                load: loadAvg[2].toFixed(2),
-                                                percent: Math.round((loadAvg[2] / cpus) * 100)
-                                            })}
-                                        </Text>
-                                        <Text c="dimmed" mt={4} size="xs">
-                                            {t('node-card.0-70-normal-70-100-high-100-overloaded')}
-                                        </Text>
-                                    </Stack>
-                                ) : (
-                                    t('node-card.no-data')
-                                )
-                            }
-                            multiline
-                            radius="md"
-                            w={250}
+            <div className={classes.main}>
+                <div className={classes.identity}>
+                    <span className={classes.dot} style={{ background: state.color }} />
+                    {node.countryCode && node.countryCode !== 'XX' && (
+                        <ReactCountryFlag
+                            countryCode={node.countryCode}
+                            style={{ fontSize: '1.35em', borderRadius: '2px', flexShrink: 0 }}
+                        />
+                    )}
+                    <Text className={classes.nodeName}>{node.name}</Text>
+                    {isConfigMissing && (
+                        <Badge
+                            color="red"
+                            leftSection={<TbAlertCircle size={12} />}
+                            variant="light"
                         >
-                            <Flex align="center" gap={4}>
-                                <PiCpuDuotone className={classes.icon} size={12} />
-                                {loadAvg ? (
-                                    <Text ff="monospace" size="xs">
-                                        {loadAvg.map((load, i) => (
-                                            <Text
-                                                c={getLoadColor(load, cpus)}
-                                                component="span"
-                                                ff="monospace"
-                                                key={i}
-                                                size="xs"
-                                            >
-                                                {i > 0 && ' '}
-                                                {load.toFixed(2)}
-                                            </Text>
-                                        ))}
-                                    </Text>
-                                ) : (
-                                    <Text c="dimmed" ff="monospace" size="xs">
-                                        {'—'}
-                                    </Text>
-                                )}
-                            </Flex>
-                        </Tooltip>
-                        <Flex align="center" gap={4}>
-                            <PiArrowDownDuotone color="var(--mantine-color-teal-5)" size={12} />
-                            <Text c="dimmed" ff="monospace" size="xs">
-                                {rxSpeed ?? '—'}
-                            </Text>
-                        </Flex>
-                        <Flex align="center" gap={4}>
-                            <PiArrowUpDuotone color="var(--mantine-color-cyan-5)" size={12} />
-                            <Text c="dimmed" ff="monospace" size="xs">
-                                {txSpeed ?? '—'}
-                            </Text>
-                        </Flex>
-                        <Flex align="center" gap="md" ml="auto">
-                            {pluginsName && (
-                                <Flex align="center" gap={4} maw={150}>
-                                    <TbPackage
-                                        color="var(--mantine-color-dimmed)"
-                                        size={12}
-                                        style={{ flexShrink: 0 }}
-                                    />
-                                    <Text c="dimmed" ff="monospace" size="xs" truncate="end">
-                                        {pluginsName}
-                                    </Text>
-                                </Flex>
-                            )}
-                            {integrationsNames.length > 0 && (
-                                <Tooltip
-                                    label={integrationsNames.join(', ')}
-                                    multiline
-                                    radius="md"
-                                    w={250}
-                                >
-                                    <Flex align="center" gap={4} maw={220}>
-                                        <TbPlugConnected
-                                            color="var(--mantine-color-pink-5)"
-                                            size={12}
-                                            style={{ flexShrink: 0 }}
-                                        />
-                                        <Text c="dimmed" ff="monospace" size="xs" truncate="end">
-                                            {integrationsNames.join(', ')}
-                                        </Text>
-                                    </Flex>
-                                </Tooltip>
-                            )}
-
-                            <Flex align="center" gap={4}>
-                                <XrayLogo color="var(--mantine-color-dimmed)" size={12} />
-                                <Text c="dimmed" ff="monospace" size="xs">
-                                    {node.versions ? node.versions.xray : '—'}
-                                </Text>
-                            </Flex>
-                            <Flex align="center" gap={4}>
-                                <Logo color="var(--mantine-color-dimmed)" size={12} />
-                                <Text c="dimmed" ff="monospace" size="xs">
-                                    {node.versions ? node.versions.node : '—'}
-                                </Text>
-                            </Flex>
-                        </Flex>
-                    </Flex>
-                </>
-            )}
-
-            {isMobile && (
-                <Box>
-                    <Flex align="center" gap="sm" mb="xs">
-                        {isConfigMissing && (
-                            <Badge
-                                color="red"
-                                leftSection={<TbAlertCircle size={14} />}
-                                size="lg"
-                                variant="light"
-                            >
-                                {t('node-card.dangling')}
-                            </Badge>
-                        )}
-
-                        {!isConfigMissing && <NodeStatusBadgeWidget node={node} withText={false} />}
-
-                        {!isConfigMissing && (
-                            <Badge
-                                color={node.usersOnline! > 0 ? 'teal' : 'gray'}
-                                leftSection={<PiUsersDuotone size={14} />}
-                                miw="7ch"
-                                size="lg"
-                                variant="outline"
-                            >
-                                {node.usersOnline}
-                            </Badge>
-                        )}
-
-                        <Flex align="center" gap="xs" style={{ flex: 1, minWidth: 0 }}>
-                            {node.countryCode && node.countryCode !== 'XX' && (
-                                <ReactCountryFlag
-                                    countryCode={node.countryCode}
-                                    style={{
-                                        fontSize: '1.5em',
-                                        borderRadius: '2px'
-                                    }}
-                                />
-                            )}
-                            <Text className={classes.nodeName} fw={600} size="sm">
-                                {node.name}
-                            </Text>
-                        </Flex>
-                    </Flex>
-
-                    <Box mb="xs">
-                        <Flex align="center" gap="xs">
-                            {node.provider && (
-                                <Badge
-                                    color="gray"
-                                    leftSection={
-                                        <Avatar
-                                            alt={node.provider.name}
-                                            color="initials"
-                                            imageProps={{ decoding: 'async', loading: 'lazy' }}
-                                            name={node.provider.name}
-                                            onLoad={(event) => {
-                                                const img = event.target as HTMLImageElement
-                                                if (
-                                                    img.naturalWidth <= 16 &&
-                                                    img.naturalHeight <= 16
-                                                ) {
-                                                    img.src = ''
-                                                }
-                                            }}
-                                            radius="sm"
-                                            size={16}
-                                            src={faviconResolver(node.provider.faviconLink)}
-                                        />
+                            {t('node-card.dangling')}
+                        </Badge>
+                    )}
+                    {node.provider && (
+                        <span className={classes.provider}>
+                            <Avatar
+                                alt={node.provider.name}
+                                color="initials"
+                                imageProps={{ decoding: 'async', loading: 'lazy' }}
+                                name={node.provider.name}
+                                onLoad={(event) => {
+                                    const img = event.target as HTMLImageElement
+                                    if (img.naturalWidth <= 16 && img.naturalHeight <= 16) {
+                                        img.src = ''
                                     }
-                                    size="lg"
-                                    variant="light"
-                                >
-                                    {node.provider.name}
-                                </Badge>
-                            )}
-
-                            {!node.provider && (
-                                <Badge
-                                    color="gray"
-                                    leftSection={
-                                        <Avatar
-                                            alt={t('node-card.unknown')}
-                                            color="initials"
-                                            imageProps={{ decoding: 'async', loading: 'lazy' }}
-                                            name={t('node-card.unknown')}
-                                            radius="sm"
-                                            size={16}
-                                        />
-                                    }
-                                    size="lg"
-                                    style={{
-                                        visibility: 'hidden'
-                                    }}
-                                    variant="light"
-                                >
-                                    {t('node-card.unknown')}
-                                </Badge>
-                            )}
-                        </Flex>
-                    </Box>
-
-                    <Box mb="xs">
-                        <Flex direction="column" gap={2}>
-                            <Flex align="center" justify="space-between">
-                                <Text c="dimmed" ff="monospace" fw={600} size="sm" truncate>
-                                    {prettyUsedData}
-                                </Text>
-                                <Text c="dimmed" size="xs">
-                                    {maxData}
-                                </Text>
-                            </Flex>
-                        </Flex>
-                    </Box>
-
-                    <Progress
-                        color={
-                            node.isTrafficTrackingActive && percentage >= 0 ? progressColor : 'teal'
-                        }
-                        radius="sm"
-                        size="xs"
-                        value={node.isTrafficTrackingActive && percentage >= 0 ? percentage : 100}
-                    />
-
-                    <Flex align="center" justify="space-between" mt="xs">
-                        {node.isTrafficTrackingActive ? (
-                            <Flex align="center" gap={4}>
-                                <PiArrowsCounterClockwise className={classes.icon} size={12} />
-                                <Text c="dimmed" size="xs">
-                                    {getNodeResetDaysUtil(node.trafficResetDay ?? 1)}
-                                </Text>
-                            </Flex>
-                        ) : (
-                            <Box />
-                        )}
-
-                        <Flex align="center" gap={4}>
-                            <XrayLogo size={12} />
-                            <Text
-                                c={isOnline ? 'teal' : 'dimmed'}
-                                fw={isOnline ? 600 : 500}
-                                size="xs"
-                            >
-                                {isOnline
-                                    ? getXrayUptimeUtil(node.xrayUptime)
-                                    : t('node-card.offline')}
-                            </Text>
-                        </Flex>
-                    </Flex>
-
-                    <Flex align="center" gap="md" mt="xs">
-                        <Flex align="center" gap={6} style={{ flex: 1, maxWidth: 160 }}>
-                            <PiMemoryDuotone className={classes.icon} size={12} />
-                            <Progress
-                                color={ramColor}
+                                }}
                                 radius="sm"
-                                size="xs"
-                                style={{ flex: 1 }}
-                                value={ramPercentage ?? 0}
+                                size={16}
+                                src={faviconResolver(node.provider.faviconLink)}
                             />
-                            <Text c="dimmed" ff="monospace" size="xs">
-                                {ramPercentage !== null ? `${ramPercentage}%` : '—'}
-                            </Text>
-                        </Flex>
-                        <Flex align="center" gap={4}>
-                            <PiArrowUpDuotone color="var(--mantine-color-cyan-5)" size={10} />
-                            <Text c="dimmed" ff="monospace" size="xs">
-                                {txSpeed ?? '—'}
-                            </Text>
-                        </Flex>
-                        <Flex align="center" gap={4}>
-                            <PiArrowDownDuotone color="var(--mantine-color-teal-5)" size={10} />
-                            <Text c="dimmed" ff="monospace" size="xs">
-                                {rxSpeed ?? '—'}
-                            </Text>
-                        </Flex>
-                    </Flex>
-                </Box>
-            )}
+                            <span className={classes.truncate}>{node.provider.name}</span>
+                        </span>
+                    )}
+                </div>
+
+                <Text className={classes.address} onClick={handleCopy}>
+                    {node.address}
+                </Text>
+
+                <div className={classes.traffic}>
+                    <div className={classes.trafficText}>
+                        <bdi dir="ltr">
+                            <b>{prettyUsedData}</b>
+                            <span className={classes.dim}> / {maxData}</span>
+                        </bdi>
+                        {isTracking && <span className={classes.dim}>{percentage}%</span>}
+                    </div>
+                    <Progress
+                        color={getTrafficColor(percentage)}
+                        radius="xl"
+                        size={4}
+                        value={isTracking ? percentage : 0}
+                    />
+                </div>
+
+                <Text className={classes.state} style={{ color: state.color }}>
+                    {isOnline && <XrayLogo size={13} />}
+                    {state.label}
+                </Text>
+            </div>
+
+            <div className={classes.meta}>
+                <span className={classes.metaItem} data-active={node.usersOnline! > 0 || undefined}>
+                    <PiUsers size={14} />
+                    {node.usersOnline ?? 0}
+                </span>
+
+                <span className={classes.metaItem}>
+                    <PiMemory size={14} />
+                    <Progress
+                        className={classes.ramBar}
+                        color={ramPercentage !== null && ramPercentage > 90 ? 'red' : 'gray'}
+                        radius="xl"
+                        size={4}
+                        value={ramPercentage ?? 0}
+                    />
+                    {ramPercentage !== null ? `${ramPercentage}%` : '—'}
+                </span>
+
+                <Tooltip
+                    label={
+                        loadAvg ? (
+                            <Stack gap={0}>
+                                <Text fw={600} size="xs">
+                                    {t('node-card.load-average', { count: cpus })}
+                                </Text>
+                                {[1, 5, 15].map((minutes, i) => (
+                                    <Text key={minutes} size="xs">
+                                        {t('node-card.load-average-minutes', {
+                                            count: minutes,
+                                            load: loadAvg[i].toFixed(2),
+                                            percent: Math.round((loadAvg[i] / cpus) * 100)
+                                        })}
+                                    </Text>
+                                ))}
+                                <Text c="dimmed" mt={4} size="xs">
+                                    {t('node-card.0-70-normal-70-100-high-100-overloaded')}
+                                </Text>
+                            </Stack>
+                        ) : (
+                            t('node-card.no-data')
+                        )
+                    }
+                    multiline
+                    w={250}
+                >
+                    <span className={classes.metaItem}>
+                        <PiCpu size={14} />
+                        {loadAvg
+                            ? loadAvg.map((load, i) => (
+                                  <Text
+                                      c={getLoadColor(load, cpus)}
+                                      component="span"
+                                      key={i}
+                                      size="xs"
+                                  >
+                                      {load.toFixed(2)}
+                                  </Text>
+                              ))
+                            : '—'}
+                    </span>
+                </Tooltip>
+
+                <span className={classes.metaItem}>
+                    <PiArrowDown size={13} />
+                    {rxSpeed ?? '—'}
+                    <PiArrowUp size={13} />
+                    {txSpeed ?? '—'}
+                </span>
+
+                {node.isTrafficTrackingActive && (
+                    <span className={classes.metaItem}>
+                        <PiArrowsCounterClockwise size={14} />
+                        {getNodeResetDaysUtil(node.trafficResetDay ?? 1)}
+                    </span>
+                )}
+
+                <span className={classes.metaEnd}>
+                    {pluginsName && (
+                        <span className={classes.metaItem}>
+                            <TbPackage size={14} />
+                            <span className={classes.truncate}>{pluginsName}</span>
+                        </span>
+                    )}
+                    <span className={classes.metaItem}>
+                        <XrayLogo color="currentColor" size={12} />
+                        {node.versions ? node.versions.xray : '—'}
+                    </span>
+                    <span className={classes.metaItem}>
+                        <Logo color="currentColor" size={12} />
+                        {node.versions ? node.versions.node : '—'}
+                    </span>
+                </span>
+            </div>
         </Box>
     )
 })

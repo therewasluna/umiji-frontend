@@ -2,9 +2,20 @@ import { LoginFormFeature } from '@features/auth/login-form'
 import { OAuth2LoginButtonsFeature } from '@features/auth/oauth2-login-button/oauth2-login-button.feature'
 import { PasskeyLoginButtonFeature } from '@features/auth/passkey-login-button'
 import { RegisterFormFeature } from '@features/auth/register-form'
-import { Badge, Box, Center, Divider, Group, Image, Stack, Text, Title } from '@mantine/core'
+import {
+    Badge,
+    Box,
+    Button,
+    Center,
+    Divider,
+    Group,
+    Image,
+    Stack,
+    Text,
+    Title
+} from '@mantine/core'
 import { GetStatusCommand } from '@umiji/backend-contract'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useGetAuthStatus } from '@shared/api/hooks/auth/auth.query.hooks'
@@ -48,7 +59,7 @@ const BrandLogo = ({ logoUrl }: { logoUrl?: null | string }) => {
 
 const BrandTitle = ({ titleParts }: { titleParts: Array<{ color: string; text: string }> }) => {
     return (
-        <Title ff="Unbounded" order={1} pos="relative">
+        <Title ff="Unbounded, Vazirmatn" order={1} pos="relative">
             {titleParts.map((part, index) => (
                 <Text
                     c={part.color || 'white'}
@@ -91,6 +102,7 @@ const AlternativeAuthMethods = ({
 
 export const LoginPage = () => {
     const { t } = useTranslation()
+    const [showBrokerLogin, setShowBrokerLogin] = useState(false)
 
     const { data: authStatus } = useGetAuthStatus()
 
@@ -107,6 +119,7 @@ export const LoginPage = () => {
 
     const isRegister = !authStatus?.isLoginAllowed && authStatus?.isRegisterAllowed
     const authMethods = getAuthMethods(authStatus)
+    const showPasswordLogin = authMethods.isPasswordEnabled || showBrokerLogin
 
     return (
         <Page title={t('login.login')}>
@@ -125,9 +138,20 @@ export const LoginPage = () => {
                 {!isRegister && authStatus && authStatus.authentication && (
                     <Box maw={800} p={30} w={{ base: 440, sm: 500, md: 500 }}>
                         <Stack gap="lg">
-                            {authMethods.isPasswordEnabled && <LoginFormFeature />}
+                            {authMethods.isPasswordEnabled ? (
+                                <LoginFormFeature />
+                            ) : showBrokerLogin ? (
+                                <>
+                                    <Text>{t('login-form.feature.broker-sign-in')}</Text>
+                                    <LoginFormFeature />
+                                </>
+                            ) : (
+                                <Button onClick={() => setShowBrokerLogin(true)} variant="default">
+                                    {t('login-form.feature.broker-sign-in')}
+                                </Button>
+                            )}
 
-                            {authMethods.hasPrimaryMethods && authMethods.hasAlternativeMethods && (
+                            {showPasswordLogin && authMethods.hasAlternativeMethods && (
                                 <Center>
                                     <Divider
                                         label={t('login.or')}
@@ -143,7 +167,7 @@ export const LoginPage = () => {
                                     authentication={authStatus.authentication}
                                     isOAuth2Enabled={authMethods.isOAuth2Enabled}
                                     isPasskeyEnabled={authMethods.isPasskeyEnabled}
-                                    isPasswordEnabled={authMethods.isPasswordEnabled}
+                                    isPasswordEnabled={showPasswordLogin}
                                 />
                             )}
                         </Stack>

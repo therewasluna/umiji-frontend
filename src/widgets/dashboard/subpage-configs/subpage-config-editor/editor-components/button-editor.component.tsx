@@ -10,6 +10,7 @@ import {
     TextInput
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import { IconArrowDown, IconArrowUp, IconChevronRight, IconTrash } from '@tabler/icons-react'
 import {
     BUTTON_TYPES_VALUES,
     SUBSCRIPTION_PAGE_TEMPLATE_KEYS,
@@ -18,7 +19,6 @@ import {
     TSubscriptionPageLanguageCode,
     TSubscriptionPageSvgLibrary
 } from '@umiji/subscription-page-types'
-import { IconArrowDown, IconArrowUp, IconChevronRight, IconTrash } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 import { TbExternalLink } from 'react-icons/tb'
 
@@ -80,11 +80,7 @@ export function ButtonEditor(props: IProps) {
                         </Text>
                     </Group>
                     <Group gap={4} wrap="nowrap">
-                        <Badge
-                            color={button.type === 'external' ? 'blue' : 'cyan'}
-                            size="xs"
-                            variant="light"
-                        >
+                        <Badge color="gray" size="xs" variant="soft">
                             {button.type}
                         </Badge>
                         <ActionIcon
@@ -127,10 +123,9 @@ export function ButtonEditor(props: IProps) {
                 </Group>
 
                 <Collapse expanded={opened}>
-                    <Stack gap="sm" pt="sm">
+                    <Stack gap="md" pt="sm">
                         <Select
                             allowDeselect={false}
-                            classNames={{ input: styles.selectDark }}
                             data={BUTTON_TYPES_VALUES}
                             label={t('button-editor.component.type')}
                             leftSection={<TbExternalLink size={16} />}
@@ -144,7 +139,6 @@ export function ButtonEditor(props: IProps) {
                         />
 
                         <TextInput
-                            classNames={{ input: styles.inputDark }}
                             label={t('button-editor.component.link')}
                             leftSection={
                                 <TemplateInfoPopoverShared

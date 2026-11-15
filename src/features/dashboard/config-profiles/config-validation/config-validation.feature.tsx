@@ -105,6 +105,14 @@ export const ConfigValidationFeature = {
                 replaceSnippetsInArray(clonedCurrentValue.routing.balancers, snippetsMap)
             }
 
+            // shortcut: this WASM is stock Xray and doesn't know our mtproto inbound, so it's left
+            // out here and the backend checks it on save. Rebuild the WASM from xray-overlay to drop this.
+            if (Array.isArray(clonedCurrentValue.inbounds)) {
+                clonedCurrentValue.inbounds = clonedCurrentValue.inbounds.filter(
+                    (inbound: { protocol?: string }) => inbound?.protocol !== 'mtproto'
+                )
+            }
+
             const validationResult = window.XrayParseConfig(JSON.stringify(clonedCurrentValue))
 
             setResult(

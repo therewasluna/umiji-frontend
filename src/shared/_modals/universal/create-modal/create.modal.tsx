@@ -43,9 +43,7 @@ export const CreateModal = NiceModal.create((props: IProps) => {
             {...modalProps}
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbNewSection}
-                    iconVariant="soft"
                     title={t('common.field.creation')}
                 />
             }

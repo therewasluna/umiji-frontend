@@ -134,9 +134,7 @@ export const Base64EditorModal = NiceModal.create((props: IProps) => {
             size="90%"
             title={
                 <BaseOverlayHeader
-                    iconColor="grape"
                     IconComponent={TbBinary}
-                    iconVariant="soft"
                     subtitle={label}
                     title={t('base64-editor.base64-editor')}
                 />

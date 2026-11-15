@@ -21,11 +21,10 @@ import {
     SUBSCRIPTION_TEMPLATE_TYPE
 } from '@umiji/backend-contract'
 import cx from 'clsx'
-import ColorHash from 'color-hash'
-import { githubDarkTheme, JsonEditor } from 'json-edit-react'
+import { JsonEditor } from 'json-edit-react'
 import { CSSProperties, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { PiNetwork, PiProhibit, PiPulse } from 'react-icons/pi'
+import { PiNetwork, PiProhibit } from 'react-icons/pi'
 import { RiDraggable } from 'react-icons/ri'
 import {
     TbAlertCircle,
@@ -40,6 +39,7 @@ import { generatePath } from 'react-router'
 
 import { showModal } from '@shared/_modals/show-modal'
 import { ROUTES } from '@shared/constants'
+import { JSON_VIEWER_THEME } from '@shared/constants/theme/json-viewer-theme'
 import { useIsMobile } from '@shared/hooks'
 import { XrayLogo } from '@shared/ui/logos'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
@@ -115,8 +115,6 @@ export function HostCardWidget(props: IProps) {
 
     const isHostActive = !item.isDisabled
 
-    const ch = new ColorHash({ lightness: [0.65, 0.65, 0.65] })
-
     const isParamSet = (value: unknown): boolean => {
         if (value == null) return false
         if (typeof value === 'string') return value.trim().length > 0
@@ -172,38 +170,13 @@ export function HostCardWidget(props: IProps) {
                             </Group>
                         )}
 
-                        {!isHostActive && (
-                            <ActionIcon
-                                color="gray"
-                                size="lg"
-                                style={{ flexShrink: 0 }}
-                                variant="soft"
-                            >
-                                <PiProhibit size={16} />
-                            </ActionIcon>
-                        )}
+                        {!isHostActive && <PiProhibit className={classes.statusIcon} size={16} />}
 
                         {isHostActive && item.isHidden && (
-                            <ActionIcon
-                                color="violet"
-                                size="lg"
-                                style={{ flexShrink: 0 }}
-                                variant="soft"
-                            >
-                                <TbEyeOff size={16} />
-                            </ActionIcon>
+                            <TbEyeOff className={classes.statusIcon} size={16} />
                         )}
 
-                        {isHostActive && !item.isHidden && (
-                            <ActionIcon
-                                color="teal"
-                                size="lg"
-                                style={{ flexShrink: 0 }}
-                                variant="soft"
-                            >
-                                <PiPulse size={16} />
-                            </ActionIcon>
-                        )}
+                        {isHostActive && !item.isHidden && <span className={classes.statusDot} />}
                     </Group>
 
                     <Box
@@ -228,7 +201,8 @@ export function HostCardWidget(props: IProps) {
                             <Stack gap="xs">
                                 <Badge
                                     autoContrast
-                                    color={configProfile?.uuid ? ch.hex(configProfile.uuid) : 'red'}
+                                    color={configProfile?.uuid ? 'dark.2' : 'red'}
+                                    tt="none"
                                     leftSection={
                                         configProfile?.uuid ? (
                                             <XrayLogo size={12} />
@@ -260,7 +234,7 @@ export function HostCardWidget(props: IProps) {
                                     renderItem={(tag) => (
                                         <Badge
                                             autoContrast
-                                            color={ch.hex(tag)}
+                                            color="gray"
                                             key={tag}
                                             leftSection={<TbStar size={12} />}
                                             size="md"
@@ -278,7 +252,7 @@ export function HostCardWidget(props: IProps) {
                                                 <Stack gap="xs">
                                                     {items.map((tag) => (
                                                         <Badge
-                                                            color={ch.hex(tag)}
+                                                            color="gray"
                                                             fullWidth
                                                             key={tag}
                                                             leftSection={<TbStar size={12} />}
@@ -327,7 +301,7 @@ export function HostCardWidget(props: IProps) {
                                 className={classes.dragHandle}
                                 ref={isDragOverlay ? undefined : handleRef}
                             >
-                                <RiDraggable color="white" size="24px" />
+                                <RiDraggable size="20px" />
                             </Box>
                         )}
                     </Group>
@@ -356,36 +330,15 @@ export function HostCardWidget(props: IProps) {
                             wrap="nowrap"
                         >
                             {!isHostActive && (
-                                <ActionIcon
-                                    color="gray"
-                                    size="md"
-                                    style={{ flexShrink: 0 }}
-                                    variant="soft"
-                                >
-                                    <PiProhibit size={16} />
-                                </ActionIcon>
+                                <PiProhibit className={classes.statusIcon} size={16} />
                             )}
 
                             {isHostActive && item.isHidden && (
-                                <ActionIcon
-                                    color="violet"
-                                    size="md"
-                                    style={{ flexShrink: 0 }}
-                                    variant="soft"
-                                >
-                                    <TbEyeOff size={16} />
-                                </ActionIcon>
+                                <TbEyeOff className={classes.statusIcon} size={16} />
                             )}
 
                             {isHostActive && !item.isHidden && (
-                                <ActionIcon
-                                    color="teal"
-                                    size="md"
-                                    style={{ flexShrink: 0 }}
-                                    variant="soft"
-                                >
-                                    <PiPulse size={16} />
-                                </ActionIcon>
+                                <span className={classes.statusDot} />
                             )}
 
                             <Text fw={600} style={{ flexShrink: 0 }} truncate>
@@ -423,7 +376,7 @@ export function HostCardWidget(props: IProps) {
 
                             <Tooltip label={t('base-host-form.xray-json-template')}>
                                 <ActionIcon
-                                    color={hasXrayJsonTemplate ? 'teal' : 'gray'}
+                                    color={hasXrayJsonTemplate ? 'rose.4' : 'dark.3'}
                                     size={28}
                                     onClick={(e) => {
                                         if (!item.xrayJsonTemplateUuid) return
@@ -439,7 +392,7 @@ export function HostCardWidget(props: IProps) {
                                             '_blank'
                                         )
                                     }}
-                                    variant="soft"
+                                    variant="subtle"
                                 >
                                     <XrayLogo size={16} />
                                 </ActionIcon>
@@ -447,9 +400,9 @@ export function HostCardWidget(props: IProps) {
 
                             <Tooltip label="Mux">
                                 <ActionIcon
-                                    color={hasMuxParams ? 'teal' : 'gray'}
+                                    color={hasMuxParams ? 'rose.4' : 'dark.3'}
                                     size={28}
-                                    variant="soft"
+                                    variant="subtle"
                                     onClick={(e) => {
                                         if (!item.muxParams) return
                                         e.stopPropagation()
@@ -463,15 +416,13 @@ export function HostCardWidget(props: IProps) {
                                                     indent={2}
                                                     maxWidth="100%"
                                                     rootName=""
-                                                    theme={githubDarkTheme}
+                                                    theme={JSON_VIEWER_THEME}
                                                     viewOnly
                                                 />
                                             ),
                                             title: (
                                                 <BaseOverlayHeader
-                                                    iconColor="shaded-gray"
                                                     IconComponent={TbCloudNetwork}
-                                                    iconVariant="soft"
                                                     title={t('host-card.mux-params')}
                                                 />
                                             ),
@@ -485,9 +436,9 @@ export function HostCardWidget(props: IProps) {
 
                             <Tooltip label={t('host-card.final-mask')}>
                                 <ActionIcon
-                                    color={hasFinalMask ? 'teal' : 'gray'}
+                                    color={hasFinalMask ? 'rose.4' : 'dark.3'}
                                     size={28}
-                                    variant="soft"
+                                    variant="subtle"
                                     onClick={(e) => {
                                         if (!item.finalMask) return
                                         e.stopPropagation()
@@ -501,15 +452,13 @@ export function HostCardWidget(props: IProps) {
                                                     indent={2}
                                                     maxWidth="100%"
                                                     rootName=""
-                                                    theme={githubDarkTheme}
+                                                    theme={JSON_VIEWER_THEME}
                                                     viewOnly
                                                 />
                                             ),
                                             title: (
                                                 <BaseOverlayHeader
-                                                    iconColor="shaded-gray"
                                                     IconComponent={TbMask}
-                                                    iconVariant="soft"
                                                     title={t('host-card.final-mask')}
                                                 />
                                             ),
@@ -523,9 +472,9 @@ export function HostCardWidget(props: IProps) {
 
                             <Tooltip label="SockOpt">
                                 <ActionIcon
-                                    color={hasSockoptParams ? 'teal' : 'gray'}
+                                    color={hasSockoptParams ? 'rose.4' : 'dark.3'}
                                     size={28}
-                                    variant="soft"
+                                    variant="subtle"
                                     onClick={(e) => {
                                         if (!item.sockoptParams) return
                                         e.stopPropagation()
@@ -539,15 +488,13 @@ export function HostCardWidget(props: IProps) {
                                                     indent={2}
                                                     maxWidth="100%"
                                                     rootName=""
-                                                    theme={githubDarkTheme}
+                                                    theme={JSON_VIEWER_THEME}
                                                     viewOnly
                                                 />
                                             ),
                                             title: (
                                                 <BaseOverlayHeader
-                                                    iconColor="shaded-gray"
                                                     IconComponent={PiNetwork}
-                                                    iconVariant="soft"
                                                     title={t('host-card.sockopt-params')}
                                                 />
                                             ),
@@ -576,7 +523,8 @@ export function HostCardWidget(props: IProps) {
                         >
                             <Badge
                                 autoContrast
-                                color={configProfile?.uuid ? ch.hex(configProfile.uuid) : 'red'}
+                                color={configProfile?.uuid ? 'dark.2' : 'red'}
+                                tt="none"
                                 leftSection={
                                     configProfile?.uuid ? (
                                         <XrayLogo size={12} />
@@ -608,7 +556,7 @@ export function HostCardWidget(props: IProps) {
                                 renderItem={(tag) => (
                                     <Badge
                                         autoContrast
-                                        color={ch.hex(tag)}
+                                        color="gray"
                                         key={tag}
                                         leftSection={<TbStar size={12} />}
                                         size="md"
@@ -623,7 +571,7 @@ export function HostCardWidget(props: IProps) {
                                             <Stack gap="xs">
                                                 {items.map((tag) => (
                                                     <Badge
-                                                        color={ch.hex(tag)}
+                                                        color="gray"
                                                         fullWidth
                                                         key={tag}
                                                         leftSection={<TbStar size={12} />}

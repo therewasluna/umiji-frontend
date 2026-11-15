@@ -25,9 +25,7 @@ export const SummaryCardWidget = ({ onRefresh, totalUsers, ipStats }: IProps) =>
             children: <RequirementsWidget />,
             title: (
                 <BaseOverlayHeader
-                    iconColor="yellow"
                     IconComponent={TbAlertTriangle}
-                    iconVariant="soft"
                     title={t('active-sessions-drawer.widget.requirements')}
                 />
             )
@@ -38,9 +36,7 @@ export const SummaryCardWidget = ({ onRefresh, totalUsers, ipStats }: IProps) =>
             <SectionCard.Section>
                 <Group align="flex-center" justify="space-between">
                     <BaseOverlayHeader
-                        iconColor="teal"
                         IconComponent={TbUser}
-                        iconVariant="soft"
                         subtitle={t('node-active-sessions.drawer.widget.active-users-on-this-node')}
                         title={formatInt(totalUsers)}
                     />

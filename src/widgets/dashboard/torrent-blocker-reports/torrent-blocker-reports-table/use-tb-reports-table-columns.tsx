@@ -58,7 +58,7 @@ export const useTbReportsTableColumns = (nodes?: GetNodesCommand.Response['respo
                         wrap="nowrap"
                     >
                         <CountryFlag countryCode={cell.row.original.node?.countryCode} />
-                        <Text ff="monospace" fw={500} size="md">
+                        <Text fw={500} size="md">
                             {cell.row.original.node?.name || '–'}
                         </Text>
                     </Group>

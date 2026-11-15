@@ -1,22 +1,18 @@
-import { useMediaQuery } from '@mantine/hooks'
 import { Navigate, useLocation } from 'react-router'
 
 import { OPEN_ENTITY, ROUTES } from '@shared/constants'
 import { useIsMobile } from '@shared/hooks'
 import { HeaderControls } from '@shared/ui/header-buttons'
-import { QuickLauncher } from '@shared/ui/quick-launcher'
 
 import { useIsBroker } from '@entities/auth/session-store'
 import { useIsLoadingUmijiUpdates, useUmijiInfo } from '@entities/dashboard/updates-store'
-import { useExperimentalFeature } from '@entities/dashboard/view-preferences-store'
 
 import { DASHBOARD_LINKS } from './layout-shared'
-import { CompactLayout } from './layout-variants/compact.layout'
 import { MobileLayout } from './layout-variants/mobile.layout'
 import { SidebarLayout } from './layout-variants/sidebar.layout'
-import { useQuickLauncherRoutes } from './menu-sections/use-quick-launcher-routes'
 
 import '@shared/_modals/modal-registry'
+import '@shared/utils/setup-monaco/setup-monaco'
 
 const BROKER_PATHS: string[] = [
     ROUTES.DASHBOARD.MANAGEMENT.USERS,
@@ -31,17 +27,10 @@ const isBrokerPath = (pathname: string) =>
     )
 
 export function MainLayout() {
-    const isLegacyLayoutStyle = useExperimentalFeature('legacyLayoutStyle')
-
     const isMobile = useIsMobile()
-
-    const isHiResDesktop = useMediaQuery(`(min-width: 2048px)`, undefined, {
-        getInitialValueInEffect: false
-    })
 
     const umijiInfo = useUmijiInfo()
     const isLoadingUpdates = useIsLoadingUmijiUpdates()
-    const launcherRoutes = useQuickLauncherRoutes()
     const isBroker = useIsBroker()
     const location = useLocation()
 
@@ -70,21 +59,12 @@ export function MainLayout() {
         return (
             <MobileLayout
                 headerControls={headerControls}
-                isSocialButtons={isMobile && !isBroker}
+                isSocialButtons={!isBroker}
                 isLoadingUpdates={isLoadingUpdates}
                 umijiInfo={umijiInfo}
             />
         )
     }
 
-    return (
-        <>
-            {isLegacyLayoutStyle ? (
-                <SidebarLayout headerControls={headerControls} />
-            ) : (
-                <CompactLayout headerControls={headerControls} isHiResDesktop={isHiResDesktop} />
-            )}
-            {!isBroker && <QuickLauncher routes={launcherRoutes} />}
-        </>
-    )
+    return <SidebarLayout headerControls={headerControls} />
 }

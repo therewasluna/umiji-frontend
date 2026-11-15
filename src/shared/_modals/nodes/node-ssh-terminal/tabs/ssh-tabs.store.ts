@@ -10,6 +10,7 @@ export type TOpenTabResult = 'focused' | 'opened' | 'rejected'
 
 interface IState {
     activeId: string
+    isCtrlArmed: boolean
     statuses: Record<string, ISshSessionStatus | undefined>
     tabs: ISshTab[]
 }
@@ -17,12 +18,14 @@ interface IState {
 interface IActions {
     actions: {
         closeTab: (id: string) => void
+        consumeCtrl: () => boolean
         dropSessions: () => void
         getHandle: (id: string) => ISshSessionHandle | undefined
         getStatuses: () => Record<string, ISshSessionStatus | undefined>
         openTab: (node: GetNodeCommand.Response['response']) => TOpenTabResult
         registerHandle: (id: string, handle: ISshSessionHandle | null) => void
         selectTab: (id: string) => void
+        setCtrlArmed: (armed: boolean) => void
         setStatus: (id: string, status: ISshSessionStatus) => void
     }
 }
@@ -34,6 +37,7 @@ export function createSshTabsStore(initial?: GetNodeCommand.Response['response']
 
     return createStore<IActions & IState>()((set, get) => ({
         activeId: initial?.uuid ?? '',
+        isCtrlArmed: false,
         statuses: {},
         tabs: initial ? [{ id: initial.uuid, node: initial }] : [],
 
@@ -53,6 +57,14 @@ export function createSshTabsStore(initial?: GetNodeCommand.Response['response']
                     statuses: { ...statuses, [id]: undefined },
                     tabs: rest
                 })
+            },
+
+            consumeCtrl: () => {
+                if (!get().isCtrlArmed) return false
+
+                set({ isCtrlArmed: false })
+
+                return true
             },
 
             dropSessions: () => {
@@ -89,6 +101,8 @@ export function createSshTabsStore(initial?: GetNodeCommand.Response['response']
 
             selectTab: (id) => set({ activeId: id }),
 
+            setCtrlArmed: (armed) => set({ isCtrlArmed: armed }),
+
             setStatus: (id, status) => set({ statuses: { ...get().statuses, [id]: status } })
         }
     }))
@@ -110,4 +124,5 @@ export const useSshTabsActions = () => useSshTabsStore((state) => state.actions)
 export const useSshTabs = () => useSshTabsStore((state) => state.tabs)
 export const useSshActiveTabId = () => useSshTabsStore((state) => state.activeId)
 export const useSshStatuses = () => useSshTabsStore((state) => state.statuses)
+export const useSshCtrlArmed = () => useSshTabsStore((state) => state.isCtrlArmed)
 export const useSshActiveStatus = () => useSshTabsStore((state) => state.statuses[state.activeId])

@@ -3,13 +3,30 @@ import type { editor } from 'monaco-editor'
 import { ConfigEditorActionsFeature } from '@features/dashboard/config-profiles/config-editor-actions'
 import { ConfigValidationFeature } from '@features/dashboard/config-profiles/config-validation'
 import { MonacoSetupFeature } from '@features/dashboard/config-profiles/monaco-setup'
-import { Box, Button, Code, Group, Loader, Paper } from '@mantine/core'
+import {
+    ActionIcon,
+    Box,
+    Button,
+    Code,
+    Group,
+    Loader,
+    Paper,
+    SegmentedControl,
+    Text,
+    Tooltip
+} from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { useMonaco } from '@monaco-editor/react'
 import clsx from 'clsx'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbAlertTriangle } from 'react-icons/tb'
+import {
+    TbAlertTriangle,
+    TbArrowBackUp,
+    TbArrowForwardUp,
+    TbBraces,
+    TbLayoutDashboard
+} from 'react-icons/tb'
 import { useBlocker } from 'react-router'
 
 import { usePseudoFullscreen, useViewportFillHeight } from '@shared/hooks'
@@ -19,6 +36,7 @@ import { LoaderModalShared } from '@shared/ui/loader-modal'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { preventBackScroll } from '@shared/utils/misc'
 
+import { VisualEditorWidget } from '../visual-editor/visual-editor.widget'
 import styles from './ConfigEditor.module.css'
 import { IProps } from './interfaces'
 
@@ -37,10 +55,42 @@ export function ConfigEditorWidget(props: IProps) {
 
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
     const wasWasmRestarting = useRef(false)
+    const lastVisualEdit = useRef(0)
+
+    // Monaco stays the single source of truth; the visual editor reads its text and writes whole-document
+    // edits back, so saving, validation, the unsaved-changes guard and undo work the same in both modes.
+    const [mode, setMode] = useState<'json' | 'visual'>('visual')
+    const [text, setText] = useState<string | null>(null)
+    const parsed = useMemo(() => {
+        if (text === null) return null
+        try {
+            const value: unknown = JSON.parse(text)
+            return value && typeof value === 'object' && !Array.isArray(value)
+                ? (value as Record<string, unknown>)
+                : undefined
+        } catch {
+            return undefined
+        }
+    }, [text])
+
+    const applyVisual = (next: Record<string, unknown>) => {
+        const instance = editorRef.current
+        const model = instance?.getModel()
+        if (!instance || !model) return
+
+        // Edits less than a second apart (typing in one field) undo as one step.
+        if (Date.now() - lastVisualEdit.current > 1000) instance.pushUndoStop()
+        lastVisualEdit.current = Date.now()
+        instance.executeEdits('visual-editor', [
+            { range: model.getFullModelRange(), text: JSON.stringify(next, null, 2) }
+        ])
+    }
+
+    const isVisual = mode === 'visual'
 
     const { isFullscreen, toggle: toggleFullscreen } = usePseudoFullscreen()
     const { containerRef: editorWrapperRef, footerRef } = useViewportFillHeight({
-        enabled: !isFullscreen
+        enabled: !isFullscreen && !isVisual
     })
 
     useEffect(() => {
@@ -85,10 +135,8 @@ export function ConfigEditorWidget(props: IProps) {
             modals.openConfirmModal({
                 title: (
                     <BaseOverlayHeader
-                        iconColor="red"
                         IconComponent={TbAlertTriangle}
                         iconSize={20}
-                        iconVariant="soft"
                         title={t('config-editor.widget.unsaved-changes')}
                     />
                 ),
@@ -148,6 +196,102 @@ export function ConfigEditorWidget(props: IProps) {
 
     return (
         <Box className={clsx(styles.container, isFullscreen && fullscreenClasses.overlay)}>
+            {!isFullscreen && (
+                <Group className={styles.modeBar} justify="space-between" wrap="nowrap">
+                    <SegmentedControl
+                        classNames={{
+                            root: styles.modeSwitch,
+                            indicator: styles.modeIndicator,
+                            label: styles.modeLabel
+                        }}
+                        data={[
+                            {
+                                value: 'visual',
+                                label: (
+                                    <Group gap={8} wrap="nowrap">
+                                        <TbLayoutDashboard size={17} />
+                                        {t('config-visual-editor.visual')}
+                                    </Group>
+                                )
+                            },
+                            {
+                                value: 'json',
+                                label: (
+                                    <Group gap={8} wrap="nowrap">
+                                        <TbBraces size={17} />
+                                        JSON
+                                    </Group>
+                                )
+                            }
+                        ]}
+                        onChange={(v) => setMode(v as 'json' | 'visual')}
+                        value={mode}
+                    />
+                    {isVisual && (
+                        <Group className={styles.history} gap={2} wrap="nowrap">
+                            <Tooltip label={t('config-visual-editor.undo')} withArrow>
+                                <ActionIcon
+                                    aria-label={t('config-visual-editor.undo')}
+                                    color="gray"
+                                    onClick={() =>
+                                        editorRef.current?.trigger('visual-editor', 'undo', null)
+                                    }
+                                    radius={10}
+                                    size={36}
+                                    variant="subtle"
+                                >
+                                    <TbArrowBackUp size={18} />
+                                </ActionIcon>
+                            </Tooltip>
+                            <Tooltip label={t('config-visual-editor.redo')} withArrow>
+                                <ActionIcon
+                                    aria-label={t('config-visual-editor.redo')}
+                                    color="gray"
+                                    onClick={() =>
+                                        editorRef.current?.trigger('visual-editor', 'redo', null)
+                                    }
+                                    radius={10}
+                                    size={36}
+                                    variant="subtle"
+                                >
+                                    <TbArrowForwardUp size={18} />
+                                </ActionIcon>
+                            </Tooltip>
+                        </Group>
+                    )}
+                </Group>
+            )}
+
+            {isVisual && (
+                <Box className={styles.visual}>
+                    {parsed === null && <LoaderModalShared mih="320px" />}
+                    {parsed === undefined && (
+                        <Box className={styles.brokenJson}>
+                            <TbAlertTriangle size={28} />
+                            <Text fw={600}>{t('config-visual-editor.broken-json')}</Text>
+                            <Text c="dimmed" maw={420} size="sm" ta="center">
+                                {t('config-visual-editor.broken-json-description')}
+                            </Text>
+                            <Button color="teal" onClick={() => setMode('json')} variant="soft">
+                                {t('config-visual-editor.open-json')}
+                            </Button>
+                        </Box>
+                    )}
+                    {parsed && (
+                        <VisualEditorWidget
+                            config={parsed}
+                            issue={isConfigValid ? null : result}
+                            onChange={applyVisual}
+                            snippets={snippets.snippets.map((sn) => sn.name)}
+                        />
+                    )}
+                    {/* Visual mode marks problems on the inputs; the text log stays in JSON mode. */}
+                    {(isWasmCrashed || isWasmRestarting) && (
+                        <Box className={styles.visualStatus}>{statusBar}</Box>
+                    )}
+                </Box>
+            )}
+
             <Paper
                 className={clsx(
                     styles.editorWrapper,
@@ -158,7 +302,8 @@ export function ConfigEditorWidget(props: IProps) {
                 pos="relative"
                 ref={editorWrapperRef}
                 style={{
-                    direction: 'ltr'
+                    direction: 'ltr',
+                    display: isVisual && !isFullscreen ? 'none' : undefined
                 }}
                 withBorder
             >
@@ -185,9 +330,11 @@ export function ConfigEditorWidget(props: IProps) {
                         }
 
                         checkForChanges()
+                        setText(editorRef.current?.getValue() ?? null)
                     }}
                     onMount={(editor) => {
                         editorRef.current = editor
+                        setText(editor.getValue())
 
                         editor.getAction('editor.foldLevel7')?.run()
 
@@ -207,19 +354,22 @@ export function ConfigEditorWidget(props: IProps) {
             </Paper>
 
             {!isFullscreen && (
-                <EditorFooter ref={footerRef}>
-                    <FullscreenToggleButton
-                        floating={false}
-                        isFullscreen={isFullscreen}
-                        onToggle={toggleFullscreen}
-                        size={36}
-                    />
+                <EditorFooter className={clsx(isVisual && styles.visualFooter)} ref={footerRef}>
+                    {!isVisual && (
+                        <FullscreenToggleButton
+                            floating={false}
+                            isFullscreen={isFullscreen}
+                            onToggle={toggleFullscreen}
+                            size={36}
+                        />
+                    )}
 
                     <ConfigEditorActionsFeature
                         configProfile={configProfile}
                         editorRef={editorRef}
                         hasUnsavedChanges={hasUnsavedChanges}
                         isConfigValid={isConfigValid}
+                        isVisual={isVisual}
                         originalValue={originalValue}
                         setHasUnsavedChanges={setHasUnsavedChanges}
                         setIsConfigValid={setIsConfigValid}

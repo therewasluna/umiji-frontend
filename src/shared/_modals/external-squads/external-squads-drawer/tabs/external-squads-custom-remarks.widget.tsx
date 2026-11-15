@@ -4,7 +4,7 @@ import { modals } from '@mantine/modals'
 import { notifications } from '@mantine/notifications'
 import { GetExternalSquadByUuidCommand } from '@umiji/backend-contract'
 import { RemarksManager } from '@widgets/dashboard/subscription-settings/settings/cards/managers/remarks-manager.widget'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PiClockCountdown, PiClockUser, PiListChecks, PiProhibit } from 'react-icons/pi'
 import { TbDeviceFloppy, TbDevices2, TbListLetters, TbX } from 'react-icons/tb'
@@ -40,7 +40,11 @@ export const ExternalSquadsCustomRemarksTabWidget = (props: IProps) => {
         HWIDNotSupported: DEFAULT_REMARKS.HWIDNotSupported
     })
 
-    useEffect(() => {
+    const [previousExternalSquad, setPreviousExternalSquad] = useState<typeof externalSquad | null>(
+        null
+    )
+    if (externalSquad !== previousExternalSquad) {
+        setPreviousExternalSquad(externalSquad)
         const currentRemarks = externalSquad.customRemarks
         if (currentRemarks) {
             setIsOverrideEnabled(true)
@@ -74,7 +78,7 @@ export const ExternalSquadsCustomRemarksTabWidget = (props: IProps) => {
                 HWIDNotSupported: DEFAULT_REMARKS.HWIDNotSupported
             })
         }
-    }, [externalSquad])
+    }
 
     const updateExpiredRemarks = useCallback((newRemarks: string[]) => {
         setRemarks((prev) => ({ ...prev, expired: newRemarks }))
@@ -119,9 +123,7 @@ export const ExternalSquadsCustomRemarksTabWidget = (props: IProps) => {
                             size: 'auto',
                             title: (
                                 <BaseOverlayHeader
-                                    iconColor="red"
                                     IconComponent={TbX}
-                                    iconVariant="soft"
                                     title={t('subscription-settings.widget.validation-error')}
                                 />
                             ),
@@ -195,7 +197,7 @@ export const ExternalSquadsCustomRemarksTabWidget = (props: IProps) => {
     }
 
     return (
-        <Card p="md" withBorder>
+        <Card p="lg" withBorder>
             <Stack gap="md">
                 <Group align="center" justify="space-between" wrap="nowrap">
                     <Stack gap={4}>

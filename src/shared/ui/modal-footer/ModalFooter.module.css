@@ -1,13 +1,21 @@
+/* Sticky action bar at the foot of a dialog: bleeds to the dialog edges and frosts over content scrolling under it. */
 .footer {
-    width: calc(100% + 2 * var(--mantine-spacing-sm));
-    margin-left: calc(-1 * var(--mantine-spacing-sm));
-    bottom: -1px;
-    background: rgba(22, 27, 35, 0.95);
+    position: sticky;
+    top: auto;
+    bottom: 0;
+    min-height: 0;
+    height: auto;
+    margin: var(--mantine-spacing-lg) calc(-1 * var(--mb-padding)) calc(-1 * var(--mb-padding));
+    padding: 14px var(--mb-padding);
+    background: color-mix(in srgb, var(--mantine-color-dark-7) 82%, transparent);
+    backdrop-filter: blur(14px);
     border-top: 1px solid rgba(255, 255, 255, 0.06);
-    border-bottom: none;
-    padding-left: var(--mantine-spacing-sm);
-    padding-right: var(--mantine-spacing-sm);
-    padding-top: var(--mantine-spacing-sm) !important;
-    padding-bottom: var(--mantine-spacing-sm) !important;
+    border-bottom: 0;
     border-radius: 0;
+}
+
+@supports (padding: env(safe-area-inset-bottom)) {
+    .footer {
+        padding-bottom: max(14px, env(safe-area-inset-bottom, 0px));
+    }
 }

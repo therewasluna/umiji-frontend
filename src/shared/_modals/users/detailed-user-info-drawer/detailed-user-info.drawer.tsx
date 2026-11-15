@@ -49,9 +49,7 @@ export const DetailedUserInfoDrawer = NiceModal.create((props: IProps) => {
             size="lg"
             title={
                 <BaseOverlayHeader
-                    iconColor="blue"
                     IconComponent={PiUserDuotone}
-                    iconVariant="soft"
                     title={t('detailed-user-info-drawer.widget.detailed-user-info')}
                 />
             }
@@ -64,9 +62,7 @@ export const DetailedUserInfoDrawer = NiceModal.create((props: IProps) => {
                         <SectionCard.Section>
                             <Group align="center" justify="space-between">
                                 <BaseOverlayHeader
-                                    iconColor="blue"
                                     IconComponent={PiUserDuotone}
-                                    iconVariant="soft"
                                     title={t('detailed-user-info-drawer.widget.user-information')}
                                 />
 
@@ -120,9 +116,7 @@ export const DetailedUserInfoDrawer = NiceModal.create((props: IProps) => {
                     <SectionCard.Root>
                         <SectionCard.Section>
                             <BaseOverlayHeader
-                                iconColor="teal"
                                 IconComponent={PiArrowsDownUpDuotone}
-                                iconVariant="soft"
                                 title={t('detailed-user-info-drawer.widget.traffic-information')}
                             />
                         </SectionCard.Section>
@@ -164,10 +158,8 @@ export const DetailedUserInfoDrawer = NiceModal.create((props: IProps) => {
                     <SectionCard.Root>
                         <SectionCard.Section>
                             <BaseOverlayHeader
-                                iconColor="orange"
                                 IconComponent={PiCalendarDotDuotone}
                                 iconSize={16}
-                                iconVariant="soft"
                                 title={t(
                                     'detailed-user-info-drawer.widget.subscription-information'
                                 )}
@@ -203,9 +195,7 @@ export const DetailedUserInfoDrawer = NiceModal.create((props: IProps) => {
                     <SectionCard.Root>
                         <SectionCard.Section>
                             <BaseOverlayHeader
-                                iconColor="violet"
                                 IconComponent={PiNetworkDuotone}
-                                iconVariant="soft"
                                 title={t('detailed-user-info-drawer.widget.connection-information')}
                             />
                         </SectionCard.Section>
@@ -257,9 +247,7 @@ export const DetailedUserInfoDrawer = NiceModal.create((props: IProps) => {
                         <SectionCard.Root>
                             <SectionCard.Section>
                                 <BaseOverlayHeader
-                                    iconColor="green"
                                     IconComponent={PiTagDuotone}
-                                    iconVariant="soft"
                                     title={t(
                                         'detailed-user-info-drawer.widget.active-internal-squads'
                                     )}
@@ -282,9 +270,7 @@ export const DetailedUserInfoDrawer = NiceModal.create((props: IProps) => {
                     <SectionCard.Root>
                         <SectionCard.Section>
                             <BaseOverlayHeader
-                                iconColor="gray"
                                 IconComponent={PiClockDuotone}
-                                iconVariant="soft"
                                 title={t('detailed-user-info-drawer.widget.timestamps')}
                             />
                         </SectionCard.Section>

@@ -42,9 +42,7 @@ export const EditNodeModal = NiceModal.create((props: IProps) => {
             title={
                 <BaseOverlayHeader
                     countryCode={node?.countryCode}
-                    iconColor="teal"
                     IconComponent={TbCpu}
-                    iconVariant="soft"
                     title={node?.name ?? t('edit-node-modal.widget.edit-node')}
                     openEntity={{ entity: OPEN_ENTITY.NODE, id: nodeUuid }}
                 />

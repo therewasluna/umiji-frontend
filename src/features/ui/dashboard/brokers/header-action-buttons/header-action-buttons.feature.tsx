@@ -1,4 +1,4 @@
-import { ActionIcon, ActionIconGroup, Group, Tooltip } from '@mantine/core'
+import { ActionIcon, ActionIconGroup, Button, Group, Tooltip } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 import { TbPlus, TbRefresh } from 'react-icons/tb'
 
@@ -26,19 +26,14 @@ export const BrokersHeaderActionButtonsFeature = () => {
                 </Tooltip>
             </ActionIconGroup>
 
-            <ActionIconGroup>
-                <Tooltip label={t('brokers.create-broker')} withArrow>
-                    <ActionIcon
-                        aria-label={t('brokers.create-broker')}
-                        color="teal"
-                        onClick={() => showModal('brokers_brokerFormModal', {})}
-                        size="input-md"
-                        variant="soft"
-                    >
-                        <TbPlus size="24px" />
-                    </ActionIcon>
-                </Tooltip>
-            </ActionIconGroup>
+            <Button
+                leftSection={<TbPlus size={18} />}
+                onClick={() => showModal('brokers_brokerFormModal', {})}
+                size="md"
+                variant="filled"
+            >
+                {t('brokers.create-broker')}
+            </Button>
         </Group>
     )
 }

@@ -2,7 +2,7 @@ import { ActionIcon, ActionIconGroup, Tooltip } from '@mantine/core'
 import { GetHttpStatsCommand } from '@umiji/backend-contract'
 import { HttpStatsTableWidget } from '@widgets/dashboard/http-stats/http-stats-table/http-stats-table.widget'
 import { useTranslation } from 'react-i18next'
-import { TbApi, TbRefresh } from 'react-icons/tb'
+import { TbRefresh } from 'react-icons/tb'
 
 import { Page, PageHeaderShared } from '@shared/ui'
 
@@ -32,7 +32,6 @@ export default function HttpStatsPageComponent({ refetch, isFetching, httpStats 
                     </ActionIconGroup>
                 }
                 description={t('http-stats.page.component.http-stats-description')}
-                icon={<TbApi size={24} />}
                 title={t('constants.http-stats')}
             />
 

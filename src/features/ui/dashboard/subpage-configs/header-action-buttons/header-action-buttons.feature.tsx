@@ -1,4 +1,4 @@
-import { ActionIcon, ActionIconGroup, Group, Tooltip } from '@mantine/core'
+import { ActionIcon, ActionIconGroup, Button, Group, Tooltip } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 import { TbPlus, TbRefresh } from 'react-icons/tb'
 import { useNavigate } from 'react-router'
@@ -38,21 +38,19 @@ export const SubpageConfigsHeaderActionButtonsFeature = () => {
                 </Tooltip>
             </ActionIconGroup>
 
-            <ActionIconGroup>
-                <ActionIcon
-                    color="teal"
-                    onClick={() =>
-                        showModal('createModal', {
-                            createFrom: 'subpageConfig',
-                            contentOptions: { navigate }
-                        })
-                    }
-                    size="input-md"
-                    variant="light"
-                >
-                    <TbPlus size="24px" />
-                </ActionIcon>
-            </ActionIconGroup>
+            <Button
+                leftSection={<TbPlus size={18} />}
+                onClick={() =>
+                    showModal('createModal', {
+                        createFrom: 'subpageConfig',
+                        contentOptions: { navigate }
+                    })
+                }
+                size="md"
+                variant="filled"
+            >
+                {t('common.action.create')}
+            </Button>
         </Group>
     )
 }

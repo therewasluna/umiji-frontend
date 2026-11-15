@@ -1,5 +1,5 @@
 import { Group } from '@mantine/core'
-import { useClickOutside, useDisclosure } from '@mantine/hooks'
+import { useDisclosure } from '@mantine/hooks'
 
 import { HeaderControls } from '@shared/ui'
 
@@ -18,17 +18,10 @@ interface IProps {
 export const MobileLayout = (props: IProps) => {
     const { headerControls, isLoadingUpdates, isSocialButtons, umijiInfo } = props
 
-    const [opened, { toggle }] = useDisclosure()
-
-    const ref = useClickOutside(() => {
-        if (opened) {
-            toggle()
-        }
-    })
+    const [opened, { close, toggle }] = useDisclosure()
 
     return (
         <SidebarShellLayout
-            closedSide="mobile"
             footer={
                 isSocialButtons && (
                     <Group justify="center" mt="md" style={{ flexShrink: 0 }}>
@@ -44,8 +37,7 @@ export const MobileLayout = (props: IProps) => {
                 )
             }
             headerControls={headerControls}
-            navbarRef={ref}
-            onNavClose={toggle}
+            onNavClose={close}
             opened={opened}
             padding="md"
             toggle={toggle}

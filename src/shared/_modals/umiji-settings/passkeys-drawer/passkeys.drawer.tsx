@@ -181,9 +181,7 @@ export const PasskeysDrawer = NiceModal.create(() => {
             }}
             title={
                 <BaseOverlayHeader
-                    iconColor="blue"
                     IconComponent={TbFingerprint}
-                    iconVariant="soft"
                     title={t('passkeys-drawer.component.passkeys')}
                 />
             }
@@ -243,10 +241,8 @@ export const PasskeysDrawer = NiceModal.create(() => {
                             <SectionCard.Section>
                                 <Group gap="xs" justify="space-between" wrap="nowrap">
                                     <BaseOverlayHeader
-                                        iconColor="teal"
                                         IconComponent={TbPasswordFingerprint}
                                         iconSize={20}
-                                        iconVariant="soft"
                                         titleOrder={4}
                                         title={passkey.name}
                                     />

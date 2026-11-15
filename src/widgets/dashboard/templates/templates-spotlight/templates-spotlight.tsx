@@ -1,7 +1,4 @@
-import {
-    GetSubscriptionTemplatesCommand,
-    TSubscriptionTemplateType
-} from '@umiji/backend-contract'
+import { GetSubscriptionTemplatesCommand, TSubscriptionTemplateType } from '@umiji/backend-contract'
 import { generatePath, useNavigate } from 'react-router'
 
 import { ROUTES } from '@shared/constants'

@@ -1,6 +1,5 @@
 import { Text } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
-import { PiArrowsInCardinalFill } from 'react-icons/pi'
 import { useNavigate, useParams } from 'react-router'
 
 import { useGetBrokerMe, useGetSubscriptionPageConfig } from '@shared/api/hooks'
@@ -33,10 +32,7 @@ export function SubpageConfigEditorPageConnector() {
     if (isBroker && broker && !uuid) {
         return (
             <Page title={t('constants.subscription-page')}>
-                <PageHeaderShared
-                    icon={<PiArrowsInCardinalFill size={24} />}
-                    title={t('constants.subscription-page')}
-                />
+                <PageHeaderShared title={t('constants.subscription-page')} />
                 <Text c="dimmed" py="xl" ta="center">
                     {t('brokers.panel.no-subscription-page')}
                 </Text>

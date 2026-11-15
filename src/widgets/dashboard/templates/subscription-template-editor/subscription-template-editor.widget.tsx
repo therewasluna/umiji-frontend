@@ -4,8 +4,8 @@ import { TemplateEditorActionsFeature } from '@features/dashboard/subscription-t
 import { Box, Paper } from '@mantine/core'
 import { Monaco } from '@monaco-editor/react'
 import 'monaco-yaml/yaml.worker.js'
-import { GetHostsCommand, GetSubscriptionTemplateCommand } from '@umiji/backend-contract'
 import { decode } from '@stablelib/base64'
+import { GetHostsCommand, GetSubscriptionTemplateCommand } from '@umiji/backend-contract'
 import clsx from 'clsx'
 import { useLayoutEffect, useRef } from 'react'
 

@@ -29,9 +29,7 @@ export function RestartNodeButtonFeature(props: IProps) {
                 modals.open({
                     title: (
                         <BaseOverlayHeader
-                            iconColor="teal"
                             IconComponent={TbRocket}
-                            iconVariant="soft"
                             title={t('restart-node-button.feature.restart')}
                         />
                     ),

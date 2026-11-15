@@ -28,10 +28,8 @@ export function BulkDeviceTagSettingsCard(props: IProps) {
             <SectionCard.Root>
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="orange"
                         IconComponent={TbSettings}
                         iconSize={20}
-                        iconVariant="soft"
                         title={t('device-tag-settings-card.device-and-tag-settings')}
                         titleOrder={5}
                     />

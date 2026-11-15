@@ -189,9 +189,7 @@ export const EditManyHostsDrawer = NiceModal.create((props: IProps) => {
             size="700px"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={PiListChecks}
-                    iconVariant="soft"
                     title={t('edit-host-modal.widget.edit-host')}
                     withCopy={true}
                 />

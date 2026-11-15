@@ -1,4 +1,4 @@
-import { ActionIcon, ActionIconGroup, Group, Stack, Tooltip } from '@mantine/core'
+import { ActionIcon, ActionIconGroup, Button, Group, Stack, Tooltip } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { spotlight } from '@mantine/spotlight'
 import { useTranslation } from 'react-i18next'
@@ -7,7 +7,6 @@ import {
     TbAlertCircle,
     TbCards,
     TbPlus,
-    TbPlugConnected,
     TbRefresh,
     TbRocket,
     TbSearch,
@@ -19,7 +18,7 @@ import { useGetNodes, useRestartAllNodes } from '@shared/api/hooks'
 import { ActionCardShared } from '@shared/ui'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 
-import { NODES_VIEW_MODE, useExperimentalFeature } from '@entities/dashboard/view-preferences-store'
+import { NODES_VIEW_MODE } from '@entities/dashboard/view-preferences-store'
 
 interface IProps {
     setViewMode: (viewMode: NODES_VIEW_MODE) => void
@@ -30,8 +29,6 @@ export const NodesHeaderActionButtonsFeature = (props: IProps) => {
     const { setViewMode, viewMode } = props
 
     const { t } = useTranslation()
-
-    const isNodeIntegrationsEnabled = useExperimentalFeature('nodeIntegrations')
 
     const {
         isLoading: isGetNodesPending,
@@ -45,9 +42,7 @@ export const NodesHeaderActionButtonsFeature = (props: IProps) => {
         modals.open({
             title: (
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbRocket}
-                    iconVariant="soft"
                     title={t('nodes-header-action-buttons.feature.restart-all-nodes')}
                 />
             ),
@@ -137,21 +132,6 @@ export const NodesHeaderActionButtonsFeature = (props: IProps) => {
                 </Tooltip>
             </ActionIconGroup>
 
-            {isNodeIntegrationsEnabled && (
-                <ActionIconGroup>
-                    <Tooltip label={t('node-integrations.modal.title')} withArrow>
-                        <ActionIcon
-                            color="pink"
-                            onClick={() => showModal('nodeIntegrations_nodeIntegrationsModal')}
-                            size="input-md"
-                            variant="soft"
-                        >
-                            <TbPlugConnected size="24px" />
-                        </ActionIcon>
-                    </Tooltip>
-                </ActionIconGroup>
-            )}
-
             <ActionIconGroup>
                 <Tooltip
                     label={t('nodes-header-action-buttons.feature.restart-all-nodes')}
@@ -183,18 +163,14 @@ export const NodesHeaderActionButtonsFeature = (props: IProps) => {
                     </ActionIcon>
                 </Tooltip>
             </ActionIconGroup>
-            <ActionIconGroup>
-                <Tooltip label={t('common.action.create')} withArrow>
-                    <ActionIcon
-                        color="teal"
-                        onClick={() => showModal('nodes_createNodeModal')}
-                        size="input-md"
-                        variant="soft"
-                    >
-                        <TbPlus size="24px" />
-                    </ActionIcon>
-                </Tooltip>
-            </ActionIconGroup>
+            <Button
+                onClick={() => showModal('nodes_createNodeModal')}
+                leftSection={<TbPlus size={18} />}
+                size="md"
+                variant="filled"
+            >
+                {t('common.action.create')}
+            </Button>
         </Group>
     )
 }

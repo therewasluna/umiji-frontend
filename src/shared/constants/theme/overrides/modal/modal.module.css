@@ -1,23 +1,96 @@
+/* Dialogs: a dark-7 sheet with a hairline edge and a faint rose glow at the top. The header and footer
+   stay put and frost over content scrolling under them. Padding comes from Mantine's --mb-padding
+   (default lg), so a dialog that passes its own `padding` still gets it. */
+
 .modalContent {
     border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+        radial-gradient(
+            120% 160px at 50% 0%,
+            color-mix(in srgb, var(--mantine-color-rose-5) 8%, transparent),
+            transparent
+        ),
+        var(--mantine-color-dark-7);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 32px 80px -24px rgba(0, 0, 0, 0.85);
+}
+
+.modalRoot[data-full-screen] .modalContent {
+    border: 0;
+    box-shadow: none;
 }
 
 .modalHeader {
-    background: rgba(22, 27, 35, 0.95);
+    gap: var(--mantine-spacing-sm);
+    min-height: 64px;
+    padding-block: 14px;
+    background: color-mix(in srgb, var(--mantine-color-dark-7) 82%, transparent);
+    backdrop-filter: blur(14px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding: var(--mantine-spacing-sm) var(--mantine-spacing-lg);
-
-    /* @supports (padding: env(safe-area-inset-top)) {
-        padding-top: max(var(--mantine-spacing-sm), env(safe-area-inset-top, 0px));
-    } */
 }
 
 .modalRoot[data-full-screen] .modalHeader {
+    /* Mantine rounds the header's top corners from --modal-radius even in full-screen. */
+    border-radius: 0;
+
     @supports (padding: env(safe-area-inset-top)) {
-        padding-top: max(var(--mantine-spacing-sm), env(safe-area-inset-top, 0px));
+        padding-top: max(14px, env(safe-area-inset-top, 0px));
     }
 }
 
-.modalBody {
-    padding: var(--mantine-spacing-sm);
+.modalTitle {
+    min-width: 0;
+    color: var(--mantine-color-white);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.modalClose {
+    flex-shrink: 0;
+    border-radius: 10px;
+    color: var(--mantine-color-dark-1);
+    transition:
+        background-color 140ms ease,
+        color 140ms ease;
+}
+
+.modalClose:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--mantine-color-white);
+}
+
+/* Full-screen (phone) dialogs with a ModalFooter become a column down to it, so the actions sit at the
+   bottom of the screen instead of right under a short form. */
+.modalRoot[data-full-screen] .modalContent:has([data-modal-footer]) {
+    display: flex;
+    flex-direction: column;
+}
+
+.modalRoot[data-full-screen] .modalContent:has([data-modal-footer]) > .modalBody,
+.modalRoot[data-full-screen] .modalBody:has([data-modal-footer]) > :has([data-modal-footer]) {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.modalRoot[data-full-screen] [data-modal-footer] {
+    margin-top: auto;
+}
+
+/* Mantine drops the body's top padding under a header; the header has a divider, so keep it. */
+.modalContent > .modalBody {
+    padding-top: var(--mb-padding);
+    color: var(--mantine-color-dark-0);
+    font-size: var(--mantine-font-size-sm);
+    line-height: 1.6;
+}
+
+/* Confirm dialogs (modals.openConfirmModal) end with Mantine's button group: dress it like ModalFooter. */
+.managedBody > :global(.mantine-Group-root):last-child:not(:first-child) {
+    gap: 10px;
+    margin: var(--mantine-spacing-lg) calc(-1 * var(--mb-padding)) calc(-1 * var(--mb-padding)) !important;
+    padding: 14px var(--mb-padding);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
 }

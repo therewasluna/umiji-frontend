@@ -4,7 +4,7 @@ import {
     SUBSCRIPTION_TEMPLATE_TYPE,
     TSubscriptionTemplateType
 } from '@umiji/backend-contract'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbDeviceFloppy } from 'react-icons/tb'
 
@@ -66,7 +66,11 @@ export const ExternalSquadsTemplatesTabWidget = (props: IProps) => {
         )
     }, [templatesData?.templates])
 
-    useEffect(() => {
+    const [previousExternalSquad, setPreviousExternalSquad] = useState<typeof externalSquad | null>(
+        null
+    )
+    if (externalSquad !== previousExternalSquad) {
+        setPreviousExternalSquad(externalSquad)
         const initialTemplates: Record<TSubscriptionTemplateType, null | string> = {
             [SUBSCRIPTION_TEMPLATE_TYPE.CLASH]: null,
             [SUBSCRIPTION_TEMPLATE_TYPE.MIHOMO]: null,
@@ -83,7 +87,7 @@ export const ExternalSquadsTemplatesTabWidget = (props: IProps) => {
         }
 
         setSelectedTemplates(initialTemplates)
-    }, [externalSquad])
+    }
 
     const { mutate: updateExternalSquad, isPending: isUpdatingExternalSquad } =
         useUpdateExternalSquad({
@@ -176,7 +180,7 @@ export const ExternalSquadsTemplatesTabWidget = (props: IProps) => {
                     {t('external-squads.drawer.widget.subscription-templates-description-line-2')}
                 </Text>
 
-                <Stack gap="sm">
+                <Stack gap="md">
                     {availableTemplateTypes.map((templateType) => {
                         const templates = groupedTemplates[templateType] || []
 

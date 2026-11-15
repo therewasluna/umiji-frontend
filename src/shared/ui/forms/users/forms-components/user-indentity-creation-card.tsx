@@ -32,10 +32,8 @@ export const UserIdentityCreationCard = (props: IProps) => {
             <SectionCard.Root>
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="blue"
                         IconComponent={HiIdentification}
                         iconSize={20}
-                        iconVariant="soft"
                         title={t('user-identity-creation-card.user-identity')}
                         titleOrder={5}
                     />

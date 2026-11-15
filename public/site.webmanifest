@@ -3,13 +3,13 @@
     "short_name": "Umiji",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#161B23",
+    "background_color": "#1B1218",
     "lang": "en",
     "id": "/",
     "orientation": "any",
     "scope": "/",
     "description": "Umiji Dashboard",
-    "theme_color": "#161B23",
+    "theme_color": "#1B1218",
     "icons": [
         {
             "src": "/favicons/favicon-64x64.png",

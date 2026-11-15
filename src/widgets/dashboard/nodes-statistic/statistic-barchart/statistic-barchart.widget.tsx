@@ -45,9 +45,7 @@ export const NodesStatisticBarchartWidget = (props: IProps) => {
                     <Stack align="center" gap={8}>
                         <PiEmpty size="2rem" />
                         <Text c="dimmed">
-                            {t(
-                                'common.message.no-data-available-for-the-selected-period'
-                            )}
+                            {t('common.message.no-data-available-for-the-selected-period')}
                         </Text>
                     </Stack>
                 </Center>
@@ -77,9 +75,7 @@ export const NodesStatisticBarchartWidget = (props: IProps) => {
             size: '600px',
             title: (
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbChartBar}
-                    iconVariant="soft"
                     subtitle={t('statistic-nodes.component.total-traffic-placeholder', {
                         totalTraffic: prettifyBytesUtil(totalDayTraffic)
                     })}
@@ -93,7 +89,7 @@ export const NodesStatisticBarchartWidget = (props: IProps) => {
             children: (
                 <Stack>
                     <ScrollArea h={400} offsetScrollbars type="always">
-                        <Table highlightOnHover striped withTableBorder>
+                        <Table highlightOnHover withTableBorder>
                             <Table.Thead>
                                 <Table.Tr>
                                     <Table.Th>{t('statistic-nodes.component.node')}</Table.Th>
@@ -150,7 +146,7 @@ export const NodesStatisticBarchartWidget = (props: IProps) => {
                     plotOptions: {
                         bar: {
                             stacking: 'normal',
-                            borderRadius: 0,
+                            borderRadius: 3,
                             cursor: 'pointer'
                         },
                         series: {
@@ -166,11 +162,9 @@ export const NodesStatisticBarchartWidget = (props: IProps) => {
                         layout: 'horizontal',
                         align: 'center',
                         verticalAlign: 'bottom',
-                        backgroundColor: 'var(--mantine-color-body)',
-                        borderWidth: 2,
-                        padding: 20,
-                        borderRadius: 14,
-                        borderColor: 'var(--mantine-color-gray-7)',
+                        backgroundColor: 'transparent',
+                        borderWidth: 0,
+                        padding: 12,
                         itemMarginTop: 4,
                         itemMarginBottom: 4,
                         itemStyle: {
@@ -216,9 +210,8 @@ export const NodesStatisticBarchartWidget = (props: IProps) => {
                                     language: i18n.language
                                 })
                         },
-                        gridLineColor: 'var(--mantine-color-gray-light-hover)',
-                        gridLineWidth: 1,
-                        gridLineDashStyle: 'LongDash'
+                        gridLineColor: 'rgba(255, 255, 255, 0.05)',
+                        gridLineWidth: 1
                     },
                     yAxis: {
                         title: undefined,
@@ -335,9 +328,9 @@ export const NodesStatisticBarchartWidget = (props: IProps) => {
                             type: 'bar',
                             name: s.name,
                             data: s.data,
-                            color: alpha(s.color, 0.5),
-                            borderWidth: 1,
-                            borderColor: s.color,
+                            color: s.color,
+                            borderWidth: 2,
+                            borderColor: '#1B1218',
                             point: {
                                 events: {
                                     click: (event) => {

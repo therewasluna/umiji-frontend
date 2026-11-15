@@ -1,4 +1,4 @@
-import { Group, Text } from '@mantine/core'
+import { Badge } from '@mantine/core'
 import ReactCountryFlag from 'react-country-flag'
 
 import { IProps } from './interface'
@@ -6,28 +6,21 @@ import { IProps } from './interface'
 export function ConnectedNodeColumnEntity(props: IProps) {
     const { node } = props
 
+    if (!node) {
+        return null
+    }
+
     return (
-        <Group
-            align="center"
-            gap="sm"
-            style={{
-                flex: 1,
-                minWidth: 0
-            }}
-            wrap="nowrap"
+        <Badge
+            color="gray"
+            leftSection={
+                node.countryCode &&
+                node.countryCode !== 'XX' && <ReactCountryFlag countryCode={node.countryCode} />
+            }
+            tt="none"
+            variant="soft"
         >
-            {node?.countryCode && node.countryCode !== 'XX' && (
-                <ReactCountryFlag
-                    countryCode={node.countryCode}
-                    style={{
-                        fontSize: '1.1em',
-                        borderRadius: '2px'
-                    }}
-                />
-            )}
-            <Text ff="monospace" fw={500} size="md">
-                {node?.name || '–'}
-            </Text>
-        </Group>
+            {node.name}
+        </Badge>
     )
 }

@@ -1,0 +1,371 @@
+/* Hero: what is being installed, how far along, and the bar itself. */
+.hero {
+    --tone: var(--mantine-color-rose-5);
+    --tone-strong: var(--mantine-color-rose-7);
+    --tone-light: var(--mantine-color-rose-3);
+
+    position: relative;
+    overflow: hidden;
+    padding: var(--mantine-spacing-lg);
+    border: 1px solid var(--mantine-color-dark-4);
+    border-radius: var(--mantine-radius-lg);
+    background:
+        radial-gradient(
+            120% 140% at 100% 0%,
+            color-mix(in srgb, var(--tone) 16%, transparent),
+            transparent 60%
+        ),
+        var(--mantine-color-dark-7);
+    transition: background 400ms ease;
+}
+
+.hero[data-status='success'] {
+    --tone: var(--mantine-color-teal-5);
+    --tone-strong: var(--mantine-color-teal-7);
+    --tone-light: var(--mantine-color-teal-3);
+}
+
+.hero[data-status='failed'] {
+    --tone: var(--mantine-color-red-5);
+    --tone-strong: var(--mantine-color-red-8);
+    --tone-light: var(--mantine-color-red-4);
+}
+
+.target {
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    color: var(--mantine-color-dark-2);
+}
+
+.title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--mantine-color-white);
+}
+
+.clock {
+    font-variant-numeric: tabular-nums;
+}
+
+.percent {
+    flex: 0 0 auto;
+    font-size: 44px;
+    font-weight: 600;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    color: var(--mantine-color-white);
+}
+
+.percent span {
+    margin-inline-start: 2px;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--tone-light);
+}
+
+.track {
+    position: relative;
+    height: 10px;
+    margin-top: var(--mantine-spacing-md);
+    overflow: hidden;
+    border-radius: 999px;
+    background-color: var(--mantine-color-dark-8);
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.45);
+}
+
+.fill {
+    position: relative;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--tone-strong), var(--tone) 60%, var(--tone-light));
+    box-shadow: 0 0 14px color-mix(in srgb, var(--tone) 55%, transparent);
+    transition:
+        width 700ms cubic-bezier(0.22, 1, 0.36, 1),
+        background 400ms ease;
+}
+
+.hero[data-status='running'] .fill::after {
+    position: absolute;
+    inset: 0;
+    content: '';
+    background: linear-gradient(
+        100deg,
+        transparent 20%,
+        rgb(255 255 255 / 0.35) 50%,
+        transparent 80%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s linear infinite;
+}
+
+@keyframes shimmer {
+    from {
+        background-position: 150% 0;
+    }
+
+    to {
+        background-position: -50% 0;
+    }
+}
+
+/* Timeline of install steps. */
+.timeline {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.step {
+    --marker: 22px;
+
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-height: 40px;
+}
+
+/* Connector from this marker down to the next one. */
+.step:not(:last-child)::before {
+    position: absolute;
+    top: calc(var(--marker) + 4px);
+    bottom: 2px;
+    inset-inline-start: calc(var(--marker) / 2 - 1px);
+    width: 2px;
+    border-radius: 2px;
+    content: '';
+    background-color: var(--mantine-color-dark-5);
+    transition: background-color 300ms ease;
+}
+
+.step[data-status='done']:not(:last-child)::before {
+    background-color: color-mix(in srgb, var(--mantine-color-teal-5) 45%, transparent);
+}
+
+.marker {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: var(--marker);
+    height: var(--marker);
+    border: 2px solid var(--mantine-color-dark-4);
+    border-radius: 50%;
+    background-color: var(--mantine-color-dark-7);
+    color: var(--mantine-color-white);
+    transition:
+        background-color 250ms ease,
+        border-color 250ms ease;
+}
+
+.step[data-status='running'] .marker {
+    border-color: color-mix(in srgb, var(--mantine-color-rose-5) 25%, transparent);
+    border-top-color: var(--mantine-color-rose-4);
+    animation: spin 0.9s linear infinite;
+}
+
+.step[data-status='running'] .marker::after {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    content: '';
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--mantine-color-rose-5) 40%, transparent);
+    animation: halo 1.8s ease-out infinite;
+}
+
+.step[data-status='done'] .marker {
+    border-color: transparent;
+    background-color: var(--mantine-color-teal-7);
+    animation: pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.step[data-status='failed'] .marker {
+    border-color: transparent;
+    background-color: var(--mantine-color-red-7);
+    animation: pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes halo {
+    from {
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--mantine-color-rose-5) 35%, transparent);
+    }
+
+    to {
+        box-shadow: 0 0 0 8px color-mix(in srgb, var(--mantine-color-rose-5) 0%, transparent);
+    }
+}
+
+@keyframes pop {
+    from {
+        transform: scale(0.6);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+.stepBody {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-top: 1px;
+    padding-bottom: 10px;
+}
+
+.stepLabel {
+    font-size: var(--mantine-font-size-sm);
+    font-weight: 500;
+    line-height: 20px;
+    color: var(--mantine-color-dark-2);
+    transition: color 250ms ease;
+}
+
+.step[data-status='running'] .stepLabel,
+.step[data-status='done'] .stepLabel {
+    color: var(--mantine-color-white);
+}
+
+.step[data-status='failed'] .stepLabel {
+    color: var(--mantine-color-red-4);
+}
+
+.stepDetail {
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 11px;
+    color: var(--mantine-color-dark-2);
+}
+
+.stepTime {
+    flex: 0 0 auto;
+    padding-top: 2px;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--mantine-color-dark-2);
+}
+
+.step[data-status='running'] .stepTime {
+    color: var(--mantine-color-rose-3);
+}
+
+.errorMessage {
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 11px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Live output: the commands' own output, as a small terminal. */
+.output {
+    overflow: hidden;
+    border: 1px solid var(--mantine-color-dark-4);
+    border-radius: var(--mantine-radius-md);
+    background-color: var(--mantine-color-dark-8);
+}
+
+.outputHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    color: var(--mantine-color-dark-1);
+}
+
+.outputHeader:hover {
+    background-color: rgb(255 255 255 / 0.03);
+}
+
+.chevron {
+    margin-inline-start: auto;
+    transition: transform 200ms ease;
+}
+
+.output[data-open] .chevron {
+    transform: rotate(180deg);
+}
+
+.liveDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--mantine-color-dark-3);
+}
+
+.liveDot[data-status='running'] {
+    background-color: var(--mantine-color-rose-4);
+    box-shadow: 0 0 8px var(--mantine-color-rose-5);
+    animation: blink 1.4s ease-in-out infinite;
+}
+
+.liveDot[data-status='success'] {
+    background-color: var(--mantine-color-teal-5);
+}
+
+.liveDot[data-status='failed'] {
+    background-color: var(--mantine-color-red-5);
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0.35;
+    }
+}
+
+.outputBody {
+    max-height: 168px;
+    padding: 10px 12px 12px;
+    overflow: auto;
+    border-top: 1px solid var(--mantine-color-dark-5);
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--mantine-color-dark-1);
+    scrollbar-width: thin;
+}
+
+.outputLine {
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.outputEmpty {
+    color: var(--mantine-color-dark-3);
+}
+
+.caret {
+    display: inline-block;
+    width: 7px;
+    height: 13px;
+    vertical-align: -2px;
+    background-color: var(--mantine-color-rose-4);
+    animation: blink 1s steps(1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero[data-status='running'] .fill::after,
+    .step[data-status='running'] .marker::after,
+    .liveDot[data-status='running'],
+    .caret {
+        animation: none;
+    }
+
+    .step[data-status='running'] .marker {
+        animation-duration: 2.4s;
+    }
+
+    .fill {
+        transition: none;
+    }
+}

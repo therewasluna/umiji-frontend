@@ -23,7 +23,6 @@ import {
     TbFingerprint,
     TbNetwork,
     TbRadar,
-    TbRadar2,
     TbRefresh,
     TbSearch,
     TbServer,
@@ -262,7 +261,7 @@ export function SessionsExplorerWidget() {
                         )}
                     </Group>
                 }
-                icon={<TbRadar2 size={24} />}
+                description={t('page-descriptions.sessions-explorer')}
                 title={t('constants.sessions-explorer')}
             />
 

@@ -3,14 +3,14 @@ import { useForm } from '@mantine/form'
 import { BROKER_BOT_MAX_TOMAN } from '@umiji/backend-contract'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbUserDollar, TbWallet } from 'react-icons/tb'
+import { TbUserDollar } from 'react-icons/tb'
 
 import { useTopUpBrokerBotWallet } from '@shared/api/hooks'
 import { SettingsCardShared } from '@shared/ui/settings-card'
 import { formatTomanUtil } from '@shared/utils/brokers'
 
 /** Credit a customer's wallet by hand, e.g. after a payment outside the bot. */
-export function BotTopupCardWidget() {
+export function BotTopupCardWidget({ isConnected }: { isConnected: boolean }) {
     const { t } = useTranslation()
     const [done, setDone] = useState<null | string>(null)
 
@@ -53,47 +53,54 @@ export function BotTopupCardWidget() {
             <SettingsCardShared.Container>
                 <SettingsCardShared.Header
                     description={t('broker-bot.topup.description')}
-                    icon={<TbWallet size={24} />}
-                    iconColor="teal"
-                    iconVariant="soft"
                     title={t('broker-bot.topup.title')}
                 />
 
                 <SettingsCardShared.Content>
-                    <Group align="flex-start" grow>
-                        <TextInput
-                            inputMode="numeric"
-                            key={form.key('telegramId')}
-                            label={t('broker-bot.topup.telegram-id')}
-                            leftSection={<TbUserDollar size={16} />}
-                            placeholder="123456789"
-                            {...form.getInputProps('telegramId')}
-                        />
-                        <NumberInput
-                            allowDecimal={false}
-                            allowNegative={false}
-                            hideControls
-                            key={form.key('amount')}
-                            label={t('broker-bot.topup.amount')}
-                            placeholder="50,000"
-                            thousandSeparator=","
-                            {...form.getInputProps('amount')}
-                        />
-                    </Group>
-                    {done && (
-                        <Text c="teal" mt="sm" size="sm">
-                            {done}
+                    {isConnected ? (
+                        <>
+                            <Group align="flex-start" grow>
+                                <TextInput
+                                    inputMode="numeric"
+                                    key={form.key('telegramId')}
+                                    label={t('broker-bot.topup.telegram-id')}
+                                    leftSection={<TbUserDollar size={16} />}
+                                    placeholder="123456789"
+                                    {...form.getInputProps('telegramId')}
+                                />
+                                <NumberInput
+                                    allowDecimal={false}
+                                    allowNegative={false}
+                                    hideControls
+                                    key={form.key('amount')}
+                                    label={t('broker-bot.topup.amount')}
+                                    placeholder="50,000"
+                                    thousandSeparator=","
+                                    {...form.getInputProps('amount')}
+                                />
+                            </Group>
+                            {done && (
+                                <Text c="teal" mt="sm" size="sm">
+                                    {done}
+                                </Text>
+                            )}
+                        </>
+                    ) : (
+                        <Text c="dimmed" size="sm">
+                            {t('broker-bot.connect-first')}
                         </Text>
                     )}
                 </SettingsCardShared.Content>
 
-                <SettingsCardShared.Bottom>
-                    <Group justify="flex-end" mt="md">
-                        <Button color="teal" loading={isPending} type="submit" variant="soft">
-                            {t('broker-bot.topup.submit')}
-                        </Button>
-                    </Group>
-                </SettingsCardShared.Bottom>
+                {isConnected && (
+                    <SettingsCardShared.Bottom>
+                        <Group justify="flex-end" mt="md">
+                            <Button color="teal" loading={isPending} type="submit" variant="soft">
+                                {t('broker-bot.topup.submit')}
+                            </Button>
+                        </Group>
+                    </SettingsCardShared.Bottom>
+                )}
             </SettingsCardShared.Container>
         </form>
     )

@@ -2,7 +2,12 @@
     position: relative;
     display: flex;
     gap: 6px;
-    background: #1b1f26;
+    min-height: 64px;
+    padding-block: 14px;
+    padding-inline: 16px;
+    background: var(--mantine-color-dark-7);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
     transition:
         border-color 150ms ease,
         background-color 150ms ease;
@@ -27,7 +32,6 @@
 
 .card[data-layout='row'] .title {
     flex: 1;
-    margin-right: 0;
 }
 
 .card[data-layout='row'] .meta {
@@ -36,11 +40,11 @@
 
 .card[data-layout='row'] .actions {
     flex: none;
-    margin-right: 28px;
+    margin-inline-end: 28px;
 }
 
 [data-drag-handle='hidden'] .card[data-layout='row'] .actions {
-    margin-right: 0;
+    margin-inline-end: 0;
 }
 
 .card[data-clickable] {
@@ -48,26 +52,13 @@
 }
 
 .card[data-clickable]:focus-visible {
-    outline: 2px solid var(--mantine-color-cyan-outline);
+    outline: 2px solid var(--mantine-color-rose-4);
     outline-offset: -2px;
 }
 
 .card:hover {
-    background-color: var(--mantine-color-gray-outline-hover);
-}
-
-.rail {
-    position: absolute;
-    top: 8px;
-    bottom: 8px;
-    left: 0;
-    width: 2px;
-    border-radius: 0 2px 2px 0;
-    background: var(--mantine-color-cyan-5);
-}
-
-.railInactive {
-    background: var(--mantine-color-dark-4);
+    border-color: var(--mantine-color-dark-5);
+    background-color: var(--mantine-color-dark-6);
 }
 
 .icon {
@@ -86,9 +77,15 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    color: var(--mantine-color-bright);
+    color: var(--mantine-color-dark-1);
     font-size: var(--mantine-font-size-md);
+    font-weight: 500;
     line-height: 22px;
+}
+
+.card[data-active] .title {
+    color: var(--mantine-color-bright);
+    font-weight: 600;
 }
 
 .meta {
@@ -98,6 +95,16 @@
     height: 26px;
     min-width: 0;
     overflow: hidden;
+}
+
+/* Counts read as quiet text with their icon; a coloured count (teal) still marks an item in use. */
+.meta :global(.mantine-Badge-root) {
+    background: transparent;
+    border: 0;
+    padding-inline: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
 }
 
 .tags {
@@ -115,9 +122,7 @@
 .subtitle {
     overflow: hidden;
     color: var(--mantine-color-dimmed);
-    font-size: 10px;
-    letter-spacing: 1.4px;
-    text-transform: uppercase;
+    font-size: 12px;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
@@ -138,5 +143,70 @@
 
     .card[data-layout='row'] .tags {
         max-width: 100%;
+    }
+
+    /* Counts wrap onto a second line instead of running past the card edge. */
+    .card[data-layout='row'] .meta {
+        flex: 1 1 100%;
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 26px;
+    }
+}
+
+/* Inside a grid that is at least 560px wide, cards become tiles: the icon on top, the name under it,
+   counts and tags on one line, and the menu and drag handle in the top corner. */
+@container (min-width: 560px) {
+    :global([data-tiles]) .card[data-layout] {
+        flex-direction: column;
+        align-items: stretch;
+        height: 132px;
+        padding: 16px 18px;
+    }
+
+    :global([data-tiles]) .card[data-layout] .header {
+        flex: 1;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        width: 100%;
+    }
+
+    :global([data-tiles]) .card[data-layout] .icon {
+        width: 40px;
+        min-width: 40px;
+        height: 40px;
+        min-height: 40px;
+        border-radius: 12px;
+        background: var(--mantine-color-dark-6);
+    }
+
+    :global([data-tiles]) .card[data-active] .icon {
+        background: color-mix(in srgb, var(--mantine-color-rose-8) 16%, transparent);
+    }
+
+    :global([data-tiles]) .card[data-layout] .content {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        column-gap: 10px;
+        row-gap: 2px;
+        width: 100%;
+    }
+
+    :global([data-tiles]) .card[data-layout] .title {
+        flex: 1 0 100%;
+        font-size: var(--mantine-font-size-lg);
+    }
+
+    :global([data-tiles]) .card[data-layout] .actions {
+        position: absolute;
+        top: 14px;
+        inset-inline-end: 42px;
+        margin: 0;
+    }
+
+    :global([data-tiles]) [data-drag-handle='hidden'] .card[data-layout] .actions {
+        inset-inline-end: 12px;
     }
 }

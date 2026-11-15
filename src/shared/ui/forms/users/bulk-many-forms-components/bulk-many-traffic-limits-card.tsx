@@ -29,10 +29,8 @@ export const BulkTrafficLimitsCard = (props: IProps) => {
             <SectionCard.Root>
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="violet"
                         IconComponent={TbChartLine}
                         iconSize={20}
-                        iconVariant="soft"
                         title={t('traffic-limits-card.traffic-and-limits')}
                         titleOrder={5}
                     />

@@ -1,41 +1,10 @@
+import type { ComponentType } from 'react'
+
 import { LoginPage } from '@pages/auth/login'
 import { Oauth2CallbackPage } from '@pages/auth/oauth2-callback/oauth2-callback.page'
-import { BrokerBroadcastPage } from '@pages/dashboard/broker-broadcast'
-import { BrokerInternalSquadsPage } from '@pages/dashboard/broker/internal-squads'
-import { BrokerOverviewPage } from '@pages/dashboard/broker/overview'
-import { BrokerSubscriptionSettingsPage } from '@pages/dashboard/broker/subscription-settings'
-import { BrokerTelegramBotPage } from '@pages/dashboard/broker/telegram-bot'
-import { BrokerTelegramOrdersPage } from '@pages/dashboard/broker/telegram-orders'
-import { BrokersPageConnector } from '@pages/dashboard/brokers/connectors'
-import { ConfigProfilesPageConnector } from '@pages/dashboard/config-profiles/connectors'
-import { ConfigProfileByUuidPageConnector } from '@pages/dashboard/config-profiles/connectors/config-profile-by-uuid.page.connector'
-import { InfraBillingPageConnector } from '@pages/dashboard/crm/infra-billing/connectors/infra-billing.page.connector'
-import { ExternalSquadsPageConnector } from '@pages/dashboard/external-squads/connectors'
-import { HomePageConnector } from '@pages/dashboard/home/connectors'
-import { HostsPageConnector } from '@pages/dashboard/hosts/ui/connectors'
-import { HttpStatsPageConnector } from '@pages/dashboard/http-stats/ui/connectors/http-stats.page.connector'
-import { HwidInspectorPageConnector } from '@pages/dashboard/hwid-inspector/ui/connectors'
-import { InternalSquadsPageConnector } from '@pages/dashboard/internal-squads/connectors/internal-squads.page.connector'
-import { NodePluginEditorPageConnector } from '@pages/dashboard/node-plugins/ui/connectors/node-plugin-editor-page.connector'
-import { NodePluginsBasePageConnector } from '@pages/dashboard/node-plugins/ui/connectors/node-plugins-base-page.connector'
-import { NodesMetricsPageConnector } from '@pages/dashboard/nodes-metrics/ui/connectors'
-import { NodesPageConnector } from '@pages/dashboard/nodes/ui/connectors'
-import { OpenEntityPage } from '@pages/dashboard/open-entity'
-import { QuickOpenPage } from '@pages/dashboard/quick-open'
-import { UmijiSettingsConnector } from '@pages/dashboard/umiji-settings/connectors'
-import { ResponseRulesPageConnector } from '@pages/dashboard/response-rules/connectors/response-rules.page.connector'
-import { SessionsExplorerPageConnector } from '@pages/dashboard/sessions-explorer/ui/connectors/sessions-explorer.page.connector'
-import { SrhInspectorPageConnector } from '@pages/dashboard/srh-inspector/ui/connectors'
-import { StatisticNodesConnector } from '@pages/dashboard/statistic-nodes/connectors'
-import { SubpageConfigBasePageConnector } from '@pages/dashboard/subpage-config/ui/connectors/subpage-config-base-page.connector'
-import { SubpageConfigEditorPageConnector } from '@pages/dashboard/subpage-config/ui/connectors/subpage-config-editor-page.connector'
-import { SubscriptionSettingsConnector } from '@pages/dashboard/subscription-settings/connectors'
-import { TemplateBasePageConnector } from '@pages/dashboard/templates/ui/connectors/template-base-page.connector'
-import { TemplateEditorPageConnector } from '@pages/dashboard/templates/ui/connectors/template-editor-page.connector'
-import { TorrentBlockerReportsPageConnector } from '@pages/dashboard/torrent-blocker-reports/ui/connectors'
-import { UsersPageConnector } from '@pages/dashboard/users/ui/connectors'
 import { NotFoundPageComponent } from '@pages/errors/4xx-error'
 import { ErrorPageComponent } from '@pages/errors/5xx-error'
+import { SUBSCRIPTION_TEMPLATE_TYPE } from '@umiji/backend-contract'
 import {
     createBrowserRouter,
     createRoutesFromElements,
@@ -49,7 +18,10 @@ import { AuthGuard } from '@shared/hocs/guards/auth-guard'
 
 import { ROUTES } from '../../shared/constants'
 import { AuthLayout } from '../layouts/auth'
-import { MainLayout } from '../layouts/dashboard/main-layout/layout'
+
+const lazyPage = (load: () => Promise<ComponentType>) => async () => ({
+    Component: await load()
+})
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -64,10 +36,27 @@ const router = createBrowserRouter(
                     <Route element={<LoginPage />} path={ROUTES.AUTH.LOGIN} />
                 </Route>
 
-                <Route element={<MainLayout />} path={ROUTES.DASHBOARD.ROOT}>
+                <Route
+                    lazy={lazyPage(() =>
+                        import('../layouts/dashboard/main-layout/layout').then((m) => m.MainLayout)
+                    )}
+                    path={ROUTES.DASHBOARD.ROOT}
+                >
                     <Route element={<Navigate replace to={ROUTES.DASHBOARD.HOME} />} index />
-                    <Route element={<HomePageConnector />} path={ROUTES.DASHBOARD.HOME} />
-                    <Route element={<OpenEntityPage />} path={ROUTES.DASHBOARD.OPEN_ENTITY} />
+                    <Route
+                        lazy={lazyPage(() =>
+                            import('@pages/dashboard/home/connectors').then(
+                                (m) => m.HomePageConnector
+                            )
+                        )}
+                        path={ROUTES.DASHBOARD.HOME}
+                    />
+                    <Route
+                        lazy={lazyPage(() =>
+                            import('@pages/dashboard/open-entity').then((m) => m.OpenEntityPage)
+                        )}
+                        path={ROUTES.DASHBOARD.OPEN_ENTITY}
+                    />
 
                     <Route path={ROUTES.DASHBOARD.MANAGEMENT.ROOT}>
                         <Route
@@ -75,69 +64,136 @@ const router = createBrowserRouter(
                             index
                         />
                         <Route
-                            element={<UsersPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/users/ui/connectors').then(
+                                    (m) => m.UsersPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.USERS}
                         />
                         <Route
-                            element={<HostsPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/hosts/ui/connectors').then(
+                                    (m) => m.HostsPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.HOSTS}
                         />
                         <Route
-                            element={<NodesPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/nodes/ui/connectors').then(
+                                    (m) => m.NodesPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.NODES}
                         />
                         <Route
-                            element={<StatisticNodesConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/statistic-nodes/connectors').then(
+                                    (m) => m.StatisticNodesConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.NODES_STATS}
                         />
                         <Route
-                            element={<SubscriptionSettingsConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/subscription-settings/connectors').then(
+                                    (m) => m.SubscriptionSettingsConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.SUBSCRIPTION_SETTINGS}
                         />
                         <Route
-                            element={<ConfigProfilesPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/config-profiles/connectors').then(
+                                    (m) => m.ConfigProfilesPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.CONFIG_PROFILES}
                         />
                         <Route
-                            element={<ConfigProfileByUuidPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/config-profiles/connectors/config-profile-by-uuid.page.connector').then(
+                                    (m) => m.ConfigProfileByUuidPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.CONFIG_PROFILE_BY_UUID}
                         />
                         <Route
-                            element={<InternalSquadsPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/internal-squads/connectors').then(
+                                    (m) => m.InternalSquadsPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.INTERNAL_SQUADS}
                         />
                         <Route
-                            element={<ExternalSquadsPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/external-squads/connectors').then(
+                                    (m) => m.ExternalSquadsPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.EXTERNAL_SQUADS}
                         />
                         <Route
-                            element={<BrokersPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/brokers/connectors').then(
+                                    (m) => m.BrokersPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.BROKERS}
                         />
                         <Route
-                            element={<BrokerBroadcastPage />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/broker-broadcast').then(
+                                    (m) => m.BrokerBroadcastPage
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.BROKER_BROADCAST}
                         />
 
                         <Route
-                            element={<NodesMetricsPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/nodes-metrics/ui/connectors').then(
+                                    (m) => m.NodesMetricsPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.NODES_METRICS}
                         />
                         <Route
-                            element={<ResponseRulesPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/response-rules/connectors/response-rules.page.connector').then(
+                                    (m) => m.ResponseRulesPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.RESPONSE_RULES}
                         />
 
                         <Route
-                            element={<UmijiSettingsConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/umiji-settings/connectors').then(
+                                    (m) => m.UmijiSettingsConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.MANAGEMENT.UMIJI_SETTINGS}
                         />
 
                         <Route path={ROUTES.DASHBOARD.MANAGEMENT.NODE_PLUGINS.ROOT}>
-                            <Route element={<NodePluginsBasePageConnector />} index />
+                            <Route
+                                lazy={lazyPage(() =>
+                                    import('@pages/dashboard/node-plugins/ui/connectors/node-plugins-base-page.connector').then(
+                                        (m) => m.NodePluginsBasePageConnector
+                                    )
+                                )}
+                                index
+                            />
 
                             <Route
-                                element={<NodePluginEditorPageConnector />}
+                                lazy={lazyPage(() =>
+                                    import('@pages/dashboard/node-plugins/ui/connectors/node-plugin-editor-page.connector').then(
+                                        (m) => m.NodePluginEditorPageConnector
+                                    )
+                                )}
                                 path={ROUTES.DASHBOARD.MANAGEMENT.NODE_PLUGINS.NODE_PLUGIN_BY_UUID}
                             />
                         </Route>
@@ -145,56 +201,113 @@ const router = createBrowserRouter(
 
                     <Route path={ROUTES.DASHBOARD.TOOLS.ROOT}>
                         <Route
-                            element={<HwidInspectorPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/hwid-inspector/ui/connectors').then(
+                                    (m) => m.HwidInspectorPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.TOOLS.HWID_INSPECTOR}
                         />
                         <Route
-                            element={<SrhInspectorPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/srh-inspector/ui/connectors').then(
+                                    (m) => m.SrhInspectorPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.TOOLS.SRH_INSPECTOR}
                         />
 
                         <Route
-                            element={<TorrentBlockerReportsPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/torrent-blocker-reports/ui/connectors').then(
+                                    (m) => m.TorrentBlockerReportsPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.TOOLS.TORRENT_BLOCKER_REPORTS}
                         />
                         <Route
-                            element={<SessionsExplorerPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/sessions-explorer/ui/connectors').then(
+                                    (m) => m.SessionsExplorerPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.TOOLS.SESSIONS_EXPLORER}
                         />
                         <Route
-                            element={<HttpStatsPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/http-stats/ui/connectors/http-stats.page.connector').then(
+                                    (m) => m.HttpStatsPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.TOOLS.HTTP_STATS}
                         />
                         <Route
-                            element={<QuickOpenPage />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/quick-open').then((m) => m.QuickOpenPage)
+                            )}
                             path={ROUTES.DASHBOARD.TOOLS.QUICK_OPEN}
                         />
                     </Route>
 
                     <Route path={ROUTES.DASHBOARD.TEMPLATES.ROOT}>
                         <Route
-                            element={<TemplateBasePageConnector />}
+                            element={
+                                <Navigate
+                                    replace
+                                    to={ROUTES.DASHBOARD.TEMPLATES.TEMPLATES_BY_TYPE.replace(
+                                        ':type',
+                                        SUBSCRIPTION_TEMPLATE_TYPE.XRAY_JSON
+                                    )}
+                                />
+                            }
+                            index
+                        />
+                        <Route
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/templates/ui/connectors/template-base-page.connector').then(
+                                    (m) => m.TemplateBasePageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.TEMPLATES.TEMPLATES_BY_TYPE}
                         />
 
                         <Route
-                            element={<TemplateEditorPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/templates/ui/connectors/template-editor-page.connector').then(
+                                    (m) => m.TemplateEditorPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.TEMPLATES.TEMPLATE_EDITOR}
                         />
                     </Route>
 
                     <Route path={ROUTES.DASHBOARD.SUBPAGE_CONFIGS.ROOT}>
-                        <Route element={<SubpageConfigBasePageConnector />} index />
+                        <Route
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/subpage-config/ui/connectors/subpage-config-base-page.connector').then(
+                                    (m) => m.SubpageConfigBasePageConnector
+                                )
+                            )}
+                            index
+                        />
 
                         <Route
-                            element={<SubpageConfigEditorPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/subpage-config/ui/connectors/subpage-config-editor-page.connector').then(
+                                    (m) => m.SubpageConfigEditorPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.SUBPAGE_CONFIGS.SUBPAGE_CONFIG_BY_UUID}
                         />
                     </Route>
 
                     <Route path={ROUTES.DASHBOARD.CRM.ROOT}>
                         <Route
-                            element={<InfraBillingPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/crm/infra-billing/connectors/infra-billing.page.connector').then(
+                                    (m) => m.InfraBillingPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.CRM.INFRA_BILLING}
                         />
                     </Route>
@@ -205,28 +318,68 @@ const router = createBrowserRouter(
                             index
                         />
                         <Route
-                            element={<BrokerOverviewPage />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/broker/overview').then(
+                                    (m) => m.BrokerOverviewPage
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.BROKER.OVERVIEW}
                         />
                         <Route
-                            element={<BrokerInternalSquadsPage />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/broker/internal-squads').then(
+                                    (m) => m.BrokerInternalSquadsPage
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.BROKER.INTERNAL_SQUADS}
                         />
                         <Route
-                            element={<SubpageConfigEditorPageConnector />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/subpage-config/ui/connectors/subpage-config-editor-page.connector').then(
+                                    (m) => m.SubpageConfigEditorPageConnector
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.BROKER.SUBSCRIPTION_PAGE}
                         />
                         <Route
-                            element={<BrokerSubscriptionSettingsPage />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/broker/subscription-settings').then(
+                                    (m) => m.BrokerSubscriptionSettingsPage
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.BROKER.SUBSCRIPTION_SETTINGS}
                         />
                         <Route
-                            element={<BrokerTelegramBotPage />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/broker/telegram-bot').then(
+                                    (m) => m.BrokerTelegramBotPage
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.BROKER.TELEGRAM_BOT}
                         />
                         <Route
-                            element={<BrokerTelegramOrdersPage />}
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/broker/telegram-texts').then(
+                                    (m) => m.BrokerTelegramTextsPage
+                                )
+                            )}
+                            path={ROUTES.DASHBOARD.BROKER.TELEGRAM_TEXTS}
+                        />
+                        <Route
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/broker/telegram-orders').then(
+                                    (m) => m.BrokerTelegramOrdersPage
+                                )
+                            )}
                             path={ROUTES.DASHBOARD.BROKER.TELEGRAM_ORDERS}
+                        />
+                        <Route
+                            lazy={lazyPage(() =>
+                                import('@pages/dashboard/broker/telegram-stats').then(
+                                    (m) => m.BrokerTelegramStatsPage
+                                )
+                            )}
+                            path={ROUTES.DASHBOARD.BROKER.TELEGRAM_STATS}
                         />
                     </Route>
                 </Route>

@@ -1,0 +1,21 @@
+.swatchCard {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+    transition: border-color 140ms ease;
+}
+
+.swatchCard:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.swatchCard[data-checked] {
+    border-color: var(--swatch);
+}
+
+.check {
+    opacity: 0;
+}
+
+.swatchCard[data-checked] .check {
+    opacity: 1;
+}

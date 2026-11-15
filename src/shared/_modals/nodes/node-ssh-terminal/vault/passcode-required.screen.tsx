@@ -18,9 +18,7 @@ export const PasscodeRequiredScreen = (props: IProps) => {
         <SectionCard.Root maw={450} mx="auto" w="100%">
             <SectionCard.Section>
                 <BaseOverlayHeader
-                    iconColor="blue"
                     IconComponent={TbLock}
-                    iconVariant="soft"
                     subtitle={t('node-ssh.passcode-required-description')}
                     title={t('node-ssh.passcode-title')}
                     titleOrder={5}

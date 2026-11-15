@@ -13,6 +13,7 @@ import { useNiceMantineModal } from '@shared/_modals/use-nice-modal'
 import { queryClient } from '@shared/api'
 import { QueryKeys, useCreateInfraBillingHistoryRecord } from '@shared/api/hooks'
 import { SelectInfraProviderShared } from '@shared/ui/infra-billing/select-infra-provider/select-infra-provider.shared'
+import { ModalFooter } from '@shared/ui/modal-footer'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { handleFormErrors } from '@shared/utils/misc'
 import { toUtcDayISO } from '@shared/utils/time-utils'
@@ -92,9 +93,7 @@ export const CreateInfraBillingRecordModal = NiceModal.create(() => {
             size="md"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbInvoice}
-                    iconVariant="soft"
                     title={t('create-infra-billing-record.modal.widget.bill-record')}
                 />
             }
@@ -145,15 +144,20 @@ export const CreateInfraBillingRecordModal = NiceModal.create(() => {
                         thousandSeparator=","
                         {...form.getInputProps('amount')}
                     />
-
+                </Stack>
+                <ModalFooter>
+                    <Button color="gray" onClick={hide} variant="soft">
+                        {t('common.action.cancel')}
+                    </Button>
                     <Button
+                        color="teal"
                         loading={isCreateInfraBillingRecordPending}
                         type="submit"
                         variant="soft"
                     >
                         {t('common.action.create')}
                     </Button>
-                </Stack>
+                </ModalFooter>
             </form>
         </Modal>
     )

@@ -105,9 +105,7 @@ export function MobileProvidersListWidget(props: IProps) {
                                         src={faviconResolver(provider.faviconLink)}
                                     />
                                 }
-                                iconColor="violet"
                                 IconComponent={TbCloud}
-                                iconVariant="soft"
                                 title={provider.name}
                                 truncateTitle
                             />

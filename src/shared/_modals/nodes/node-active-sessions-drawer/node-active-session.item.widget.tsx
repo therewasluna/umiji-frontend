@@ -60,9 +60,7 @@ export const NodeActiveSessionItem = (props: IProps) => {
                                 </ActionIcon>
                             </Tooltip>
                         }
-                        iconColor="blue"
                         IconComponent={TbId}
-                        iconVariant="soft"
                         title={user.userId.toString()}
                     />
 

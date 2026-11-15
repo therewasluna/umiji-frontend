@@ -71,7 +71,7 @@ export function BrokersListWidget(props: IProps) {
         return (
             <Center py={80}>
                 <Stack align="center" gap="sm" maw={420}>
-                    <ThemeIcon color="teal" radius="xl" size={64} variant="soft">
+                    <ThemeIcon color="gray" radius="xl" size={64} variant="soft">
                         <PiHandshake size={32} />
                     </ThemeIcon>
                     <Text fw={600} size="lg">

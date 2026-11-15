@@ -29,9 +29,7 @@ export const SnippetsModal = NiceModal.create(() => {
         modals.open({
             title: (
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbCode}
-                    iconVariant="soft"
                     title={t('snippets.drawer.widget.create-snippet')}
                 />
             ),
@@ -50,9 +48,7 @@ export const SnippetsModal = NiceModal.create(() => {
             size="min(760px, 95vw)"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbCode}
-                    iconVariant="soft"
                     title={t('snippets.drawer.widget.snippets')}
                 />
             }

@@ -41,7 +41,7 @@ export function BrokerCardWidget(props: IProps) {
                 </EntityCardShared.Icon>
                 <EntityCardShared.Content
                     badges={
-                        <Group gap="xs" wrap="nowrap">
+                        <Group gap="xs" style={{ rowGap: 2 }}>
                             <Badge color={BROKER_STATE_COLOR[state]} size="lg" variant="soft">
                                 {t(`brokers.status-${state}`)}
                             </Badge>

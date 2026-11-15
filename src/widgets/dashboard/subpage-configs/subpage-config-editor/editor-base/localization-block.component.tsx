@@ -1,17 +1,15 @@
-import { Badge, Card, Divider, Group, ScrollArea, SimpleGrid, Stack } from '@mantine/core'
+import { Badge, Box, ScrollArea, SimpleGrid } from '@mantine/core'
 import { UseFormReturnType } from '@mantine/form'
 import {
     getLanguagesArray,
     TSubscriptionPageLanguageCode,
     TSubscriptionPageRawConfig
 } from '@umiji/subscription-page-types'
-import { IconGlobe } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 
-import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
+import { SettingsCardShared } from '@shared/ui/settings-card'
 
 import { LocaleCard } from '../editor-components/locale-card.component'
-import styles from '../subpage-config-visual-editor.module.css'
 
 const ALL_LANGUAGES = getLanguagesArray()
 
@@ -37,28 +35,26 @@ export function LocalizationBlockComponent({ form }: IProps) {
     }
 
     return (
-        <Card className={styles.sectionCard} p="lg" radius="lg">
-            <Stack gap="md" h="100%">
-                <Group gap="sm" justify="space-between">
-                    <BaseOverlayHeader
-                        iconColor="teal"
-                        IconComponent={IconGlobe}
-                        iconSize={20}
-                        iconVariant="soft"
-                        subtitle={t('subpage-config-visual-editor.widget.additional-languages')}
-                        title={t('subpage-config-visual-editor.widget.localization')}
-                        titleOrder={5}
-                    />
-
-                    <Badge color="teal" size="sm" variant="light">
+        <SettingsCardShared.Container>
+            <SettingsCardShared.Header
+                actions={
+                    <Badge color="gray" size="lg" variant="soft">
                         {t('localization-block.active', { count: locales.length })}
                     </Badge>
-                </Group>
+                }
+                description={t('subpage-config-visual-editor.widget.additional-languages')}
+                title={t('subpage-config-visual-editor.widget.localization')}
+            />
 
-                <Divider className={styles.divider} />
-
-                <ScrollArea.Autosize mah={200} type="always">
-                    <SimpleGrid cols={{ base: 1, md: 2 }} ml="md" mr="md" spacing="xs">
+            {/* Fills the height the grid row gives the card (the Branding card beside it sets it),
+                so the list scrolls only when it really doesn't fit. Alone in a column it keeps 232px. */}
+            <Box mih={232} mt="xs" pos="relative" style={{ flex: 1 }}>
+                <ScrollArea
+                    offsetScrollbars
+                    style={{ position: 'absolute', inset: 0 }}
+                    type="hover"
+                >
+                    <SimpleGrid cols={{ base: 2, xl: 3 }} spacing="xs" verticalSpacing="xs">
                         {ALL_LANGUAGES.map((lang) => {
                             const isActive = locales.includes(lang.code)
                             return (
@@ -72,8 +68,8 @@ export function LocalizationBlockComponent({ form }: IProps) {
                             )
                         })}
                     </SimpleGrid>
-                </ScrollArea.Autosize>
-            </Stack>
-        </Card>
+                </ScrollArea>
+            </Box>
+        </SettingsCardShared.Container>
     )
 }

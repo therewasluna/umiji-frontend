@@ -61,7 +61,6 @@ export function NodePluginsEditorActionsFeature(props: Props) {
     const openSyncChoiceModal = () => {
         openApplyToNodesModal({
             IconComponent: TbPackage,
-            iconColor: 'grape',
             onApply: () => syncNodePlugin({ variables: { uuid: pluginUuid } })
         })
     }
@@ -212,7 +211,7 @@ export function NodePluginsEditorActionsFeature(props: Props) {
                     onClose={() => handlers.close()}
                     onOpen={() => handlers.open()}
                     shadow="md"
-                    trigger="click-hover"
+                    trigger="click"
                     withinPortal
                 >
                     <Menu.Target>

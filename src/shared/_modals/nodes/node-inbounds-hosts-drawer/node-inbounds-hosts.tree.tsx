@@ -8,11 +8,7 @@ import {
     TreeNodeData,
     useTree
 } from '@mantine/core'
-import {
-    GetConfigProfilesCommand,
-    GetHostsCommand,
-    GetNodesCommand
-} from '@umiji/backend-contract'
+import { GetConfigProfilesCommand, GetHostsCommand, GetNodesCommand } from '@umiji/backend-contract'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PiListChecks, PiTag } from 'react-icons/pi'

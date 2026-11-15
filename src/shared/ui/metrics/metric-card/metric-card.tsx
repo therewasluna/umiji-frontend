@@ -1,4 +1,4 @@
-import { Card, Group, Stack, Text, ThemeIcon, ThemeIconProps } from '@mantine/core'
+import { Card, Group, Text, ThemeIconProps } from '@mantine/core'
 import { ReactNode } from 'react'
 
 import { ShimmerSkeleton } from '@shared/ui/shimmer-skeleton'
@@ -6,6 +6,7 @@ import { formatInt } from '@shared/utils/misc'
 
 import classes from './metric-card.module.css'
 
+// The icon* fields are still accepted from callers; the icon now renders as a small neutral glyph.
 export interface IMetricCardProps {
     iconColor?: ThemeIconProps['color']
     IconComponent: React.ComponentType<{ size: number }>
@@ -20,48 +21,26 @@ export interface IMetricCardProps {
 }
 
 export function MetricCardShared(props: IMetricCardProps) {
-    const {
-        iconColor,
-        themeIconProps,
-        IconComponent,
-        iconSize = 24,
-        iconVariant,
-        isLoading,
-        title,
-        value,
-        subtitle,
-        rollingNumberComponent
-    } = props
+    const { IconComponent, isLoading, title, value, subtitle, rollingNumberComponent } = props
 
     return (
-        <Card>
-            <Group gap="md" wrap="nowrap">
-                <ThemeIcon
-                    color={iconColor}
-                    radius="lg"
-                    size="xl"
-                    variant={iconVariant}
-                    {...themeIconProps}
-                >
-                    <IconComponent size={iconSize} />
-                </ThemeIcon>
-
-                <Stack gap={0} miw={0}>
-                    <Text className={classes.title} truncate="end">
-                        {title}
-                    </Text>
-                    {isLoading ? (
-                        <ShimmerSkeleton height={24} width={80} />
-                    ) : (
-                        (rollingNumberComponent ?? (
-                            <Text className={classes.value} truncate="end">
-                                {typeof value === 'number' ? formatInt(value) : value}
-                            </Text>
-                        ))
-                    )}
-                    {subtitle && <Text className={classes.subtitle}>{subtitle}</Text>}
-                </Stack>
+        <Card className={classes.card} padding="lg">
+            <Group className={classes.head} gap={8} wrap="nowrap">
+                <IconComponent size={16} />
+                <Text className={classes.title} truncate="end">
+                    {title}
+                </Text>
             </Group>
+            {isLoading ? (
+                <ShimmerSkeleton height={30} width={80} />
+            ) : (
+                (rollingNumberComponent ?? (
+                    <Text className={classes.value} truncate="end">
+                        {typeof value === 'number' ? formatInt(value) : value}
+                    </Text>
+                ))
+            )}
+            {subtitle && <Text className={classes.subtitle}>{subtitle}</Text>}
         </Card>
     )
 }

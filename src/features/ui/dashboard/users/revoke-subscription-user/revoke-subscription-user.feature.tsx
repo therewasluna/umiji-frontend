@@ -74,9 +74,7 @@ export function RevokeSubscriptionUserFeature(props: IProps) {
         modals.open({
             title: (
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={PiKeyDuotone}
-                    iconVariant="soft"
                     title={t('revoke-subscription-user.feature.revoke')}
                 />
             ),

@@ -40,7 +40,7 @@ export const ProgressWidget = ({ completed, percent, total }: IProps) => {
                         >
                             <Progress.Section
                                 animated
-                                color="teal"
+                                color="rose"
                                 style={{
                                     transition: 'width 400ms ease'
                                 }}

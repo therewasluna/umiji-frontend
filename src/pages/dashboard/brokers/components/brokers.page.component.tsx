@@ -3,7 +3,6 @@ import { GetBrokersCommand } from '@umiji/backend-contract'
 import { BrokersListWidget } from '@widgets/dashboard/brokers/brokers-list/brokers-list.widget'
 import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
-import { PiHandshake } from 'react-icons/pi'
 
 import { Page } from '@shared/ui/page'
 import { PageHeaderShared } from '@shared/ui/page-header/page-header.shared'
@@ -21,7 +20,6 @@ export const BrokersPageComponent = (props: IProps) => {
             <PageHeaderShared
                 actions={<BrokersHeaderActionButtonsFeature />}
                 description={t('brokers.page-description')}
-                icon={<PiHandshake size={24} />}
                 title={t('constants.brokers')}
             />
 

@@ -30,7 +30,7 @@ export const NodesStatisticSparklineCardWidget = (props: IProps) => {
         <Card p="md" withBorder>
             <Stack gap="md">
                 <Box>
-                    <Text c="dimmed" fw={500} mb={4} size="xs" tt="uppercase">
+                    <Text c="dimmed" mb={4} size="sm">
                         {t('statistic-nodes.component.total-traffic')}
                     </Text>
                     {isLoading ? (
@@ -76,14 +76,10 @@ export const NodesStatisticSparklineCardWidget = (props: IProps) => {
                         <Sparkline
                             curveType="bump"
                             data={isDataAvailable ? sparklineData : [1, 1, 1]}
-                            fillOpacity={0.3}
+                            color="rose.5"
+                            fillOpacity={0.12}
                             h={100}
                             strokeWidth={2}
-                            trendColors={{
-                                negative: 'red.6',
-                                neutral: 'gray.5',
-                                positive: 'teal.6'
-                            }}
                             w="100%"
                         />
                     )}

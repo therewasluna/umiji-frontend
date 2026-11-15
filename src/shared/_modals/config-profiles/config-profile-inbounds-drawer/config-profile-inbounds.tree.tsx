@@ -11,18 +11,15 @@ import {
     TreeNodeData
 } from '@mantine/core'
 import { modals } from '@mantine/modals'
-import {
-    GetInboundsByProfileUuidCommand,
-    GetInternalSquadsCommand
-} from '@umiji/backend-contract'
-import ColorHash from 'color-hash'
-import { githubDarkTheme, JsonEditor } from 'json-edit-react'
+import { GetInboundsByProfileUuidCommand, GetInternalSquadsCommand } from '@umiji/backend-contract'
+import { JsonEditor } from 'json-edit-react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PiCheck, PiCopy, PiTag, PiUsers } from 'react-icons/pi'
 import { TbChevronRight, TbCirclesRelation, TbTag } from 'react-icons/tb'
 
 import { showModal } from '@shared/_modals/show-modal'
+import { JSON_VIEWER_THEME } from '@shared/constants/theme/json-viewer-theme'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { SectionCard } from '@shared/ui/section-card'
 import { formatInt } from '@shared/utils/misc'
@@ -31,7 +28,7 @@ type ProfileInbound = GetInboundsByProfileUuidCommand.Response['response']['inbo
 type InternalSquad = GetInternalSquadsCommand.Response['response']['internalSquads'][number]
 
 type InboundsTreeMeta =
-    | { inbound: ProfileInbound; squadsCount: number; kind: 'inbound'; tagColor: string }
+    | { inbound: ProfileInbound; squadsCount: number; kind: 'inbound' }
     | { inboundsCount: number; kind: 'squad'; membersCount: number; squadUuid: string }
 
 interface InboundsTreeNode extends TreeNodeData {
@@ -54,21 +51,13 @@ const openRawInboundModal = (inbound: ProfileInbound) => {
                     indent={4}
                     maxWidth="100%"
                     rootName=""
-                    theme={githubDarkTheme}
+                    theme={JSON_VIEWER_THEME}
                     viewOnly
                 />
             </Box>
         ),
         size: 'xl',
-        title: (
-            <BaseOverlayHeader
-                iconColor="teal"
-                IconComponent={TbTag}
-                iconVariant="soft"
-                title={inbound.tag}
-                titleOrder={5}
-            />
-        )
+        title: <BaseOverlayHeader IconComponent={TbTag} title={inbound.tag} titleOrder={5} />
     })
 }
 
@@ -78,8 +67,6 @@ export function ConfigProfileInboundsTree(props: IProps) {
     const { inbounds, internalSquads } = props
 
     const treeData = useMemo<InboundsTreeNode[]>(() => {
-        const colorHash = new ColorHash({ lightness: 0.7, saturation: 0.6 })
-
         return inbounds.map((inbound) => {
             const filteredSquads = internalSquads.filter((squad) =>
                 inbound.activeSquads.some((squadUuid) => squadUuid === squad.uuid)
@@ -100,8 +87,7 @@ export function ConfigProfileInboundsTree(props: IProps) {
                 nodeProps: {
                     inbound,
                     kind: 'inbound' as const,
-                    squadsCount: filteredSquads.length,
-                    tagColor: colorHash.hex(inbound.tag)
+                    squadsCount: filteredSquads.length
                 },
                 value: `inbound:${inbound.uuid}`
             }
@@ -150,19 +136,19 @@ export function ConfigProfileInboundsTree(props: IProps) {
                 {meta?.kind === 'inbound' && (
                     <>
                         <ActionIcon
-                            color={meta.tagColor}
+                            color="gray"
                             onClick={(event) => {
                                 event.stopPropagation()
                                 openRawInboundModal(meta.inbound)
                             }}
                             size="md"
                             style={{ flexShrink: 0 }}
-                            variant="filled"
+                            variant="soft"
                         >
-                            <TbTag color="var(--mantine-color-dark-8)" size={20} />
+                            <TbTag size={18} />
                         </ActionIcon>
 
-                        <Text ff="monospace" fw={600} size="sm" truncate="end">
+                        <Text fw={600} size="sm" truncate="end">
                             {treeNode.label}
                         </Text>
 

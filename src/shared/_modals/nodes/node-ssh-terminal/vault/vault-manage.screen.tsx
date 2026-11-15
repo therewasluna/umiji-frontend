@@ -89,9 +89,7 @@ export const VaultManageScreen = (props: IProps) => {
                 <SectionCard.Root>
                     <SectionCard.Section>
                         <BaseOverlayHeader
-                            iconColor="cyan"
                             IconComponent={TbDownload}
-                            iconVariant="soft"
                             title={t('node-ssh.export')}
                             titleOrder={5}
                         />
@@ -125,9 +123,7 @@ export const VaultManageScreen = (props: IProps) => {
             <SectionCard.Root>
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="cyan"
                         IconComponent={TbUpload}
-                        iconVariant="soft"
                         title={t('node-ssh.import')}
                         titleOrder={5}
                     />
@@ -210,9 +206,7 @@ export const VaultManageScreen = (props: IProps) => {
                 <SectionCard.Root>
                     <SectionCard.Section>
                         <BaseOverlayHeader
-                            iconColor="red"
                             IconComponent={TbTrash}
-                            iconVariant="soft"
                             title={t('node-ssh.reset')}
                             titleOrder={5}
                         />

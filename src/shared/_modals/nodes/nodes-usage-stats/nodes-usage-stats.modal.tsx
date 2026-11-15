@@ -118,9 +118,7 @@ export const NodesUsageStatsModal = NiceModal.create((props: IProps) => {
             }}
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbChartArcs}
-                    iconVariant="soft"
                     title={t('common.field.usage-stats')}
                 />
             }

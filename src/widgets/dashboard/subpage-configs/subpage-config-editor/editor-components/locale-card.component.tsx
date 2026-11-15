@@ -40,9 +40,9 @@ export function LocaleCard(props: IProps) {
                     </div>
                 </Group>
                 <Badge
-                    color={isActive ? 'teal' : 'gray'}
+                    color={isActive ? 'rose' : 'gray'}
                     size="xs"
-                    variant={isActive ? 'filled' : 'light'}
+                    variant={isActive ? 'light' : 'transparent'}
                 >
                     {code.toUpperCase()}
                 </Badge>

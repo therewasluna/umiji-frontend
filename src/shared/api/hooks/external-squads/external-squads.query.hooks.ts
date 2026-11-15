@@ -1,10 +1,10 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
+import { keepPreviousData } from '@tanstack/react-query'
 import {
     GetExternalSquadByUuidCommand,
     GetExternalSquadsCommand,
     GetExternalSquadsTagsCommand
 } from '@umiji/backend-contract'
-import { keepPreviousData } from '@tanstack/react-query'
 import { t } from 'i18next'
 
 import { sToMs } from '@shared/utils/time-utils'

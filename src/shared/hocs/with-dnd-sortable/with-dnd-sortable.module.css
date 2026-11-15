@@ -55,10 +55,23 @@
 
 .dragHandleInlineEnd {
     top: 50%;
-    right: 4px;
+    inset-inline-end: 8px;
     transform: translateY(-50%);
 }
 
 .dragHandleInlineEnd:active {
     transform: translateY(-50%) scale(0.95);
+}
+
+/* In a tile grid the handle sits in the top corner, beside the card's menu. */
+@container (min-width: 560px) {
+    :global([data-tiles]) .dragHandleInlineEnd {
+        top: 14px;
+        inset-inline-end: 8px;
+        transform: none;
+    }
+
+    :global([data-tiles]) .dragHandleInlineEnd:active {
+        transform: scale(0.95);
+    }
 }

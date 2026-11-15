@@ -30,8 +30,9 @@ export const ConfigProfileCardShared = memo((props: IProps) => {
     return (
         <Accordion.Item
             style={{
-                border: '1px solid rgb(255, 255, 255, 0.08)',
-                background: 'rgb(255, 255, 255, 0.02)'
+                border: '1px solid rgba(255, 255, 255, 0.07)',
+                background: 'var(--mantine-color-dark-7)',
+                borderRadius: 12
             }}
             value={profile.uuid}
         >
@@ -43,7 +44,7 @@ export const ConfigProfileCardShared = memo((props: IProps) => {
                 value={profile.uuid}
             >
                 <Group mb="xs">
-                    <Text ff="monospace" fw={700} size="md">
+                    <Text fw={600} size="md">
                         {profile.name}
                     </Text>
                 </Group>
@@ -52,9 +53,8 @@ export const ConfigProfileCardShared = memo((props: IProps) => {
                         color={
                             selectedInboundsFromProfile === profile.inbounds.length
                                 ? 'teal'
-                                : 'cyan'
+                                : 'gray'
                         }
-                        ff="monospace"
                         leftSection={<PiCheckBold />}
                         size="md"
                         variant="soft"
@@ -64,8 +64,7 @@ export const ConfigProfileCardShared = memo((props: IProps) => {
 
                     <Tooltip label={t('config-profile-card.shared.active-on-nodes')}>
                         <Badge
-                            color={profile.nodes.length > 0 ? 'teal' : 'cyan'}
-                            ff="monospace"
+                            color={profile.nodes.length > 0 ? 'teal' : 'gray'}
                             leftSection={<PiCpu />}
                             onClick={(e) => {
                                 e.preventDefault()

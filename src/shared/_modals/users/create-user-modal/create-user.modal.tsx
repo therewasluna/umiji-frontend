@@ -16,6 +16,7 @@ import {
     AccessSettingsCard,
     ContactInformationCard,
     DeviceTagSettingsCard,
+    TelegramProxyCard,
     TrafficLimitsCard,
     UserIdentityCreationCard
 } from '@shared/ui/forms/users/forms-components'
@@ -93,11 +94,19 @@ export const CreateUserModal = NiceModal.create(() => {
             if (typeof values.email === 'string' && values.email === '') {
                 form.setFieldValue('email', null)
             }
+            // forceUpdate would remount the input and take the focus away mid-edit.
+            if (values.mtprotoSecret === '') {
+                form.setFieldValue('mtprotoSecret', null, { forceUpdate: false })
+            }
+            if (values.mtprotoAdTag === '') {
+                form.setFieldValue('mtprotoAdTag', null, { forceUpdate: false })
+            }
         },
         validate: schemaResolver(
             CreateUserCommand.RequestBodySchema.omit({
                 expireAt: true,
-                hwidDeviceLimit: true
+                hwidDeviceLimit: true,
+                ipLimit: true
             })
         ),
 
@@ -111,6 +120,7 @@ export const CreateUserModal = NiceModal.create(() => {
             telegramId: undefined,
             email: undefined,
             hwidDeviceLimit: undefined,
+            ipLimit: undefined,
             tag: undefined,
             activeInternalSquads: []
         }
@@ -132,9 +142,13 @@ export const CreateUserModal = NiceModal.create(() => {
                     email: values.email === '' ? undefined : values.email,
                     // @ts-expect-error - TODO: fix ZOD schema
                     hwidDeviceLimit: values.hwidDeviceLimit === '' ? null : values.hwidDeviceLimit,
+                    // @ts-expect-error - NumberInput gives '' when cleared
+                    ipLimit: values.ipLimit === '' ? null : values.ipLimit,
                     tag: values.tag,
                     activeInternalSquads: values.activeInternalSquads,
-                    externalSquadUuid: values.externalSquadUuid
+                    externalSquadUuid: values.externalSquadUuid,
+                    mtprotoSecret: values.mtprotoSecret ?? undefined,
+                    mtprotoAdTag: values.mtprotoAdTag ?? undefined
                 }
             },
             {
@@ -149,9 +163,7 @@ export const CreateUserModal = NiceModal.create(() => {
             size="1000px"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbUser}
-                    iconVariant="soft"
                     title={t('create-user-modal.widget.create-user')}
                 />
             }
@@ -186,6 +198,12 @@ export const CreateUserModal = NiceModal.create(() => {
                     <AccessSettingsCard
                         cardVariants={cardVariants}
                         externalSquads={externalSquads}
+                        form={form}
+                        internalSquads={internalSquads}
+                        motionWrapper={MotionWrapper}
+                    />
+                    <TelegramProxyCard
+                        cardVariants={cardVariants}
                         form={form}
                         internalSquads={internalSquads}
                         motionWrapper={MotionWrapper}
@@ -246,6 +264,12 @@ export const CreateUserModal = NiceModal.create(() => {
                         <AccessSettingsCard
                             cardVariants={cardVariants}
                             externalSquads={externalSquads}
+                            form={form}
+                            internalSquads={internalSquads}
+                            motionWrapper={MotionWrapper}
+                        />
+                        <TelegramProxyCard
+                            cardVariants={cardVariants}
                             form={form}
                             internalSquads={internalSquads}
                             motionWrapper={MotionWrapper}

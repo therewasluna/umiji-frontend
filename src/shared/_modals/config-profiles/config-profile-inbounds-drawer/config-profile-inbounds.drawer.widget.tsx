@@ -50,9 +50,7 @@ export const ConfigProfileInboundsDrawer = NiceModal.create((props: IProps) => {
             size="500px"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbCirclesRelation}
-                    iconVariant="soft"
                     title={t('config-profile-inbounds.drawer.widget.inbounds-with-active-squads')}
                 />
             }

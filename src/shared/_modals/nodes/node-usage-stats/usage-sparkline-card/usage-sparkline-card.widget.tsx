@@ -30,7 +30,7 @@ export const NodeUsersSparklineCardWidget = (props: IProps) => {
         <Card p="md" withBorder>
             <Stack gap="md">
                 <Box>
-                    <Text c="dimmed" fw={500} mb={4} size="xs" tt="uppercase">
+                    <Text c="dimmed" fw={500} mb={4} size="xs">
                         {t('common.field.total-traffic')}
                     </Text>
                     {isLoading ? (

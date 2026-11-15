@@ -115,10 +115,8 @@ export const NodeSystemCardWidget = memo((props: IProps) => {
                 <SectionCard.Section>
                     <Group justify="space-between" wrap="nowrap">
                         <BaseOverlayHeader
-                            iconColor="violet"
                             IconComponent={PiDesktopTowerDuotone}
                             iconSize={20}
-                            iconVariant="soft"
                             title={t('node-system-card.widget.system-info')}
                             titleOrder={5}
                         />
@@ -149,7 +147,7 @@ export const NodeSystemCardWidget = memo((props: IProps) => {
                 <SectionCard.Section>
                     <div className={classes.memorySection}>
                         <Stack gap={6}>
-                            <Text c="dimmed" fw={600} lh={1} lts={1} size="10px" tt="uppercase">
+                            <Text c="dimmed" fw={600} lh={1} lts={1} size="10px">
                                 {t('node-system-card.widget.memory')}
                             </Text>
 
@@ -163,7 +161,7 @@ export const NodeSystemCardWidget = memo((props: IProps) => {
                                     </Text>
                                 </Group>
                                 <Progress
-                                    color={memoryData?.color ?? 'teal'}
+                                    color={memoryData?.color ?? 'rose'}
                                     radius="xl"
                                     size="sm"
                                     value={memoryData?.percentage ?? 0}
@@ -178,14 +176,7 @@ export const NodeSystemCardWidget = memo((props: IProps) => {
                         <div className={classes.interfaceSection}>
                             <Stack gap={6}>
                                 <Group gap={6} justify="space-between">
-                                    <Text
-                                        c="dimmed"
-                                        fw={600}
-                                        lh={1}
-                                        lts={1}
-                                        size="10px"
-                                        tt="uppercase"
-                                    >
+                                    <Text c="dimmed" fw={600} lh={1} lts={1} size="10px">
                                         {t('common.field.interface')}
                                     </Text>
                                     <Badge color="cyan" ff="monospace" size="xs" variant="soft">
@@ -237,7 +228,7 @@ export const NodeSystemCardWidget = memo((props: IProps) => {
                 <SectionCard.Section>
                     <div className={classes.infoSection}>
                         <Stack gap={6}>
-                            <Text c="dimmed" fw={600} lh={1} lts={1} size="10px" tt="uppercase">
+                            <Text c="dimmed" fw={600} lh={1} lts={1} size="10px">
                                 {t('common.field.system')}
                             </Text>
 

@@ -80,7 +80,7 @@ export const ApiTokenItem = ({ apiToken }: IProps) => {
                       })}
             </Text>
 
-            <Menu position="bottom-end" shadow="lg" trigger="click-hover" width={190}>
+            <Menu position="bottom-end" shadow="lg" trigger="click" width={190}>
                 <Menu.Target>
                     <ActionIcon
                         color="gray"
@@ -98,9 +98,7 @@ export const ApiTokenItem = ({ apiToken }: IProps) => {
                             modals.open({
                                 title: (
                                     <BaseOverlayHeader
-                                        iconColor="teal"
                                         IconComponent={TbCookie}
-                                        iconVariant="soft"
                                         title={apiToken.name}
                                     />
                                 ),

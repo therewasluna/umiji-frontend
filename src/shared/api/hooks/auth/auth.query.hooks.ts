@@ -1,9 +1,6 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
-import {
-    GetPasskeyAuthenticationOptionsCommand,
-    GetStatusCommand
-} from '@umiji/backend-contract'
 import { keepPreviousData } from '@tanstack/react-query'
+import { GetPasskeyAuthenticationOptionsCommand, GetStatusCommand } from '@umiji/backend-contract'
 import { t } from 'i18next'
 
 import { createGetQueryHook, errorHandler } from '../../tsq-helpers'

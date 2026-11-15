@@ -29,7 +29,7 @@ export function ChipMultiSelect(props: IProps) {
                         >
                             <Group align="center" gap="xs" justify="space-between" wrap="nowrap">
                                 <Group align="center" gap="xs" wrap="nowrap">
-                                    <Checkbox.Indicator color="red" size="sm" />
+                                    <Checkbox.Indicator size="sm" />
                                     <Text className={classes.label} size="sm">
                                         {item.label}
                                     </Text>

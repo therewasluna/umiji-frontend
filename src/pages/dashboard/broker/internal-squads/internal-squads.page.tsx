@@ -15,18 +15,10 @@ type TSquad = GetBrokerMeCommand.Response['response']['internalSquads'][number]
 
 const HOSTS_PREVIEW = 6
 
-const PROTOCOL_COLOR: Record<string, string> = {
-    vless: 'teal',
-    vmess: 'blue',
-    trojan: 'violet',
-    shadowsocks: 'orange',
-    hysteria: 'pink'
-}
-
 const SectionTitle = ({ children, Icon }: { children: ReactNode; Icon: typeof TbWorld }) => (
     <Group gap={6} mb="xs">
         <Icon size={14} style={{ color: 'var(--mantine-color-dimmed)' }} />
-        <Text c="dimmed" fw={700} size="xs" tt="uppercase">
+        <Text c="dimmed" fw={700} size="xs">
             {children}
         </Text>
     </Group>
@@ -55,7 +47,7 @@ const SquadCard = ({ squad, totalUsers }: { squad: TSquad; totalUsers: number })
     const hiddenHosts = squad.hosts.length - HOSTS_PREVIEW
 
     return (
-        <SectionCard.Root gap="md" h="100%">
+        <SectionCard.Root gap="md" h="100%" p="lg">
             <SectionCard.Section>
                 <Group gap="sm" justify="space-between" wrap="nowrap">
                     <Group gap="sm" miw={0} wrap="nowrap">
@@ -68,7 +60,7 @@ const SquadCard = ({ squad, totalUsers }: { squad: TSquad; totalUsers: number })
                             <TbCirclesRelation size={20} />
                         </ThemeIcon>
                         <Stack gap={0} miw={0}>
-                            <Text ff="monospace" fw={700} size="lg" truncate="end">
+                            <Text fw={700} size="lg" truncate="end">
                                 {squad.name}
                             </Text>
                             <Text c="dimmed" size="xs" truncate="end">
@@ -150,10 +142,10 @@ const SquadCard = ({ squad, totalUsers }: { squad: TSquad; totalUsers: number })
                         <Group gap="sm" justify="space-between" key={inbound.uuid} wrap="nowrap">
                             <Group gap="xs" miw={0} wrap="nowrap">
                                 <Badge
-                                    color={PROTOCOL_COLOR[inbound.type] ?? 'gray'}
+                                    color="gray"
                                     miw={92}
                                     style={{ flexShrink: 0 }}
-                                    variant="light"
+                                    variant="soft"
                                 >
                                     {inbound.type}
                                 </Badge>
@@ -205,7 +197,6 @@ export function BrokerInternalSquadsPage() {
         <Page title={t('constants.internal-squads')}>
             <PageHeaderShared
                 description={t('brokers.panel.internal-squads-description')}
-                icon={<TbCirclesRelation size={24} />}
                 title={t('constants.internal-squads')}
             />
 

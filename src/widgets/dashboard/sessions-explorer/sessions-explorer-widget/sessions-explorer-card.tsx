@@ -95,7 +95,6 @@ export const SessionsExplorerCard = memo(
                                 </Tooltip>
                             }
                             IconComponent={TbId}
-                            iconVariant="soft"
                             title={user.userId.toString()}
                             titleOrder={5}
                             truncateTitle
@@ -148,9 +147,7 @@ export const SessionsExplorerCard = memo(
                                         <BaseOverlayHeader
                                             countryCode={node.countryCode}
                                             hideIcon
-                                            iconColor="blue"
                                             IconComponent={TbServer}
-                                            iconVariant="soft"
                                             title={node.nodeName}
                                             titleOrder={6}
                                         />

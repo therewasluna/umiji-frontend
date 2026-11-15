@@ -1,0 +1,882 @@
+/* Bot texts editor. Panels follow the settings cards (dark-7, hairline borders); rose marks focus, edits and the
+   live preview. The phone is a Telegram night chat tinted into the Umiji palette. */
+
+/* ----------------------------- languages ----------------------------- */
+
+.langGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(196px, 1fr));
+    gap: 10px;
+}
+
+.langTile {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 12px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.015);
+    transition:
+        border-color 160ms ease,
+        background-color 160ms ease;
+}
+
+.langTile[data-enabled] {
+    border-color: rgba(245, 99, 162, 0.28);
+    background: linear-gradient(180deg, rgba(245, 99, 162, 0.07), rgba(245, 99, 162, 0.015));
+}
+
+.langTile[data-default] {
+    border-color: rgba(245, 99, 162, 0.5);
+}
+
+.langTileTop {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.langCode {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--mantine-color-dark-1);
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.langTile[data-enabled] .langCode {
+    background: var(--mantine-color-rose-light);
+    color: var(--mantine-color-rose-light-color);
+}
+
+.langNames {
+    flex: 1;
+    min-width: 0;
+}
+
+.langTileFoot {
+    display: flex;
+    min-height: 22px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.langEdits {
+    color: var(--mantine-color-rose-3);
+    white-space: nowrap;
+}
+
+.langLocked {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--mantine-color-rose-filled);
+    color: #fff;
+}
+
+/* ----------------------------- workspace ----------------------------- */
+
+.workspace {
+    display: grid;
+    grid-template-columns: 264px minmax(0, 1fr) 372px;
+    grid-template-areas: 'rail editor preview';
+    gap: var(--mantine-spacing-md);
+    align-items: start;
+}
+
+.railCol {
+    grid-area: rail;
+    position: sticky;
+    top: var(--mantine-spacing-md);
+    min-width: 0;
+}
+
+.editorCol {
+    grid-area: editor;
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-sm);
+    min-width: 0;
+}
+
+.previewCol {
+    grid-area: preview;
+    position: sticky;
+    top: var(--mantine-spacing-md);
+    min-width: 0;
+}
+
+.mobilePicker {
+    display: none;
+}
+
+/* Preview drops under the editor; the rail stays. */
+@media (max-width: 96em) {
+    .workspace {
+        grid-template-columns: 248px minmax(0, 1fr);
+        grid-template-areas:
+            'rail editor'
+            'rail preview';
+    }
+
+    /* Phone-wide and centred, so the heading sits over the phone, not at the far edge. */
+    .previewCol {
+        position: static;
+        justify-self: center;
+        width: 100%;
+        max-width: 372px;
+    }
+}
+
+/* Phones and small tablets: one column, a searchable picker instead of the rail. */
+@media (max-width: 64em) {
+    .workspace {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            'editor'
+            'preview';
+    }
+
+    .railCol {
+        display: none;
+    }
+
+    .mobilePicker {
+        display: block;
+    }
+}
+
+/* ----------------------------- rail ----------------------------- */
+
+.rail {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100dvh - 2 * var(--mantine-spacing-md));
+    background: var(--mantine-color-dark-7);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.railTools {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.railTools > :first-child {
+    align-self: stretch;
+}
+
+.railList {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 6px 8px 10px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+.railGroup + .railGroup {
+    margin-top: 6px;
+}
+
+.railGroupHead {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 8px 5px;
+    color: var(--mantine-color-dark-2);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.railItem {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 9px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--mantine-color-dark-1);
+    font: inherit;
+    font-size: var(--mantine-font-size-sm);
+    text-align: start;
+    cursor: pointer;
+    transition:
+        background-color 120ms ease,
+        color 120ms ease;
+}
+
+.railItem:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--mantine-color-dark-0);
+}
+
+.railItem[data-active] {
+    background: var(--mantine-color-rose-light);
+    color: var(--mantine-color-rose-light-color);
+}
+
+.railItem:focus-visible {
+    outline: 2px solid var(--mantine-primary-color-filled);
+    outline-offset: -2px;
+}
+
+.railKind {
+    flex-shrink: 0;
+    opacity: 0.55;
+}
+
+.railItem[data-active] .railKind {
+    opacity: 0.9;
+}
+
+.railLabel {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--mantine-color-rose-5);
+    box-shadow: 0 0 0 3px rgba(245, 99, 162, 0.16);
+}
+
+.dot[data-tone='error'] {
+    background: var(--mantine-color-red-6);
+    box-shadow: 0 0 0 3px rgba(250, 82, 82, 0.18);
+}
+
+/* ----------------------------- field ----------------------------- */
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-md);
+}
+
+.fieldHead {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.fieldIcon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 13px;
+    background: var(--mantine-color-rose-light);
+    color: var(--mantine-color-rose-light-color);
+}
+
+.fieldTitle {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.langTabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    overflow-x: auto;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.18);
+    scrollbar-width: none;
+}
+
+.langTabs::-webkit-scrollbar {
+    display: none;
+}
+
+.langTab {
+    display: inline-flex;
+    flex: 1 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 7px 12px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--mantine-color-dark-1);
+    font: inherit;
+    font-size: var(--mantine-font-size-sm);
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+        background-color 140ms ease,
+        color 140ms ease;
+}
+
+.langTab:hover {
+    color: var(--mantine-color-dark-0);
+}
+
+.langTab[data-active] {
+    background: linear-gradient(135deg, rgba(245, 99, 162, 0.24), rgba(142, 102, 243, 0.16));
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(245, 99, 162, 0.35);
+}
+
+.langTab:focus-visible {
+    outline: 2px solid var(--mantine-primary-color-filled);
+    outline-offset: -2px;
+}
+
+.langTabCode {
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 10px;
+    font-weight: 700;
+    opacity: 0.6;
+}
+
+.editorBox {
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.16);
+    transition:
+        border-color 140ms ease,
+        box-shadow 140ms ease;
+}
+
+.editorBox:focus-within {
+    border-color: rgba(245, 99, 162, 0.55);
+    box-shadow: 0 0 0 3px rgba(245, 99, 162, 0.12);
+}
+
+.editorBox[data-error] {
+    border-color: rgba(250, 82, 82, 0.6);
+    box-shadow: 0 0 0 3px rgba(250, 82, 82, 0.1);
+}
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.textInput {
+    padding: 12px 14px !important;
+    color: var(--mantine-color-dark-0);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.varBar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.varChip {
+    padding: 3px 8px;
+    border: 1px solid rgba(245, 99, 162, 0.28);
+    border-radius: 7px;
+    background: rgba(245, 99, 162, 0.08);
+    color: var(--mantine-color-rose-2);
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 12px;
+    cursor: pointer;
+    transition:
+        background-color 120ms ease,
+        transform 120ms ease;
+}
+
+.varChip:hover {
+    background: rgba(245, 99, 162, 0.16);
+}
+
+.varChip:active {
+    transform: translateY(1px);
+}
+
+.varChip:focus-visible {
+    outline: 2px solid var(--mantine-primary-color-filled);
+    outline-offset: 1px;
+}
+
+.fieldFoot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: calc(var(--mantine-spacing-md) * -0.5);
+}
+
+.counter {
+    color: var(--mantine-color-dark-2);
+}
+
+.counter[data-state='near'] {
+    color: var(--mantine-color-orange-5);
+}
+
+.counter[data-state='over'] {
+    color: var(--mantine-color-red-5);
+}
+
+.defaultBox {
+    padding: 10px 14px;
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    color: var(--mantine-color-dark-2);
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: var(--mantine-spacing-sm);
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(142, 102, 243, 0.1);
+    color: var(--mantine-color-violet-2);
+}
+
+.note svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* ----------------------------- preview ----------------------------- */
+
+.previewHead {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin: 2px 4px 10px;
+}
+
+.phone {
+    max-width: 372px;
+    margin-inline: auto;
+    padding: 9px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 34px;
+    background: linear-gradient(160deg, #2b1d26 0%, #150e13 60%, #1d1219 100%);
+    box-shadow:
+        0 40px 80px -40px rgba(220, 66, 134, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.phoneScreen {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* Fits the viewport so the keyboard under a long message stays in view. */
+    height: clamp(520px, calc(100dvh - 150px), 720px);
+    overflow: hidden;
+    border-radius: 26px;
+    background: #110b0f;
+}
+
+/* Stacked under the editor the page scrolls, so the screen grows to the whole message instead of
+   clipping it. Kept after the base rule so it wins. */
+@media (max-width: 96em) {
+    .phoneScreen {
+        height: auto;
+        min-height: 480px;
+    }
+}
+
+.chatHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(30, 21, 27, 0.96);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.avatar {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--mantine-color-rose-5), var(--mantine-color-violet-7));
+    color: #fff;
+    font-weight: 700;
+}
+
+.avatar[data-staff] {
+    background: linear-gradient(135deg, #3d2c37, #261a22);
+    font-size: 17px;
+}
+
+.chatTitle {
+    min-width: 0;
+}
+
+.topicBar {
+    display: flex;
+    padding: 7px 12px;
+    background: rgba(30, 21, 27, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.topicPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 100%;
+    padding: 3px 10px 3px 7px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--mantine-color-dark-0);
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.topicPill[data-active] {
+    background: rgba(245, 99, 162, 0.2);
+    box-shadow: 0 0 0 1.5px var(--mantine-color-rose-5);
+}
+
+.chatBody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 14px 10px 16px;
+    background-color: #120b10;
+    background-image:
+        radial-gradient(circle at 18% 12%, rgba(245, 99, 162, 0.11), transparent 42%),
+        radial-gradient(circle at 85% 88%, rgba(142, 102, 243, 0.12), transparent 46%),
+        radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size:
+        auto,
+        auto,
+        16px 16px;
+    scrollbar-width: none;
+}
+
+.chatBody::-webkit-scrollbar {
+    display: none;
+}
+
+.chatInner {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.tgMessage {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    width: 88%;
+    animation: tgIn 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.tgBubble {
+    position: relative;
+    max-width: 100%;
+    padding: 7px 10px 6px;
+    border-radius: 15px 15px 15px 5px;
+    background: #2a1f26;
+    color: #f4ecf1;
+    font-size: 13.5px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+    transition: box-shadow 200ms ease;
+}
+
+[dir='rtl'] .tgBubble {
+    border-radius: 15px 15px 5px 15px;
+}
+
+.tgBubble[data-active] {
+    box-shadow:
+        0 0 0 1.5px rgba(245, 99, 162, 0.7),
+        0 10px 30px -12px rgba(245, 99, 162, 0.5);
+}
+
+.tgBubble strong {
+    font-weight: 700;
+}
+
+.tgTime {
+    float: inline-end;
+    margin-top: 6px;
+    margin-inline-start: 10px;
+    color: rgba(255, 255, 255, 0.38);
+    font-size: 10.5px;
+    line-height: 1;
+}
+
+.tgCode {
+    padding: 0 4px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffb8d4;
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 12.5px;
+    word-break: break-all;
+}
+
+.tgPre {
+    display: block;
+    margin: 4px 0;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.28);
+    color: #ffb8d4;
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 12px;
+    white-space: pre-wrap;
+}
+
+.tgPre .tgCode {
+    padding: 0;
+    background: none;
+}
+
+.tgQuote {
+    margin: 3px 0;
+    padding: 3px 8px;
+    border-inline-start: 3px solid var(--mantine-color-rose-5);
+    border-radius: 4px;
+    background: rgba(245, 99, 162, 0.09);
+}
+
+.tgLink {
+    color: #ff9ac3;
+}
+
+.tgSpoiler {
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.16);
+    background-image: radial-gradient(rgba(255, 255, 255, 0.55) 0.6px, transparent 0.8px);
+    background-size: 4px 4px;
+    color: transparent;
+    transition: color 200ms ease;
+    cursor: pointer;
+}
+
+.tgSpoiler:hover,
+.tgSpoiler:focus {
+    background: rgba(255, 255, 255, 0.06);
+    color: inherit;
+}
+
+.varMark {
+    border-radius: 3px;
+    background: rgba(245, 99, 162, 0.13);
+    box-shadow: inset 0 -1px 0 rgba(245, 99, 162, 0.7);
+}
+
+.tgKeyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.tgRow {
+    display: flex;
+    gap: 4px;
+}
+
+.tgButton {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    padding: 9px 12px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: rgba(56, 40, 50, 0.82);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.25;
+    text-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    backdrop-filter: blur(8px);
+    transition:
+        box-shadow 200ms ease,
+        background-color 200ms ease;
+}
+
+.tgButton[data-url]::after {
+    content: '↗';
+    position: absolute;
+    top: 3px;
+    inset-inline-end: 6px;
+    font-size: 9px;
+    opacity: 0.6;
+}
+
+.tgButton[data-active] {
+    background: rgba(245, 99, 162, 0.24);
+    box-shadow:
+        0 0 0 1.5px var(--mantine-color-rose-5),
+        0 8px 24px -10px rgba(245, 99, 162, 0.8);
+}
+
+.tgAlert {
+    position: absolute;
+    top: 74px;
+    left: 50%;
+    width: max-content;
+    max-width: 84%;
+    padding: 10px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background: rgba(18, 12, 16, 0.94);
+    color: #f4ecf1;
+    font-size: 13px;
+    line-height: 1.45;
+    text-align: center;
+    white-space: pre-wrap;
+    box-shadow:
+        0 0 0 1.5px rgba(245, 99, 162, 0.55),
+        0 18px 40px -12px rgba(0, 0, 0, 0.8);
+    transform: translateX(-50%);
+    animation: tgAlertIn 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.composer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    background: rgba(30, 21, 27, 0.96);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 13px;
+}
+
+.composer span {
+    flex: 1;
+}
+
+@keyframes tgIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+}
+
+@keyframes tgAlertIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -8px) scale(0.97);
+    }
+}
+
+/* ----------------------------- save bar ----------------------------- */
+
+.saveBar {
+    position: sticky;
+    bottom: var(--mantine-spacing-md);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+    padding: 8px 8px 8px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 16px;
+    background: rgba(27, 18, 24, 0.92);
+    box-shadow:
+        0 20px 50px -18px rgba(0, 0, 0, 0.85),
+        0 0 0 1px rgba(245, 99, 162, 0.12);
+    backdrop-filter: blur(14px);
+    animation: saveIn 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.saveDot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--mantine-color-rose-5);
+    box-shadow: 0 0 0 4px rgba(245, 99, 162, 0.18);
+}
+
+.saveDot[data-tone='error'] {
+    background: var(--mantine-color-red-6);
+    box-shadow: 0 0 0 4px rgba(250, 82, 82, 0.18);
+}
+
+.saveText {
+    margin-inline-end: 6px;
+    white-space: nowrap;
+}
+
+@media (max-width: 30em) {
+    .saveText {
+        white-space: normal;
+    }
+}
+
+@keyframes saveIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tgMessage,
+    .tgAlert,
+    .saveBar {
+        animation: none;
+    }
+}

@@ -1,5 +1,16 @@
-import { Accordion, ActionIcon, Button, Center, Divider, Drawer, Group, Stack } from '@mantine/core'
+import {
+    Accordion,
+    ActionIcon,
+    Button,
+    Divider,
+    Drawer,
+    Group,
+    Stack,
+    Text,
+    ThemeIcon
+} from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react'
 import {
     TSubscriptionPageAppConfig,
     TSubscriptionPageLanguageCode,
@@ -7,7 +18,6 @@ import {
     TSubscriptionPagePlatformSchema,
     TSubscriptionPageSvgLibrary
 } from '@umiji/subscription-page-types'
-import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -94,36 +104,40 @@ export function PlatformEditor(props: IProps) {
     }
 
     const editingApp = editingAppIndex !== null ? platform.apps[editingAppIndex] : null
+    const PlatformIcon = PLATFORM_ICONS[platformKey]
 
     return (
         <>
-            <Accordion.Item className={styles.accordionItem} value={platformKey}>
-                <Center>
-                    <Accordion.Control className={styles.accordionControl}>
-                        <Group gap="sm">
-                            <BaseOverlayHeader
-                                iconColor="violet"
-                                IconComponent={PLATFORM_ICONS[platformKey]}
-                                iconVariant="soft"
-                                subtitle={t('platform-editor.apps-configured', {
-                                    count: platform.apps.length
-                                })}
-                                title={PLATFORM_LABELS[platformKey]}
-                                titleOrder={5}
-                            />
+            <Accordion.Item value={platformKey}>
+                <Group gap={0} wrap="nowrap">
+                    <Accordion.Control>
+                        <Group gap="sm" wrap="nowrap">
+                            <ThemeIcon color="gray" size="md" variant="soft">
+                                <PlatformIcon size={16} />
+                            </ThemeIcon>
+                            <Group style={{ columnGap: 8, rowGap: 0 }}>
+                                <Text c="white" fw={600} size="sm">
+                                    {PLATFORM_LABELS[platformKey]}
+                                </Text>
+                                <Text c="dimmed" size="xs">
+                                    {t('platform-editor.apps-configured', {
+                                        count: platform.apps.length
+                                    })}
+                                </Text>
+                            </Group>
                         </Group>
                     </Accordion.Control>
                     <ActionIcon
                         className={styles.deleteButton}
                         color="red"
-                        mr="sm"
+                        mr="xs"
                         onClick={onDelete}
                         size="lg"
                         variant="subtle"
                     >
                         <IconTrash size={18} />
                     </ActionIcon>
-                </Center>
+                </Group>
                 <Accordion.Panel>
                     <Stack gap="md">
                         <SvgIconSelect
@@ -185,9 +199,7 @@ export function PlatformEditor(props: IProps) {
                 size="lg"
                 title={
                     <BaseOverlayHeader
-                        iconColor="cyan"
                         IconComponent={IconEdit}
-                        iconVariant="soft"
                         subtitle={editingApp?.name || t('platform-editor.component.unnamed-app')}
                         title={t('platform-editor.component.edit-app')}
                         titleOrder={5}

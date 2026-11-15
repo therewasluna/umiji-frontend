@@ -1,0 +1,66 @@
+/* One row per thing, on three columns: icon tile, text, action. What a row holds sits under the text
+   column, so the tile, the title and the contents line up down the card. */
+
+.section {
+    --list-indent: 52px;
+
+    padding-block: var(--mantine-spacing-md);
+
+    /* A phone needs the width more than the alignment. */
+    @media (max-width: $mantine-breakpoint-xs) {
+        --list-indent: 0px;
+    }
+
+    &:first-child {
+        padding-top: var(--mantine-spacing-xs);
+    }
+
+    &:last-child {
+        padding-bottom: 0;
+    }
+
+    & + & {
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+    }
+}
+
+.head {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    &[data-clickable] {
+        cursor: pointer;
+    }
+}
+
+/* As tall as the tile: a short row centres on it, a long hint starts level with its top and runs on. */
+.headText {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    min-height: 40px;
+}
+
+.action {
+    display: flex;
+    flex: none;
+    align-items: center;
+    height: 40px;
+    cursor: default;
+}
+
+.panel {
+    padding-top: 12px;
+    margin-inline-start: var(--list-indent);
+}
+
+.toggle svg {
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.toggle[data-opened] svg {
+    transform: rotate(180deg);
+}

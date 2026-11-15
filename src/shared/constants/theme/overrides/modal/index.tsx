@@ -1,5 +1,5 @@
 // oxlint-disable
-import { Modal } from '@mantine/core'
+import { Modal, ModalOverlay } from '@mantine/core'
 
 import { scrollLockShards } from '@shared/utils/scroll-lock-shards'
 
@@ -10,14 +10,25 @@ export default {
         classNames: {
             root: classes.modalRoot,
             header: classes.modalHeader,
+            title: classes.modalTitle,
+            close: classes.modalClose,
             body: classes.modalBody,
             content: classes.modalContent
         },
         defaultProps: {
             removeScrollProps: { shards: scrollLockShards },
-            transitionProps: { transition: 'fade', duration: 200 },
-            radius: 'md',
+            transitionProps: { transition: 'pop', duration: 180 },
+            closeButtonProps: { size: 'lg', iconSize: 18 },
+            padding: 'lg',
+            radius: 18,
             centered: true
+        }
+    }),
+    ModalOverlay: ModalOverlay.extend({
+        defaultProps: {
+            color: '#0A0609',
+            backgroundOpacity: 0.72,
+            blur: 2
         }
     })
 }

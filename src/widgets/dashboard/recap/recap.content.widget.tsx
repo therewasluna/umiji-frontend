@@ -414,25 +414,26 @@ export function RecapContent() {
 
                     <Group gap="xs">
                         <Button
-                            color={accent}
+                            color="teal"
                             fullWidth
                             leftSection={<TbCopy size={14} />}
                             loading={copying}
                             onClick={copy}
                             radius="md"
                             size="sm"
-                            variant="filled"
+                            variant="soft"
                         >
                             {t('common.action.copy')}
                         </Button>
                         <Button
+                            color="gray"
                             fullWidth
                             leftSection={<TbDownload size={14} />}
                             loading={downloading}
                             onClick={download}
                             radius="md"
                             size="sm"
-                            variant="default"
+                            variant="soft"
                         >
                             {t('common.action.download')}
                         </Button>

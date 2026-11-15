@@ -15,8 +15,8 @@ import {
     ThemeIcon
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { TSubscriptionPageSvgLibrary } from '@umiji/subscription-page-types'
 import { IconBulb, IconPhoto, IconPlus, IconTrash } from '@tabler/icons-react'
+import { TSubscriptionPageSvgLibrary } from '@umiji/subscription-page-types'
 import isSvg from 'is-svg'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -104,9 +104,7 @@ export function SvgLibraryModal(props: IProps) {
                 size="xl"
                 title={
                     <BaseOverlayHeader
-                        iconColor="violet"
                         IconComponent={IconPhoto}
-                        iconVariant="soft"
                         subtitle={t('svg-library-modal.icons', { count: libraryEntries.length })}
                         title={t('svg-library-modal.component.svg-library')}
                     />
@@ -114,13 +112,13 @@ export function SvgLibraryModal(props: IProps) {
             >
                 <Stack gap="md">
                     <Alert
-                        bg="linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%)"
-                        color="violet.4"
+                        bg="rgba(255, 255, 255, 0.02)"
+                        color="gray"
                         icon={<IconBulb size={20} />}
                         radius="md"
                         styles={{
                             root: {
-                                border: '1px solid rgba(139, 92, 246, 0.25)'
+                                border: '1px solid rgba(255, 255, 255, 0.07)'
                             }
                         }}
                         title={t('svg-library-modal.component.where-to-find-icons')}
@@ -128,12 +126,7 @@ export function SvgLibraryModal(props: IProps) {
                     >
                         <Text c="dimmed" size="sm">
                             {t('svg-library-modal.component.you-can-find-beautiful-icons-at')}{' '}
-                            <Anchor
-                                c="violet.4"
-                                fw={500}
-                                href="https://tabler.io/icons"
-                                target="_blank"
-                            >
+                            <Anchor fw={500} href="https://tabler.io/icons" target="_blank">
                                 tabler.io/icons.
                             </Anchor>
                         </Text>
@@ -187,15 +180,11 @@ export function SvgLibraryModal(props: IProps) {
                                             <div className={styles.svgPreviewBox}>
                                                 {isSvg(svg) ? (
                                                     <ThemeIcon
-                                                        color="cyan"
+                                                        color="gray"
                                                         radius="xl"
                                                         size={44}
-                                                        style={{
-                                                            background: `linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%)`,
-                                                            border: '1px solid rgba(34, 211, 238, 0.3)',
-                                                            flexShrink: 0
-                                                        }}
-                                                        variant="light"
+                                                        style={{ flexShrink: 0 }}
+                                                        variant="soft"
                                                     >
                                                         <span
                                                             dangerouslySetInnerHTML={{
@@ -218,12 +207,13 @@ export function SvgLibraryModal(props: IProps) {
                                                 <Text c="white" fw={500} size="sm" truncate="end">
                                                     {key}
                                                 </Text>
-                                                <Badge color="violet" size="xs" variant="light">
+                                                <Badge color="gray" size="xs" variant="soft">
                                                     SVG
                                                 </Badge>
                                             </div>
                                         </Group>
                                         <ActionIcon
+                                            className={styles.deleteButton}
                                             color="red"
                                             onClick={(e) => {
                                                 e.stopPropagation()
@@ -250,9 +240,7 @@ export function SvgLibraryModal(props: IProps) {
                 size="md"
                 title={
                     <BaseOverlayHeader
-                        iconColor="cyan"
                         IconComponent={editingKey ? IconPhoto : IconPlus}
-                        iconVariant="soft"
                         title={
                             editingKey
                                 ? t('svg-library-modal.component.edit-icon')
@@ -263,7 +251,6 @@ export function SvgLibraryModal(props: IProps) {
             >
                 <Stack gap="md">
                     <TextInput
-                        classNames={{ input: styles.inputDark }}
                         description={t(
                             'svg-library-modal.component.only-latin-characters-no-spaces'
                         )}
@@ -285,7 +272,6 @@ export function SvgLibraryModal(props: IProps) {
                         </Text>
                         <Stack gap="sm">
                             <Textarea
-                                classNames={{ input: styles.inputDark }}
                                 onChange={(e) => setNewSvg(e.target.value)}
                                 placeholder="<svg>...</svg>"
                                 rows={12}
@@ -299,15 +285,11 @@ export function SvgLibraryModal(props: IProps) {
                                     <div className={styles.svgPreviewBox}>
                                         {isSvg(newSvg) ? (
                                             <ThemeIcon
-                                                color="cyan"
+                                                color="gray"
                                                 radius="xl"
                                                 size={44}
-                                                style={{
-                                                    background: `linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%)`,
-                                                    border: '1px solid rgba(34, 211, 238, 0.3)',
-                                                    flexShrink: 0
-                                                }}
-                                                variant="light"
+                                                style={{ flexShrink: 0 }}
+                                                variant="soft"
                                             >
                                                 <span
                                                     dangerouslySetInnerHTML={{

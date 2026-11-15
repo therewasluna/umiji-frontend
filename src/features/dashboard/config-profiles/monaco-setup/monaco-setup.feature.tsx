@@ -203,6 +203,24 @@ export const MonacoSetupFeature = {
             const response = await axios.get(jsonSchemaUrl)
             const schema = response.data
 
+            // Upstream's schema doesn't know the mtproto inbound from our Xray build.
+            schema.definitions?.InboundObject?.properties?.protocol?.anyOf?.push({
+                const: 'mtproto'
+            })
+            schema.definitions?.InboundConfigurationObject?.anyOf?.push({
+                title: 'InboundConfigurationObject',
+                type: 'object',
+                properties: {
+                    domain: { type: 'string' },
+                    target: { type: 'string' },
+                    adTag: { type: 'string' },
+                    publicIp: { type: 'string' },
+                    clients: { type: 'array' }
+                },
+                required: ['domain'],
+                additionalProperties: false
+            })
+
             const snippetDescriptions = snippets.map((snippet) => {
                 const snippetJson = JSON.stringify(snippet.snippet, null, 1)
 

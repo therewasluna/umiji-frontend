@@ -1,31 +1,83 @@
-/* .drawerContent {
-    background-color: #161b23;
-    background-image:
-        linear-gradient(to right, rgba(128, 128, 128, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(128, 128, 128, 0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-} */
+/* Side sheets match the dialogs: dark-7, hairline edge, faint rose glow, frosted header. On wide screens
+   they float off the edges with round corners (offset/radius props); on phones they fill the screen. */
 
 .drawerContent {
-    border-radius: var(--drawer-radius, var(--mantine-radius-md));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+        radial-gradient(
+            120% 160px at 50% 0%,
+            color-mix(in srgb, var(--mantine-color-rose-5) 8%, transparent),
+            transparent
+        ),
+        var(--mantine-color-dark-7);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 32px 80px -24px rgba(0, 0, 0, 0.85);
 }
 
 @media (max-width: $mantine-breakpoint-sm) {
+    .drawerRoot {
+        --drawer-offset: 0px !important;
+    }
+
     .drawerContent {
-        border-radius: 0;
+        border: 0;
+        border-radius: 0 !important;
     }
 }
 
 .drawerHeader {
-    background: rgba(22, 27, 35, 0.95);
+    gap: var(--mantine-spacing-sm);
+    min-height: 64px;
+    padding-block: 14px;
+    background: color-mix(in srgb, var(--mantine-color-dark-7) 82%, transparent);
+    backdrop-filter: blur(14px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding: var(--mantine-spacing-sm) var(--mantine-spacing-lg);
 
     @supports (padding: env(safe-area-inset-top)) {
-        padding-top: max(var(--mantine-spacing-sm), env(safe-area-inset-top, 0px));
+        padding-top: max(14px, env(safe-area-inset-top, 0px));
     }
 }
 
-.drawerBody {
-    padding: var(--mantine-spacing-sm);
+.drawerTitle {
+    min-width: 0;
+    color: var(--mantine-color-white);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.drawerClose {
+    flex-shrink: 0;
+    border-radius: 10px;
+    color: var(--mantine-color-dark-1);
+    transition:
+        background-color 140ms ease,
+        color 140ms ease;
+}
+
+.drawerClose:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--mantine-color-white);
+}
+
+.drawerContent > .drawerBody {
+    padding-top: var(--mb-padding);
+    color: var(--mantine-color-dark-0);
+    font-size: var(--mantine-font-size-sm);
+    line-height: 1.6;
+}
+
+/* A drawer with a DrawerFooter becomes a column down to that footer, so the footer sits on the bottom edge. */
+.drawerContent:has([data-drawer-footer]) {
+    display: flex;
+    flex-direction: column;
+}
+
+.drawerContent:has([data-drawer-footer]) > .drawerBody,
+.drawerBody:has([data-drawer-footer]) > :has([data-drawer-footer]) {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--mantine-spacing-lg);
 }

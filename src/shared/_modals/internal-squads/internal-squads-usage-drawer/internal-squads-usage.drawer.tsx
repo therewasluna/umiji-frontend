@@ -110,9 +110,7 @@ export const InternalSquadsUsageDrawer = NiceModal.create((props: IProps) => {
             }}
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbChartArcs}
-                    iconVariant="soft"
                     title={t('common.field.usage-stats')}
                 />
             }
@@ -126,9 +124,7 @@ export const InternalSquadsUsageDrawer = NiceModal.create((props: IProps) => {
                                 size: 'xl',
                                 title: (
                                     <BaseOverlayHeader
-                                        iconColor="yellow"
                                         IconComponent={TbQuestionMark}
-                                        iconVariant="soft"
                                         title={t('internal-squads-usage-drawer.info.title')}
                                     />
                                 ),

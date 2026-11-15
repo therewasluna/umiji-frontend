@@ -1,4 +1,4 @@
-import { ActionIcon, ActionIconGroup, Group, Tooltip } from '@mantine/core'
+import { ActionIcon, ActionIconGroup, Button, Group, Tooltip } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 import { TbPlus, TbRefresh } from 'react-icons/tb'
 
@@ -43,26 +43,19 @@ export const InternalSquadsHeaderActionButtonsFeature = (props: IProps) => {
                 </Tooltip>
             </ActionIconGroup>
 
-            <ActionIconGroup>
-                <Tooltip
-                    label={t('common.action.create')}
-                    withArrow
-                >
-                    <ActionIcon
-                        color="teal"
-                        onClick={() =>
-                            showModal('createModal', {
-                                createFrom: 'internalSquad',
-                                contentOptions: {}
-                            })
-                        }
-                        size="input-md"
-                        variant="soft"
-                    >
-                        <TbPlus size="24px" />
-                    </ActionIcon>
-                </Tooltip>
-            </ActionIconGroup>
+            <Button
+                onClick={() =>
+                    showModal('createModal', {
+                        createFrom: 'internalSquad',
+                        contentOptions: {}
+                    })
+                }
+                leftSection={<TbPlus size={18} />}
+                size="md"
+                variant="filled"
+            >
+                {t('common.action.create')}
+            </Button>
         </Group>
     )
 }

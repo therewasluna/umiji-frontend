@@ -1,10 +1,13 @@
 import { MRT_ColumnDef } from '@kastov/mantine-react-table-open'
-import { Badge, ComboboxItem, Group, SelectProps, Stack, Text, Tooltip } from '@mantine/core'
+import { Badge, ComboboxItem, Group, SelectProps, Text } from '@mantine/core'
 import { GetBrokersCommand, GetNodesCommand, GetUsersCommand } from '@umiji/backend-contract'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { PiHandshake } from 'react-icons/pi'
+import { TbSearch, TbTag } from 'react-icons/tb'
 
 import { IAssignableExternalSquads, IAssignableInternalSquads } from '@shared/api/hooks'
+import { resetDataStrategy } from '@shared/constants/forms/reset-data.constants'
 import { prettifyBytesUtil } from '@shared/utils/bytes'
 import { formatInt } from '@shared/utils/misc'
 import { formatTimeUtil } from '@shared/utils/time-utils'
@@ -36,6 +39,10 @@ const renderSelectOption: SelectProps['renderOption'] = ({ option }) => {
 
 type TUserRow = GetUsersCommand.Response['response']['users'][number]
 
+/**
+ * Every field the users list knows about, in one place: how it renders, filters and sorts.
+ * A field the row doesn't show lands in the row's details panel, so a new one can't get lost.
+ */
 export const useUserTableColumns = (
     internalSquads?: IAssignableInternalSquads,
     externalSquads?: IAssignableExternalSquads,
@@ -45,28 +52,27 @@ export const useUserTableColumns = (
     const { t, i18n } = useTranslation()
     const isBroker = useIsBroker()
 
-    const columns = useMemo<MRT_ColumnDef<GetUsersCommand.Response['response']['users'][number]>[]>(
+    const columns = useMemo<MRT_ColumnDef<TUserRow>[]>(
         () => [
             {
                 accessorKey: 'username',
                 header: t('common.field.username'),
                 Cell: ({ cell }) => <UsernameColumnEntity user={cell.row.original} />,
-                mantineTableBodyCellProps: {
-                    align: 'left'
-                },
-                minSize: 150,
-                maxSize: 300,
-                size: 220,
                 columnFilterModeOptions: ['contains', 'equals', 'startsWith', 'endsWith'],
                 enableColumnFilterModes: true,
-                enableColumnFilter: true
+                enableColumnFilter: true,
+                // This filter is the list's search box.
+                mantineFilterTextInputProps: {
+                    leftSection: <TbSearch size={18} />,
+                    placeholder: t('user-table.search'),
+                    size: 'md'
+                }
             },
             {
                 accessorKey: 'id',
                 header: t('use-table-columns.id'),
                 enableColumnFilterModes: false,
-                accessorFn: (originalRow) => originalRow.id,
-                size: 80
+                accessorFn: (originalRow) => originalRow.id
             },
             {
                 accessorKey: 'status',
@@ -74,23 +80,17 @@ export const useUserTableColumns = (
                 Cell: ({ cell }) => <StatusColumnEntity need="badge" user={cell.row.original} />,
                 filterVariant: 'select',
                 enableColumnFilterModes: false,
-                enableSorting: false,
-                mantineTableBodyCellProps: {
-                    align: 'center'
-                }
+                enableSorting: false
             },
             {
                 accessorKey: 'nodeName',
                 header: t('use-table-columns.last-connected-node'),
                 Cell: ({ cell }) => (
                     <ConnectedNodeColumnEntity
-                        node={
-                            nodes?.find(
-                                (node) =>
-                                    node.uuid ===
-                                    cell.row.original.userTraffic.lastConnectedNodeUuid
-                            ) ?? undefined
-                        }
+                        node={nodes?.find(
+                            (node) =>
+                                node.uuid === cell.row.original.userTraffic.lastConnectedNodeUuid
+                        )}
                     />
                 ),
                 filterVariant: 'select',
@@ -113,126 +113,52 @@ export const useUserTableColumns = (
                     }
                 },
                 enableSorting: false,
-                enableColumnFilterModes: false,
-                mantineTableBodyCellProps: {
-                    align: 'center'
-                }
+                enableColumnFilterModes: false
             },
             {
                 accessorKey: 'expireAt',
                 header: t('use-table-columns.expire-at'),
                 Cell: ({ cell }) => <StatusColumnEntity need="date" user={cell.row.original} />,
                 enableColumnFilterModes: false,
-                enableColumnFilter: false,
-                enableClickToCopy: false,
-                mantineTableBodyCellProps: {
-                    align: 'center'
-                }
+                enableColumnFilter: false
             },
             {
                 accessorKey: 'usedTrafficBytes',
                 header: t('use-table-columns.data-usage'),
                 Cell: ({ cell }) => <DataUsageColumnEntity user={cell.row.original} />,
-                mantineTableBodyCellProps: {
-                    align: 'center'
-                },
-                minSize: 150,
                 enableColumnFilterModes: false,
-                enableColumnFilter: false,
-                maxSize: 700,
-                size: 300
+                enableColumnFilter: false
             },
+            // The usage bar shows these two; the columns stay for sorting and the limit filter.
             {
                 accessorKey: 'usedTrafficPercentage',
                 header: t('use-table-columns.used-traffic'),
-                Cell: ({ cell }) => {
-                    const { usedTrafficBytes } = cell.row.original.userTraffic ?? {}
-                    const limit = cell.row.original.trafficLimitBytes ?? 0
-
-                    let percentage = 0
-                    if (limit > 0 && typeof usedTrafficBytes === 'number') {
-                        percentage = (usedTrafficBytes * 100) / limit
-                    }
-
-                    return <Text fw={600}>{percentage.toFixed(2)}%</Text>
-                },
-                mantineTableBodyCellProps: {
-                    align: 'center'
-                },
-                minSize: 80,
                 enableColumnFilterModes: false,
-                enableColumnFilter: false,
-                maxSize: 700,
-                size: 180
+                enableColumnFilter: false
             },
             {
                 accessorKey: 'trafficLimitBytes',
                 header: t('traffic-limits-card.traffic-limit'),
-                Cell: ({ cell }) => {
-                    const limitBytes = cell.row.original.trafficLimitBytes ?? 0
-                    return limitBytes === 0 ? '∞' : prettifyBytesUtil(limitBytes) || '0 B'
-                },
-                mantineTableBodyCellProps: {
-                    align: 'center'
-                },
                 filterVariant: 'range',
                 Filter: ({ column, rangeFilterIndex }) =>
                     rangeFilterIndex === 0 ? <TrafficLimitRangeFilter column={column} /> : null,
-                minSize: 230,
                 enableColumnFilterModes: false,
-                enableColumnFilter: true,
-                size: 230
+                enableColumnFilter: true
             },
-            {
-                accessorKey: 'shortUuid',
-                header: t('use-table-columns.sub-link'),
-                accessorFn: (originalRow) => originalRow.shortUuid,
-                minSize: 400,
-                maxSize: 800,
-                enableColumnFilterModes: false,
-                mantineTableBodyCellProps: {
-                    align: 'center'
-                }
-            },
-
-            {
-                accessorKey: 'description',
-                header: t('common.field.description'),
-                accessorFn: (originalRow) => originalRow.description || '–',
-                minSize: 250,
-                size: 400,
-                enableColumnFilterModes: false,
-                mantineTableBodyCellProps: {
-                    align: 'center',
-                    style: { whiteSpace: 'normal', wordBreak: 'break-word' }
-                }
-            },
-
-            {
-                accessorKey: 'telegramId',
-                header: t('use-table-columns.telegram-id'),
-                accessorFn: (originalRow) => originalRow.telegramId || '–',
-                minSize: 100,
-                size: 200,
-                enableColumnFilterModes: false,
-                mantineTableBodyCellProps: {
-                    align: 'center'
-                }
-            },
-
             {
                 accessorKey: 'tag',
                 header: t('common.field.tag'),
-                Cell: ({ cell }) => (
-                    <Text ff="monospace" fw={500} size="md">
-                        {cell.row.original.tag || '–'}
-                    </Text>
-                ),
-
-                mantineTableBodyCellProps: {
-                    align: 'center'
-                },
-
+                Cell: ({ cell }) =>
+                    cell.row.original.tag ? (
+                        <Badge
+                            color="gray"
+                            leftSection={<TbTag size={12} />}
+                            tt="none"
+                            variant="soft"
+                        >
+                            {cell.row.original.tag}
+                        </Badge>
+                    ) : null,
                 columnFilterModeOptions: ['equals'],
                 enableColumnFilterModes: false,
                 enableColumnFilter: true,
@@ -268,44 +194,20 @@ export const useUserTableColumns = (
                     const squads = cell.row.original.activeInternalSquads
 
                     if (squads.length === 0) {
-                        return <Text c="dimmed">–</Text>
+                        return '–'
                     }
 
-                    const visibleSquads = squads.slice(0, 1)
-                    const hiddenSquads = squads.slice(1)
-
                     return (
-                        <Group gap="xs" wrap="nowrap">
-                            {visibleSquads.map((squad) => (
-                                <Badge key={squad.uuid} variant="soft">
+                        <Group gap={4}>
+                            {squads.map((squad) => (
+                                <Badge color="gray" key={squad.uuid} tt="none" variant="soft">
                                     {squad.name}
                                 </Badge>
                             ))}
-
-                            {hiddenSquads.length > 0 && (
-                                <Tooltip
-                                    label={
-                                        <Stack gap="xs">
-                                            {hiddenSquads.map((squad) => (
-                                                <Badge fullWidth key={squad.uuid} variant="soft">
-                                                    {squad.name}
-                                                </Badge>
-                                            ))}
-                                        </Stack>
-                                    }
-                                    multiline
-                                    position="top"
-                                >
-                                    <Badge color="violet" style={{ cursor: 'help' }} variant="soft">
-                                        +{hiddenSquads.length}
-                                    </Badge>
-                                </Tooltip>
-                            )}
                         </Group>
                     )
                 }
             },
-
             {
                 accessorKey: 'externalSquadUuid',
                 header: t('constants.external-squads'),
@@ -320,174 +222,21 @@ export const useUserTableColumns = (
                             value: squad.uuid
                         })) ?? []
                 },
-                Cell: ({ cell }) => {
-                    const userSquad = cell.row.original.externalSquadUuid
-
-                    if (!userSquad) {
-                        return <Text c="dimmed">–</Text>
-                    }
-
-                    const squadName = externalSquads?.externalSquads.find(
-                        (squad) => userSquad === squad.uuid
-                    )?.name
-
-                    return squadName || '–'
-                }
+                Cell: ({ cell }) =>
+                    externalSquads?.externalSquads.find(
+                        (squad) => cell.row.original.externalSquadUuid === squad.uuid
+                    )?.name || '–'
             },
-
             {
-                accessorKey: 'email',
-                header: t('use-table-columns.email'),
-                accessorFn: (originalRow) => originalRow.email || '–',
-                minSize: 100,
-                size: 200,
-                enableColumnFilterModes: false,
-                mantineTableBodyCellProps: {
-                    align: 'center'
-                }
-            },
-
-            {
-                accessorKey: 'userTraffic.firstConnectedAt',
-                header: t('common.field.first-connected-at'),
-                accessorFn: (originalRow) => {
-                    if (originalRow.userTraffic && originalRow.userTraffic.firstConnectedAt) {
-                        return formatTimeUtil({
-                            time: originalRow.userTraffic.firstConnectedAt,
-                            template: 'TIME_FIRST_DATETIME',
-                            language: i18n.language
-                        })
-                    }
-                    return '–'
-                },
-                minSize: 250,
-                size: 250,
-                enableColumnFilterModes: false,
+                accessorKey: 'trafficLimitStrategy',
+                header: t('detailed-user-info-drawer.widget.traffic-limit-strategy'),
+                Cell: ({ cell }) =>
+                    resetDataStrategy(t).find(
+                        ({ value }) => value === cell.row.original.trafficLimitStrategy
+                    )?.label ?? cell.row.original.trafficLimitStrategy,
                 enableColumnFilter: false,
-
-                mantineTableBodyCellProps: {
-                    align: 'left',
-                    ff: 'monospace'
-                }
-            },
-
-            {
-                accessorKey: 'lastTrafficResetAt',
-                header: t('use-table-columns.traffic-reset'),
-                accessorFn: (originalRow) =>
-                    originalRow.lastTrafficResetAt
-                        ? formatTimeUtil({
-                              time: originalRow.lastTrafficResetAt,
-                              template: 'TIME_FIRST_DATETIME',
-                              language: i18n.language
-                          })
-                        : t('use-table-columns.never'),
-                minSize: 250,
-                size: 250,
-                enableClickToCopy: false,
                 enableColumnFilterModes: false,
-                enableColumnFilter: false,
-                mantineTableBodyCellProps: {
-                    align: 'left',
-                    ff: 'monospace'
-                }
-            },
-            {
-                accessorKey: 'userTraffic.onlineAt',
-                header: t('use-table-columns.online-at'),
-                accessorFn: (originalRow) =>
-                    originalRow.userTraffic && originalRow.userTraffic.onlineAt
-                        ? formatTimeUtil({
-                              time: originalRow.userTraffic.onlineAt,
-                              template: 'TIME_FIRST_DATETIME',
-                              language: i18n.language
-                          })
-                        : t('use-table-columns.never'),
-                minSize: 250,
-                size: 250,
-                enableColumnFilterModes: false,
-                enableColumnFilter: false,
-                mantineTableBodyCellProps: {
-                    align: 'left',
-                    ff: 'monospace'
-                }
-            },
-
-            {
-                accessorKey: 'userTraffic.lifetimeUsedTrafficBytes',
-                header: t('use-table-columns.lifetime-used'),
-                accessorFn: (originalRow) =>
-                    originalRow.userTraffic && originalRow.userTraffic.lifetimeUsedTrafficBytes
-                        ? prettifyBytesUtil(originalRow.userTraffic.lifetimeUsedTrafficBytes)
-                        : '–',
-                minSize: 170,
-                maxSize: 300,
-                size: 170,
-                enableColumnFilterModes: false,
-                enableColumnFilter: false,
-                mantineTableBodyCellProps: {
-                    align: 'center'
-                }
-            },
-            {
-                accessorKey: 'subRevokedAt',
-                header: t('use-table-columns.sub-link-revoked-at'),
-                accessorFn: (originalRow) =>
-                    originalRow.subRevokedAt
-                        ? formatTimeUtil({
-                              time: originalRow.subRevokedAt,
-                              template: 'TIME_FIRST_DATETIME',
-                              language: i18n.language
-                          })
-                        : t('use-table-columns.never'),
-                minSize: 250,
-                size: 250,
-                enableColumnFilterModes: false,
-                enableColumnFilter: false,
-                mantineTableBodyCellProps: {
-                    align: 'left',
-                    ff: 'monospace'
-                }
-            },
-            {
-                accessorKey: 'createdAt',
-                header: t('use-table-columns.created-at'),
-                accessorFn: (originalRow) =>
-                    formatTimeUtil({
-                        time: originalRow.createdAt,
-                        template: 'TIME_FIRST_DATETIME',
-                        language: i18n.language
-                    }),
-                minSize: 250,
-                size: 250,
-                enableColumnFilterModes: false,
-                enableColumnFilter: false,
-                mantineTableBodyCellProps: {
-                    align: 'left',
-                    ff: 'monospace'
-                }
-            },
-            {
-                accessorKey: 'vlessUuid',
-                header: t('use-table-columns.vless-uuid'),
-                accessorFn: (originalRow) => originalRow.vlessUuid,
-                minSize: 400,
-                enableColumnFilterModes: false,
-                maxSize: 800,
-                mantineTableBodyCellProps: {
-                    align: 'center'
-                }
-            },
-            {
-                accessorKey: 'trojanPassword',
-                header: t('use-table-columns.trojan-password'),
-                accessorFn: (originalRow) => originalRow.trojanPassword,
-                minSize: 400,
-                maxSize: 800,
-                enableColumnFilterModes: false,
-                mantineTableBodyCellProps: {
-                    align: 'center'
-                }
+                enableSorting: false
             },
             {
                 accessorKey: 'hwidDeviceLimit',
@@ -508,6 +257,132 @@ export const useUserTableColumns = (
                     min: 0,
                     max: 9_999
                 }
+            },
+            {
+                accessorKey: 'ipLimit',
+                header: t('use-table-columns.ip-limit'),
+                accessorFn: (originalRow) => originalRow.ipLimit ?? '–',
+                enableColumnFilter: false,
+                enableColumnFilterModes: false,
+                enableSorting: false
+            },
+            {
+                accessorKey: 'userTraffic.lifetimeUsedTrafficBytes',
+                header: t('use-table-columns.lifetime-used'),
+                accessorFn: (originalRow) =>
+                    originalRow.userTraffic && originalRow.userTraffic.lifetimeUsedTrafficBytes
+                        ? prettifyBytesUtil(originalRow.userTraffic.lifetimeUsedTrafficBytes)
+                        : '–',
+                enableColumnFilterModes: false,
+                enableColumnFilter: false
+            },
+            {
+                accessorKey: 'telegramId',
+                header: t('use-table-columns.telegram-id'),
+                accessorFn: (originalRow) => originalRow.telegramId || '–',
+                enableColumnFilterModes: false
+            },
+            {
+                accessorKey: 'email',
+                header: t('use-table-columns.email'),
+                accessorFn: (originalRow) => originalRow.email || '–',
+                enableColumnFilterModes: false
+            },
+            {
+                accessorKey: 'userTraffic.onlineAt',
+                header: t('use-table-columns.online-at'),
+                accessorFn: (originalRow) =>
+                    originalRow.userTraffic && originalRow.userTraffic.onlineAt
+                        ? formatTimeUtil({
+                              time: originalRow.userTraffic.onlineAt,
+                              template: 'TIME_FIRST_DATETIME',
+                              language: i18n.language
+                          })
+                        : t('use-table-columns.never'),
+                enableColumnFilterModes: false,
+                enableColumnFilter: false
+            },
+            {
+                accessorKey: 'userTraffic.firstConnectedAt',
+                header: t('common.field.first-connected-at'),
+                accessorFn: (originalRow) => {
+                    if (originalRow.userTraffic && originalRow.userTraffic.firstConnectedAt) {
+                        return formatTimeUtil({
+                            time: originalRow.userTraffic.firstConnectedAt,
+                            template: 'TIME_FIRST_DATETIME',
+                            language: i18n.language
+                        })
+                    }
+                    return '–'
+                },
+                enableColumnFilterModes: false,
+                enableColumnFilter: false
+            },
+            {
+                accessorKey: 'lastTrafficResetAt',
+                header: t('use-table-columns.traffic-reset'),
+                accessorFn: (originalRow) =>
+                    originalRow.lastTrafficResetAt
+                        ? formatTimeUtil({
+                              time: originalRow.lastTrafficResetAt,
+                              template: 'TIME_FIRST_DATETIME',
+                              language: i18n.language
+                          })
+                        : t('use-table-columns.never'),
+                enableColumnFilterModes: false,
+                enableColumnFilter: false
+            },
+            {
+                accessorKey: 'createdAt',
+                header: t('use-table-columns.created-at'),
+                accessorFn: (originalRow) =>
+                    formatTimeUtil({
+                        time: originalRow.createdAt,
+                        template: 'TIME_FIRST_DATETIME',
+                        language: i18n.language
+                    }),
+                enableColumnFilterModes: false,
+                enableColumnFilter: false
+            },
+            {
+                accessorKey: 'subRevokedAt',
+                header: t('use-table-columns.sub-link-revoked-at'),
+                accessorFn: (originalRow) =>
+                    originalRow.subRevokedAt
+                        ? formatTimeUtil({
+                              time: originalRow.subRevokedAt,
+                              template: 'TIME_FIRST_DATETIME',
+                              language: i18n.language
+                          })
+                        : t('use-table-columns.never'),
+                enableColumnFilterModes: false,
+                enableColumnFilter: false
+            },
+            {
+                accessorKey: 'shortUuid',
+                header: t('use-table-columns.sub-link'),
+                accessorFn: (originalRow) => originalRow.shortUuid,
+                // Filters and sorts on the short ID, shows the whole link it stands for.
+                Cell: ({ cell }) => cell.row.original.subscriptionUrl,
+                enableColumnFilterModes: false
+            },
+            {
+                accessorKey: 'vlessUuid',
+                header: t('use-table-columns.vless-uuid'),
+                accessorFn: (originalRow) => originalRow.vlessUuid,
+                enableColumnFilterModes: false
+            },
+            {
+                accessorKey: 'trojanPassword',
+                header: t('use-table-columns.trojan-password'),
+                accessorFn: (originalRow) => originalRow.trojanPassword,
+                enableColumnFilterModes: false
+            },
+            {
+                accessorKey: 'description',
+                header: t('common.field.description'),
+                accessorFn: (originalRow) => originalRow.description || '–',
+                enableColumnFilterModes: false
             }
         ],
         [t, nodes, internalSquads, externalSquads, i18n.language]
@@ -532,23 +407,21 @@ export const useUserTableColumns = (
                         value: broker.uuid
                     })) ?? []
             },
-            mantineTableBodyCellProps: {
-                align: 'center'
-            },
             Cell: ({ cell }) => {
                 const broker = brokers?.brokers.find(
                     ({ uuid }) => uuid === cell.row.original.brokerUuid
                 )
 
-                if (!broker) {
-                    return <Text c="dimmed">–</Text>
-                }
-
-                return (
-                    <Badge color="violet" variant="soft">
+                return broker ? (
+                    <Badge
+                        color="gray"
+                        leftSection={<PiHandshake size={12} />}
+                        tt="none"
+                        variant="soft"
+                    >
                         {broker.username}
                     </Badge>
-                )
+                ) : null
             }
         }
 

@@ -35,8 +35,8 @@ export function DisclaimerOverlay() {
                     color="yellow"
                     size={64}
                     style={{
-                        background: 'rgba(250, 204, 21, 0.1)',
-                        border: '2px solid rgba(250, 204, 21, 0.3)'
+                        background: 'transparent',
+                        border: '2px solid color-mix(in srgb, var(--mantine-color-yellow-4) 45%, transparent)'
                     }}
                     variant="light"
                 >

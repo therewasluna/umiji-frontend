@@ -1,3 +1,17 @@
+.card {
+    background: var(--mantine-color-dark-7);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+}
+
+.head {
+    color: var(--mantine-color-dark-2);
+}
+
+.head svg {
+    flex: none;
+}
+
 .title {
     color: var(--mantine-color-dimmed);
     font-size: var(--mantine-font-size-sm);
@@ -11,14 +25,15 @@
 }
 
 .value {
+    margin-top: 4px;
     font-weight: 700;
-    font-size: var(--mantine-font-size-xl);
-    line-height: 1.2;
+    font-size: 24px;
+    line-height: 1.25;
+    font-variant-numeric: tabular-nums;
     white-space: nowrap;
     overflow: hidden;
-    font-family: var(--mantine-font-family-monospace);
     text-overflow: ellipsis;
-    color: var(--mantine-color-white-5);
+    color: var(--mantine-color-bright);
 }
 
 .subtitle {

@@ -1,38 +1,86 @@
 import {
-    Accordion,
+    ActionIcon,
+    Badge,
     Button,
-    Center,
+    Checkbox,
     Code,
+    Collapse,
     Group,
+    PasswordInput,
     Stack,
     Switch,
+    SwitchProps,
     TagsInput,
     Text,
     TextInput,
-    ThemeIcon
+    Tooltip
 } from '@mantine/core'
 import { useForm, schemaResolver } from '@mantine/form'
+import { useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
 import { GetUmijiSettingsCommand, UpdateUmijiSettingsCommand } from '@umiji/backend-contract'
 import { TFunction } from 'i18next'
+import { ComponentType, ReactNode, useEffect, useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BiLogoGithub, BiLogoTelegram } from 'react-icons/bi'
-import { PiGlobe, PiKey } from 'react-icons/pi'
+import { FaYandex } from 'react-icons/fa'
 import { SiKeycloak } from 'react-icons/si'
-import { TbAlertCircle, TbFingerprint, TbKey, TbPassword, TbServer } from 'react-icons/tb'
+import {
+    TbAlertCircle,
+    TbChevronDown,
+    TbCircleDot,
+    TbFingerprint,
+    TbHelp,
+    TbHash,
+    TbId,
+    TbLink,
+    TbMail,
+    TbWorld,
+    TbKey,
+    TbPassword,
+    TbShieldCheck
+} from 'react-icons/tb'
 
 import { showModal } from '@shared/_modals/show-modal'
-import { HelpActionIconShared } from '@shared/_modals/universal'
 import { THelpDrawerAvailableScreen } from '@shared/_modals/universal/help-drawer/help-drawer.types'
 import { queryClient } from '@shared/api'
 import { QueryKeys } from '@shared/api/hooks/keys-factory'
 import { useUpdateUmijiSettings } from '@shared/api/hooks/umiji-settings/umiji-settings.mutation.hooks'
-import { CheckboxCardShared } from '@shared/ui/checkbox-card/checkbox-card.shared'
-import { PocketidLogo, YandexLogo } from '@shared/ui/logos'
+import { DimmedText, HelpPopover } from '@shared/ui/forms/hosts/base-host-form/options/fields/help'
+import { PocketidLogo } from '@shared/ui/logos'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { SettingsCardShared } from '@shared/ui/settings-card'
 import { TagInputPill } from '@shared/ui/tag-input-pill'
 import { handleFormErrors } from '@shared/utils/misc'
+
+import classes from './authentification-settings-card.module.css'
+
+function authFieldLabel(id: string, label: string, description: string) {
+    return (
+        <Group component="span" gap={6} wrap="nowrap">
+            <label htmlFor={id}>{label}</label>
+            {description && (
+                <HelpPopover>
+                    <DimmedText>{description}</DimmedText>
+                </HelpPopover>
+            )}
+        </Group>
+    )
+}
+
+const fieldIcons = {
+    clientId: TbId,
+    clientSecret: TbKey,
+    plainDomain: TbWorld,
+    allowedEmails: TbMail,
+    realm: TbShieldCheck,
+    frontendDomain: TbWorld,
+    keycloakDomain: TbWorld,
+    authorizationUrl: TbLink,
+    tokenUrl: TbLink,
+    allowedIds: TbHash,
+    withPkce: TbShieldCheck
+}
 
 interface IProps {
     oauth2Settings: NonNullable<GetUmijiSettingsCommand.Response['response']['oauth2Settings']>
@@ -45,22 +93,19 @@ const getOAuth2ProvidersConfig = (t: TFunction) =>
         {
             key: 'telegram' as const,
             title: 'Telegram',
-            icon: <BiLogoTelegram size={24} />,
-            iconColor: '#0088cc',
+            Icon: BiLogoTelegram,
             fields: ['clientId', 'clientSecret', 'frontendDomain', 'allowedIds'] as const
         },
         {
             key: 'github' as const,
             title: 'GitHub',
-            icon: <BiLogoGithub size={24} />,
-            iconColor: '#1B1F24',
+            Icon: BiLogoGithub,
             fields: ['clientId', 'clientSecret', 'allowedEmails'] as const
         },
         {
             key: 'pocketid' as const,
             title: 'PocketID',
-            icon: <PocketidLogo size={24} />,
-            iconColor: '#000',
+            Icon: PocketidLogo,
             fields: [
                 'clientId',
                 'clientSecret',
@@ -72,15 +117,13 @@ const getOAuth2ProvidersConfig = (t: TFunction) =>
         {
             key: 'yandex' as const,
             title: 'Yandex',
-            icon: <YandexLogo size={24} />,
-            iconColor: '#FC3F1D',
+            Icon: FaYandex,
             fields: ['clientId', 'clientSecret', 'allowedEmails'] as const
         },
         {
             key: 'keycloak' as const,
             title: 'Keycloak',
-            icon: <SiKeycloak color="#FFFFFF" size={24} />,
-            iconColor: '#000000',
+            Icon: SiKeycloak,
             fields: [
                 'clientId',
                 'clientSecret',
@@ -93,8 +136,7 @@ const getOAuth2ProvidersConfig = (t: TFunction) =>
         {
             key: 'generic' as const,
             title: t('authentification-settings-card.generic-oauth2'),
-            icon: <TbKey size={24} />,
-            iconColor: '#000000',
+            Icon: TbKey,
             fields: [
                 'clientId',
                 'clientSecret',
@@ -179,13 +221,131 @@ const getFieldConfig = (t: TFunction) =>
         }
     }) as const
 
+interface IAuthMethodRowProps {
+    /** What opens under the row; a method with nothing to configure has no toggle. */
+    children?: ReactNode
+    hasErrors?: boolean
+    help?: THelpDrawerAvailableScreen
+    Icon: ComponentType<{ size?: number | string }>
+    isEnabled: boolean
+    switchProps: SwitchProps
+    title: string
+}
+
+function AuthMethodGroupLabel({ label }: { label: string }) {
+    return (
+        <Text className={classes.groupLabel} component="h3">
+            {label}
+        </Text>
+    )
+}
+
+function AuthMethodRow(props: IAuthMethodRowProps) {
+    const { children, hasErrors, help, Icon, isEnabled, switchProps, title } = props
+    const { t } = useTranslation()
+    const [opened, { open, toggle }] = useDisclosure(false)
+    const panelId = useId()
+
+    useEffect(() => {
+        if (hasErrors) open()
+    }, [hasErrors, open])
+
+    return (
+        <section
+            className={classes.method}
+            data-enabled={isEnabled || undefined}
+            data-open={opened || undefined}
+        >
+            <div className={classes.head}>
+                <div className={classes.summary}>
+                    <span aria-hidden className={classes.providerIcon}>
+                        <Icon size={24} />
+                    </span>
+                    <div className={classes.identity}>
+                        <Text className={classes.title}>{title}</Text>
+                        <Text className={classes.status}>
+                            {t(isEnabled ? 'auth-settings.enabled' : 'auth-settings.disabled')}
+                        </Text>
+                    </div>
+                </div>
+
+                {children && (
+                    <Tooltip
+                        label={`${t('auth-settings.configure')}: ${title}`}
+                        openDelay={300}
+                        withArrow
+                    >
+                        <ActionIcon
+                            aria-controls={panelId}
+                            aria-expanded={opened}
+                            aria-label={`${t('auth-settings.configure')}: ${title}`}
+                            className={classes.configure}
+                            color={opened ? 'rose' : 'gray'}
+                            onClick={toggle}
+                            radius="xl"
+                            size={44}
+                            type="button"
+                            variant={opened ? 'light' : 'subtle'}
+                        >
+                            <TbChevronDown aria-hidden className={classes.chevron} size={18} />
+                        </ActionIcon>
+                    </Tooltip>
+                )}
+
+                {!children && help && (
+                    <ActionIcon
+                        aria-label={t('help-action-icon.shared.help-article')}
+                        color="gray"
+                        onClick={() => showModal('helpDrawer', { screen: help })}
+                        size={44}
+                        variant="subtle"
+                    >
+                        <TbHelp size={18} />
+                    </ActionIcon>
+                )}
+                <Switch
+                    aria-label={title}
+                    classNames={{ root: classes.switchRoot, body: classes.switchBody }}
+                    size="md"
+                    {...switchProps}
+                    onChange={(event) => {
+                        switchProps.onChange?.(event)
+                        if (event.currentTarget.checked && children) open()
+                    }}
+                />
+            </div>
+
+            {children && (
+                <Collapse expanded={opened} id={panelId}>
+                    <div aria-label={title} className={classes.panel} role="region">
+                        {children}
+                        {help && (
+                            <Button
+                                className={classes.help}
+                                color="gray"
+                                leftSection={<TbHelp size={16} />}
+                                mt="md"
+                                onClick={() => showModal('helpDrawer', { screen: help })}
+                                size="compact-sm"
+                                variant="subtle"
+                            >
+                                {t('help-action-icon.shared.help-article')}
+                            </Button>
+                        )}
+                    </div>
+                </Collapse>
+            )}
+        </section>
+    )
+}
+
 export const AuthentificationSettingsCardWidget = (props: IProps) => {
     const { passkeySettings, passwordSettings, oauth2Settings } = props
     const { t } = useTranslation()
 
     const form = useForm<NonNullable<UpdateUmijiSettingsCommand.RequestBody>>({
         name: 'auth-settings',
-        mode: 'uncontrolled',
+        mode: 'controlled',
         validate: schemaResolver(
             UpdateUmijiSettingsCommand.RequestBodySchema.pick({
                 passkeySettings: true,
@@ -235,9 +395,7 @@ export const AuthentificationSettingsCardWidget = (props: IProps) => {
                 modals.open({
                     title: (
                         <BaseOverlayHeader
-                            iconColor="red"
                             IconComponent={TbAlertCircle}
-                            iconVariant="soft"
                             title={t('auth-settings.error-modal.title')}
                         />
                     ),
@@ -282,230 +440,226 @@ export const AuthentificationSettingsCardWidget = (props: IProps) => {
     const OAUTH2_PROVIDERS = getOAuth2ProvidersConfig(t)
     const FIELD_CONFIG = getFieldConfig(t)
 
-    const renderOAuth2Provider = (config: ReturnType<typeof getOAuth2ProvidersConfig>[number]) => {
-        return (
-            <Accordion.Item key={config.key} value={config.key}>
-                <Center>
-                    <Accordion.Control
-                        icon={
-                            <ThemeIcon color={config.iconColor} size="lg" variant="filled">
-                                {config.icon}
-                            </ThemeIcon>
-                        }
-                    >
-                        <Group justify="space-between" pr="md">
-                            <Text fw={500}>{config.title}</Text>
-                        </Group>
-                    </Accordion.Control>
-                    <Group gap="xs" justify="flex-end" pr="xs" wrap="nowrap">
-                        <HelpActionIconShared
-                            actionIconProps={{
-                                size: 'input-xs'
-                            }}
-                            iconProps={{
-                                size: 20
-                            }}
-                            screen={
-                                `AUTH_METHODS_${config.key.toUpperCase()}` as THelpDrawerAvailableScreen
-                            }
+    const values = form.getValues()
+
+    const enabledMethods = [
+        values.passwordSettings?.enabled,
+        values.passkeySettings?.enabled,
+        ...OAUTH2_PROVIDERS.map((provider) => values.oauth2Settings?.[provider.key]?.enabled)
+    ].filter(Boolean).length
+
+    const totalMethods = OAUTH2_PROVIDERS.length + 2
+
+    const renderOAuth2Provider = (config: ReturnType<typeof getOAuth2ProvidersConfig>[number]) => (
+        <AuthMethodRow
+            hasErrors={Object.keys(form.errors).some((key) =>
+                key.startsWith(`oauth2Settings.${config.key}.`)
+            )}
+            help={`AUTH_METHODS_${config.key.toUpperCase()}` as THelpDrawerAvailableScreen}
+            Icon={config.Icon}
+            isEnabled={values.oauth2Settings?.[config.key]?.enabled ?? false}
+            key={config.key}
+            switchProps={form.getInputProps(`oauth2Settings.${config.key}.enabled`, {
+                type: 'checkbox'
+            })}
+            title={config.title}
+        >
+            <Stack gap="md">
+                {config.fields.map((fieldKey: keyof ReturnType<typeof getFieldConfig>) => {
+                    const fieldConfig = FIELD_CONFIG[fieldKey]
+                    const formPath = `oauth2Settings.${config.key}.${fieldKey}` as const
+                    const id = `auth-settings-${config.key}-${fieldKey}`
+                    const label = authFieldLabel(id, fieldConfig.label, fieldConfig.description)
+
+                    if (fieldConfig.type === 'tags') {
+                        return (
+                            <TagsInput
+                                clearable
+                                leftSection={
+                                    fieldKey === 'allowedIds' ? (
+                                        <TbHash size={16} />
+                                    ) : (
+                                        <TbMail size={16} />
+                                    )
+                                }
+                                id={id}
+                                key={form.key(formPath)}
+                                label={label}
+                                labelProps={{ labelElement: 'div' }}
+                                placeholder={fieldConfig.placeholder}
+                                splitChars={[',', ' ', ';']}
+                                {...form.getInputProps(formPath)}
+                                renderPill={({ value, onRemove }) => (
+                                    <TagInputPill onRemove={onRemove} value={value} />
+                                )}
+                            />
+                        )
+                    }
+
+                    if (fieldConfig.type === 'checkbox') {
+                        return (
+                            <Checkbox
+                                classNames={{ body: classes.checkboxBody }}
+                                key={form.key(formPath)}
+                                label={fieldConfig.label}
+                                {...form.getInputProps(formPath, {
+                                    type: 'checkbox'
+                                })}
+                            />
+                        )
+                    }
+
+                    if (fieldKey === 'clientSecret') {
+                        return (
+                            <PasswordInput
+                                autoComplete="off"
+                                leftSection={<TbKey size={16} />}
+                                id={id}
+                                key={form.key(formPath)}
+                                label={label}
+                                labelProps={{ labelElement: 'div' }}
+                                placeholder={fieldConfig.placeholder}
+                                {...form.getInputProps(formPath)}
+                            />
+                        )
+                    }
+
+                    const FieldIcon = fieldIcons[fieldKey]
+
+                    return (
+                        <TextInput
+                            autoComplete="off"
+                            leftSection={<FieldIcon size={16} />}
+                            id={id}
+                            key={form.key(formPath)}
+                            label={label}
+                            labelProps={{ labelElement: 'div' }}
+                            placeholder={fieldConfig.placeholder}
+                            {...form.getInputProps(formPath)}
                         />
-                        <Switch
-                            color="teal.8"
-                            key={form.key(`oauth2Settings.${config.key}.enabled`)}
-                            onClick={(e) => e.stopPropagation()}
-                            size="md"
-                            {...form.getInputProps(`oauth2Settings.${config.key}.enabled`, {
-                                type: 'checkbox'
-                            })}
-                        />
-                    </Group>
-                </Center>
-
-                <Accordion.Panel>
-                    <Stack gap="md">
-                        {config.fields.map((fieldKey: keyof ReturnType<typeof getFieldConfig>) => {
-                            const fieldConfig = FIELD_CONFIG[fieldKey]
-                            const formPath = `oauth2Settings.${config.key}.${fieldKey}` as const
-
-                            if (fieldConfig.type === 'tags') {
-                                return (
-                                    <TagsInput
-                                        clearable
-                                        description={fieldConfig.description}
-                                        key={form.key(formPath)}
-                                        label={fieldConfig.label}
-                                        placeholder={fieldConfig.placeholder}
-                                        splitChars={[',', ' ', ';']}
-                                        {...form.getInputProps(formPath)}
-                                        renderPill={({ value, onRemove }) => (
-                                            <TagInputPill onRemove={onRemove} value={value} />
-                                        )}
-                                    />
-                                )
-                            }
-
-                            if (fieldConfig.type === 'checkbox') {
-                                return (
-                                    <CheckboxCardShared
-                                        description={fieldConfig.description}
-                                        key={form.key(formPath)}
-                                        label={fieldConfig.label}
-                                        {...form.getInputProps(formPath, {
-                                            type: 'checkbox'
-                                        })}
-                                    />
-                                )
-                            }
-
-                            return (
-                                <TextInput
-                                    description={fieldConfig.description}
-                                    key={form.key(formPath)}
-                                    label={fieldConfig.label}
-                                    placeholder={fieldConfig.placeholder}
-                                    {...form.getInputProps(formPath)}
-                                />
-                            )
-                        })}
-                    </Stack>
-                </Accordion.Panel>
-            </Accordion.Item>
-        )
-    }
+                    )
+                })}
+            </Stack>
+        </AuthMethodRow>
+    )
 
     return (
         <form onSubmit={handleSubmit} style={{ display: 'contents' }}>
             <SettingsCardShared.Container>
                 <SettingsCardShared.Header
+                    actions={
+                        <Badge
+                            color="rose"
+                            leftSection={<TbShieldCheck size={12} />}
+                            size="md"
+                            title={t('auth-settings.header.active-methods')}
+                            variant="light"
+                        >
+                            {t('auth-settings.header.active-count', {
+                                active: enabledMethods,
+                                total: totalMethods
+                            })}
+                        </Badge>
+                    }
                     description={t('auth-settings.header.description')}
-                    icon={<PiKey size={24} />}
-                    iconColor="cyan"
-                    iconVariant="soft"
                     title={t('auth-settings.header.title')}
                 />
 
                 <SettingsCardShared.Content>
-                    <Accordion multiple variant="separated">
-                        {/* Password */}
-                        <Accordion.Item key="password" value="password">
-                            <Center>
-                                <Accordion.Control
-                                    disabled
-                                    icon={
-                                        <ThemeIcon color="orange" size="lg" variant="light">
-                                            <TbPassword size={24} />
-                                        </ThemeIcon>
-                                    }
-                                    style={{ opacity: 1.0 }}
-                                    styles={{
-                                        chevron: {
-                                            display: 'none'
-                                        }
-                                    }}
-                                >
-                                    <Group justify="space-between">
-                                        <Text fw={500}>{t('auth-settings.password.title')}</Text>
-                                    </Group>
-                                </Accordion.Control>
-                                <Group gap="xs" justify="flex-end" pr="xs" wrap="nowrap">
-                                    <HelpActionIconShared
-                                        actionIconProps={{
-                                            size: 'input-xs'
-                                        }}
-                                        iconProps={{
-                                            size: 20
-                                        }}
-                                        screen="AUTH_METHODS_PASSWORD"
-                                    />
-                                    <Switch
-                                        color="teal.8"
-                                        key={form.key('passwordSettings.enabled')}
-                                        onClick={(e) => e.stopPropagation()}
-                                        size="md"
-                                        {...form.getInputProps('passwordSettings.enabled', {
-                                            type: 'checkbox'
-                                        })}
-                                    />
-                                </Group>
-                            </Center>
-                        </Accordion.Item>
+                    <div className={classes.list}>
+                        <AuthMethodGroupLabel label={t('auth-settings.groups.built-in')} />
 
-                        {/* Passkey */}
-                        <Accordion.Item key="passkey" value="passkey">
-                            <Center>
-                                <Accordion.Control
-                                    icon={
-                                        <ThemeIcon color="cyan" size="lg" variant="light">
-                                            <TbFingerprint size={24} />
-                                        </ThemeIcon>
-                                    }
-                                >
-                                    <Group justify="space-between" pr="md">
-                                        <Text fw={500}>{t('auth-settings.passkey.title')}</Text>
-                                    </Group>
-                                </Accordion.Control>
-                                <Group justify="flex-end" pr="xs" wrap="nowrap">
-                                    <Switch
-                                        color="teal.8"
-                                        key={form.key('passkeySettings.enabled')}
-                                        onClick={(e) => e.stopPropagation()}
-                                        size="md"
-                                        {...form.getInputProps('passkeySettings.enabled', {
-                                            type: 'checkbox'
-                                        })}
-                                    />
-                                </Group>
-                            </Center>
+                        <AuthMethodRow
+                            help="AUTH_METHODS_PASSWORD"
+                            Icon={TbPassword}
+                            isEnabled={values.passwordSettings?.enabled ?? false}
+                            switchProps={form.getInputProps('passwordSettings.enabled', {
+                                type: 'checkbox'
+                            })}
+                            title={t('auth-settings.password.title')}
+                        />
 
-                            <Accordion.Panel>
-                                <Group justify="right">
+                        <AuthMethodRow
+                            hasErrors={Object.keys(form.errors).some((key) =>
+                                key.startsWith('passkeySettings.')
+                            )}
+                            Icon={TbFingerprint}
+                            isEnabled={values.passkeySettings?.enabled ?? false}
+                            switchProps={form.getInputProps('passkeySettings.enabled', {
+                                type: 'checkbox'
+                            })}
+                            title={t('auth-settings.passkey.title')}
+                        >
+                            <Stack gap="md">
+                                <TextInput
+                                    id="auth-settings-passkey-rpId"
+                                    key={form.key('passkeySettings.rpId')}
+                                    label={authFieldLabel(
+                                        'auth-settings-passkey-rpId',
+                                        t('auth-settings.passkey.rpId.label'),
+                                        t('auth-settings.passkey.rpId.description')
+                                    )}
+                                    labelProps={{ labelElement: 'div' }}
+                                    leftSection={<TbWorld size={16} />}
+                                    placeholder="example.com"
+                                    {...form.getInputProps('passkeySettings.rpId')}
+                                />
+
+                                <TextInput
+                                    id="auth-settings-passkey-origin"
+                                    key={form.key('passkeySettings.origin')}
+                                    label={authFieldLabel(
+                                        'auth-settings-passkey-origin',
+                                        t('auth-settings.passkey.origin.label'),
+                                        t('auth-settings.passkey.origin.description')
+                                    )}
+                                    labelProps={{ labelElement: 'div' }}
+                                    leftSection={<TbLink size={16} />}
+                                    placeholder="https://api.example.com"
+                                    {...form.getInputProps('passkeySettings.origin')}
+                                />
+
+                                <Group justify="flex-start">
                                     <Button
                                         color="gray"
-                                        disabled={!form.getValues().passkeySettings!.enabled}
-                                        leftSection={<TbFingerprint size={20} />}
+                                        disabled={!values.passkeySettings?.enabled}
+                                        leftSection={<TbFingerprint size={18} />}
                                         onClick={() => showModal('umijiSettings_passkeysDrawer')}
-                                        size="md"
+                                        size="sm"
                                         variant="light"
                                     >
                                         {t('auth-settings.passkey.manage-button')}
                                     </Button>
                                 </Group>
+                            </Stack>
+                        </AuthMethodRow>
 
-                                <Stack gap="md">
-                                    <TextInput
-                                        description={t('auth-settings.passkey.rpId.description')}
-                                        key={form.key('passkeySettings.rpId')}
-                                        label={t('auth-settings.passkey.rpId.label')}
-                                        leftSection={<PiGlobe size={16} />}
-                                        placeholder="example.com"
-                                        {...form.getInputProps('passkeySettings.rpId')}
-                                    />
+                        <AuthMethodGroupLabel label={t('auth-settings.groups.oauth2')} />
 
-                                    <TextInput
-                                        description={t('auth-settings.passkey.origin.description')}
-                                        key={form.key('passkeySettings.origin')}
-                                        label={t('auth-settings.passkey.origin.label')}
-                                        leftSection={<TbServer size={16} />}
-                                        placeholder="https://api.example.com"
-                                        {...form.getInputProps('passkeySettings.origin')}
-                                    />
-                                </Stack>
-                            </Accordion.Panel>
-                        </Accordion.Item>
-
-                        {/* OAuth2 */}
                         {OAUTH2_PROVIDERS.map(renderOAuth2Provider)}
-                    </Accordion>
+                    </div>
                 </SettingsCardShared.Content>
 
                 <SettingsCardShared.Bottom>
-                    <Group justify="flex-end">
+                    <Group className={classes.footer} justify="space-between" wrap="nowrap">
+                        <Group className={classes.unsaved} aria-live="polite" gap={6} wrap="nowrap">
+                            {form.isDirty() && (
+                                <>
+                                    <TbCircleDot aria-hidden size={14} />
+                                    <Text component="span" size="xs">
+                                        {t('auth-settings.unsaved-changes')}
+                                    </Text>
+                                </>
+                            )}
+                        </Group>
+
                         <Button
-                            color="teal"
+                            color="rose"
+                            disabled={!form.isDirty()}
                             loading={isUpdatePending}
                             size="md"
                             type="submit"
-                            variant="soft"
+                            variant="filled"
                         >
                             {t('common.action.save')}
                         </Button>

@@ -1,4 +1,4 @@
-import { Stack, ThemeIconProps } from '@mantine/core'
+import { Stack } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { t } from 'i18next'
 import { IconType } from 'react-icons'
@@ -10,21 +10,18 @@ import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 interface IProps {
     IconComponent: IconType
     delay?: number
-    iconColor?: ThemeIconProps['color']
     onApply: () => void
     onLater?: () => void
 }
 
 export const openApplyToNodesModal = (props: IProps) => {
-    const { IconComponent, iconColor = 'teal', onApply, onLater, delay = 0 } = props
+    const { IconComponent, onApply, onLater, delay = 0 } = props
 
     const open = () =>
         modals.open({
             title: (
                 <BaseOverlayHeader
-                    iconColor={iconColor}
                     IconComponent={IconComponent}
-                    iconVariant="soft"
                     title={t('apply-to-nodes.title')}
                 />
             ),

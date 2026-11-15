@@ -249,7 +249,6 @@ export const HostsDataTableWidget = memo((props: IProps) => {
                 sortStatus={sortStatus}
                 storeColumnsKey={HOSTS_CACHE_KEY}
                 striped
-                withColumnBorders
                 withRowBorders
                 withTableBorder
                 columnResizeMode="expand"

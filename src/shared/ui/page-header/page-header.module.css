@@ -1,38 +1,36 @@
-.headerWrapper {
+.header {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: var(--mantine-spacing-md);
+    gap: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+    min-height: 42px;
 }
 
-.contentSection {
+.titleBlock {
     flex: 1 1 auto;
     min-width: 0;
 }
 
-.actionsSection {
-    flex: 0 1 auto;
-    margin-left: auto;
-    display: flex;
-    justify-content: flex-end;
+.title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.25;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
+.actions {
+    margin-inline-start: auto;
+
+    /* On a phone the buttons fill their row, so both edges meet the page like the content below. */
+    @media (max-width: $mantine-breakpoint-xs) {
+        &.actions {
+            flex: 1 1 100%;
+            flex-wrap: wrap;
+            margin-inline-start: 0;
+        }
+
+        & > * {
+            flex: 1 1 auto;
+        }
     }
-    to {
-        opacity: 1;
-    }
-}
-
-.card {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    animation: fadeIn 200ms linear both;
-}
-
-.actionIcon {
-    cursor: default;
 }

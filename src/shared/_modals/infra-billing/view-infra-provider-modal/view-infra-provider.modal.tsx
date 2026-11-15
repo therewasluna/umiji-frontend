@@ -9,6 +9,7 @@ import { TbServer } from 'react-icons/tb'
 import { useNiceMantineModal } from '@shared/_modals/use-nice-modal'
 import { queryClient } from '@shared/api'
 import { QueryKeys, useUpdateInfraProvider } from '@shared/api/hooks'
+import { ModalFooter } from '@shared/ui/modal-footer'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { handleFormErrors } from '@shared/utils/misc'
 
@@ -74,9 +75,7 @@ export const ViewInfraProviderModal = NiceModal.create((props: IProps) => {
             size="md"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbServer}
-                    iconVariant="soft"
                     title={t('view-infra-provider.drawer.widget.infra-provider')}
                 />
             }
@@ -106,11 +105,20 @@ export const ViewInfraProviderModal = NiceModal.create((props: IProps) => {
                         placeholder={t('view-infra-provider.drawer.widget.enter-login-url')}
                         {...form.getInputProps('loginUrl')}
                     />
-
-                    <Button loading={isUpdateInfraProviderPending} type="submit" variant="soft">
+                </Stack>
+                <ModalFooter>
+                    <Button color="gray" onClick={hide} variant="soft">
+                        {t('common.action.cancel')}
+                    </Button>
+                    <Button
+                        color="teal"
+                        loading={isUpdateInfraProviderPending}
+                        type="submit"
+                        variant="soft"
+                    >
                         {t('common.action.save')}
                     </Button>
-                </Stack>
+                </ModalFooter>
             </form>
         </Modal>
     )

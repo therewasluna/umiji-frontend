@@ -40,9 +40,7 @@ export const NodeConfigProfilesCard = <
             <SectionCard.Root>
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="teal"
                         IconComponent={SiSecurityscorecard}
-                        iconVariant="soft"
                         title={t('base-node-form.core-configuration')}
                         titleOrder={5}
                     />

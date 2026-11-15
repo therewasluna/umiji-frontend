@@ -9,12 +9,12 @@ interface IProps {
 export const SidebarLayout = (props: IProps) => {
     const { headerControls } = props
 
-    const [opened, { toggle }] = useDisclosure(true)
+    const [opened, { close, toggle }] = useDisclosure(false)
 
     return (
         <SidebarShellLayout
-            closedSide="desktop"
             headerControls={headerControls}
+            onNavClose={close}
             opened={opened}
             padding="xl"
             toggle={toggle}

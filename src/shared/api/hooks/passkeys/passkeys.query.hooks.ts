@@ -1,8 +1,5 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
-import {
-    GetPasskeysCommand,
-    GetPasskeyRegistrationOptionsCommand
-} from '@umiji/backend-contract'
+import { GetPasskeysCommand, GetPasskeyRegistrationOptionsCommand } from '@umiji/backend-contract'
 import { t } from 'i18next'
 
 import { createGetQueryHook, errorHandler } from '../../tsq-helpers'

@@ -1,74 +1,53 @@
 import { Box, Group, Progress, Text } from '@mantine/core'
-import { RESET_PERIODS } from '@umiji/backend-contract'
-import { useTranslation } from 'react-i18next'
 
 import { prettifyBytesUtil } from '@shared/utils/bytes'
 
 import { IProps } from '@entities/dashboard/users/ui/table-columns/username/interface'
 
+// The reset strategy and lifetime usage live in the row's details panel.
 export function DataUsageColumnEntity(props: IProps) {
-    const { t } = useTranslation()
-
     const { user } = props
 
     const usedBytes = user.userTraffic.usedTrafficBytes
     const limitBytes = user.trafficLimitBytes
-    const lifetimeBytes = user.userTraffic.lifetimeUsedTrafficBytes
     const isUnlimited = limitBytes === 0
     const percentage = isUnlimited ? 0 : (usedBytes * 100) / limitBytes
 
-    const strategy = {
-        [RESET_PERIODS.MONTH]: t('data-usage.column.monthly'),
-        [RESET_PERIODS.WEEK]: t('data-usage.column.weekly'),
-        [RESET_PERIODS.DAY]: t('data-usage.column.daily'),
-        [RESET_PERIODS.MONTH_ROLLING]: `${t('data-usage.column.monthly')} ↻`,
-        [RESET_PERIODS.NO_RESET]: '∞'
-    }[user.trafficLimitStrategy]
-
     const prettyUsedData = prettifyBytesUtil(usedBytes) || '0 B'
-    const prettyLifetimeData = prettifyBytesUtil(lifetimeBytes) || '0 B'
     const maxData = isUnlimited ? '∞' : prettifyBytesUtil(limitBytes) || '∞'
 
+    // Rose while there is room, coral near the cap, red at it.
     const getProgressColor = () => {
-        if (isUnlimited) return 'teal'
         if (percentage > 95) return 'red'
-        if (percentage > 80) return 'yellow.4'
-        return 'teal'
+        if (percentage > 80) return 'yellow'
+        return 'rose'
     }
 
     return (
-        <Box miw={300}>
-            <Group justify="space-between">
-                <Text c="red.5" fw={700} fz="xs">
-                    {percentage.toFixed(2)}%
-                    <Text c="dimmed" component="span" fz="xs">
-                        {' '}
-                        {strategy}
+        <Box ta="start">
+            <Group gap={6} justify="space-between" wrap="nowrap">
+                <Text fz="sm" truncate="end">
+                    <bdi>
+                        <b>{prettyUsedData}</b>
+                        <Text c="dimmed" component="span" fz="sm">
+                            {' '}
+                            / {maxData}
+                        </Text>
+                    </bdi>
+                </Text>
+                {!isUnlimited && (
+                    <Text c="dimmed" fz="xs" style={{ whiteSpace: 'nowrap' }}>
+                        <bdi>{percentage.toFixed(1)}%</bdi>
                     </Text>
-                </Text>
-                <Text c="teal.5" fw={700} fz="xs">
-                    <Text c="dimmed" component="span" fw={550} fz="xs" size="xs">
-                        Σ {prettyLifetimeData}
-                    </Text>{' '}
-                    {(100 - percentage).toFixed(2)}%
-                </Text>
+                )}
             </Group>
             <Progress
                 color={getProgressColor()}
-                radius="xs"
-                size="md"
-                value={isUnlimited ? 100 : percentage}
+                mt={6}
+                radius="xl"
+                size={6}
+                value={Math.min(percentage, 100)}
             />
-
-            <Group gap="xs" justify="space-between" mt={2}>
-                <Text c="dimmed" fw={550} size="xs">
-                    {prettyUsedData}
-                </Text>
-
-                <Text c="dimmed" fw={550} size="xs">
-                    {maxData}
-                </Text>
-            </Group>
         </Box>
     )
 }

@@ -1,5 +1,5 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react'
-import { Button, Group, Modal, Stack, TextInput } from '@mantine/core'
+import { Button, Modal, Stack, TextInput } from '@mantine/core'
 import { DatePicker } from '@mantine/dates'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
@@ -9,6 +9,7 @@ import { TbCalendar } from 'react-icons/tb'
 import { useNiceMantineModal } from '@shared/_modals/use-nice-modal'
 import { queryClient } from '@shared/api'
 import { QueryKeys, useUpdateInfraBillingNode } from '@shared/api/hooks'
+import { ModalFooter } from '@shared/ui/modal-footer'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { toUtcDayISO } from '@shared/utils/time-utils'
 
@@ -74,9 +75,7 @@ export const UpdateBillingDateModal = NiceModal.create((props: IProps) => {
             size="auto"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbCalendar}
-                    iconVariant="soft"
                     title={t('update-billing-date-modal.widget.update-billing-date')}
                 />
             }
@@ -86,7 +85,7 @@ export const UpdateBillingDateModal = NiceModal.create((props: IProps) => {
                     {uuids.length === 1 && nextBillingAt && (
                         <TextInput
                             label={t('update-billing-date-modal.widget.current-date')}
-                            mb="xs"
+                            mb="md"
                             readOnly
                             value={dayjs(new Date(nextBillingAt)).format('D MMMM YYYY')}
                             w="100%"
@@ -95,7 +94,7 @@ export const UpdateBillingDateModal = NiceModal.create((props: IProps) => {
 
                     <TextInput
                         label={t('update-billing-date-modal.widget.new-date')}
-                        mb="xs"
+                        mb="md"
                         readOnly
                         value={dayjs(selectedDate).format('D MMMM YYYY')}
                         w="100%"
@@ -124,13 +123,21 @@ export const UpdateBillingDateModal = NiceModal.create((props: IProps) => {
                         value={selectedDate}
                     />
                 </Stack>
-
-                <Group justify="flex-end" mt="lg">
-                    <Button disabled={!selectedDate} loading={isLoading} onClick={handleSave}>
-                        {t('common.action.update')}
-                    </Button>
-                </Group>
             </Stack>
+            <ModalFooter>
+                <Button color="gray" onClick={hide} variant="soft">
+                    {t('common.action.cancel')}
+                </Button>
+                <Button
+                    color="teal"
+                    disabled={!selectedDate}
+                    loading={isLoading}
+                    onClick={handleSave}
+                    variant="soft"
+                >
+                    {t('common.action.update')}
+                </Button>
+            </ModalFooter>
         </Modal>
     )
 })

@@ -6,7 +6,7 @@ import { HwidInspectorTableWidget } from '@widgets/dashboard/hwid-inspector/hwid
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 
-import { Page } from '@shared/ui'
+import { Page, PageHeaderShared } from '@shared/ui'
 import { MobileWarningOverlay } from '@shared/ui/mobile-warning-overlay/mobile-warning-overlay'
 
 export default function HwidInspectorPageComponent() {
@@ -15,7 +15,12 @@ export default function HwidInspectorPageComponent() {
 
     return (
         <Page title={t('constants.hwid-inspector')}>
-            <Stack>
+            <PageHeaderShared
+                description={t('hwid-inspector-metrics.widget.page-description')}
+                title={t('constants.hwid-inspector')}
+            />
+
+            <Stack gap="xl">
                 {isMobile && <MobileWarningOverlay />}
                 <HwidInspectorMetrics />
 

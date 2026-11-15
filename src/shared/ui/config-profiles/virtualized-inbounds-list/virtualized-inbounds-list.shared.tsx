@@ -14,6 +14,7 @@ export const VirtualizedInboundsListShared = memo((props: IProps) => {
 
     const parentRef = useRef<HTMLDivElement>(null)
 
+    // oxlint-disable-next-line react/incompatible-library -- TanStack Virtual returns imperative methods by design.
     const virtualizer = useVirtualizer({
         count: profile.inbounds.length,
         getScrollElement: () => parentRef.current,

@@ -36,14 +36,7 @@ export const ActiveNodesModal = NiceModal.create((props: IProps) => {
         <Modal
             {...modalProps}
             size="lg"
-            title={
-                <BaseOverlayHeader
-                    iconColor="teal"
-                    IconComponent={TbCpu}
-                    iconVariant="soft"
-                    title={profileName}
-                />
-            }
+            title={<BaseOverlayHeader IconComponent={TbCpu} title={profileName} />}
         >
             <Stack gap="md">
                 {nodes.length > 0 ? (

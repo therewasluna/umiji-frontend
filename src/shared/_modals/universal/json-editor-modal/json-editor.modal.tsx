@@ -43,7 +43,6 @@ export interface IJsonEditorModalProps {
 export const JsonEditorModal = NiceModal.create((props: IJsonEditorModalProps) => {
     const {
         docsUrl,
-        iconColor = 'teal',
         IconComponent = TbBraces,
         initialValue,
         onSave,
@@ -90,14 +89,7 @@ export const JsonEditorModal = NiceModal.create((props: IJsonEditorModalProps) =
         <Modal
             {...modalProps}
             size="900px"
-            title={
-                <BaseOverlayHeader
-                    iconColor={iconColor}
-                    IconComponent={IconComponent}
-                    iconVariant="soft"
-                    title={title}
-                />
-            }
+            title={<BaseOverlayHeader IconComponent={IconComponent} title={title} />}
             transitionProps={{ transition: 'fade', duration: 200 }}
         >
             <Box className={clsx(classes.container, isFullscreen && fullscreenClasses.overlay)}>

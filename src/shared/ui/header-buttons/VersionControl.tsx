@@ -37,12 +37,7 @@ export function VersionControl() {
     const handleClick = () => {
         modals.open({
             title: (
-                <BaseOverlayHeader
-                    iconColor="teal"
-                    IconComponent={Logo}
-                    iconVariant="soft"
-                    title={t('version-control.build-info')}
-                />
+                <BaseOverlayHeader IconComponent={Logo} title={t('version-control.build-info')} />
             ),
             centered: true,
             size: 'md',

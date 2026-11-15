@@ -1,10 +1,10 @@
 import { Button } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { GetStatusCommand } from '@umiji/backend-contract'
 import {
     type PublicKeyCredentialRequestOptionsJSON,
     startAuthentication
 } from '@simplewebauthn/browser'
+import { GetStatusCommand } from '@umiji/backend-contract'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbFingerprint } from 'react-icons/tb'

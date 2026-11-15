@@ -5,7 +5,7 @@ import classes from './virtualized-dnd-grid.module.css'
 export const VirtualizedGridComponents = {
     List: forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
         ({ children, ...props }, ref) => (
-            <div {...props} className={classes.list} ref={ref}>
+            <div {...props} className={classes.list} data-tiles ref={ref}>
                 {children}
             </div>
         )

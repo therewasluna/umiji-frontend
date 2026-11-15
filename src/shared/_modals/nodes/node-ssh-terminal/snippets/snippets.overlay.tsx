@@ -76,9 +76,7 @@ export const SnippetsOverlay = (props: IProps) => {
                                     </ActionIcon>
                                 ) : undefined
                             }
-                            iconColor="cyan"
                             IconComponent={TbBolt}
-                            iconVariant="soft"
                             title={
                                 draft
                                     ? draft.id
@@ -100,7 +98,7 @@ export const SnippetsOverlay = (props: IProps) => {
                 {draft ? (
                     <>
                         <SectionCard.Section>
-                            <Stack gap="sm">
+                            <Stack gap="md">
                                 <TextInput
                                     autoFocus
                                     label={t('common.field.name')}

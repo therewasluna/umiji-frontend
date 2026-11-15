@@ -5,6 +5,10 @@ import { NavLink as RouterLink, useLocation } from 'react-router'
 import { useMobileMenuSections } from '../menu-sections/mobile-menu-sections'
 import classes from './mobile-navigation.module.css'
 
+// A page and anything under it (a config profile's own page lights up Config Profiles).
+const isCurrent = (pathname: string, href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`)
+
 interface IProps {
     onClose?: () => void
 }
@@ -19,7 +23,7 @@ export const MobileNavigation = (props: IProps) => {
         <Stack gap="md" pb="md" pt="md">
             {menu.map((item, index) => (
                 <Box key={item.id}>
-                    {index > 0 && <Divider color="cyan.4" mb="lg" opacity={0.3} variant="dashed" />}
+                    {index > 0 && <Divider className={classes.sectionDivider} />}
                     <Title className={classes.sectionTitle} order={6}>
                         {item.header}
                     </Title>
@@ -31,6 +35,9 @@ export const MobileNavigation = (props: IProps) => {
                                     active={false}
                                     childrenOffset={0}
                                     className={classes.sectionLink}
+                                    defaultOpened={subItem.dropdownItems.some((dropdownItem) =>
+                                        isCurrent(pathname, dropdownItem.href)
+                                    )}
                                     key={subItem.id}
                                     label={subItem.name}
                                     leftSection={subItem.icon && <subItem.icon />}
@@ -38,7 +45,7 @@ export const MobileNavigation = (props: IProps) => {
                                 >
                                     {subItem.dropdownItems?.map((dropdownItem) => (
                                         <NavLink
-                                            active={pathname.includes(dropdownItem.href)}
+                                            active={isCurrent(pathname, dropdownItem.href)}
                                             className={classes.sectionDropdownItemLink}
                                             component={RouterLink}
                                             key={dropdownItem.id}
@@ -58,7 +65,7 @@ export const MobileNavigation = (props: IProps) => {
                                 </NavLink>
                             ) : (
                                 <NavLink
-                                    active={pathname === subItem.href}
+                                    active={!subItem.newTab && isCurrent(pathname, subItem.href)}
                                     className={classes.sectionLink}
                                     component={RouterLink}
                                     key={subItem.id}

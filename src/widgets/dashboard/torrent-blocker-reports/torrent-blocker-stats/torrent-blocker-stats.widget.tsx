@@ -8,8 +8,8 @@ import { useGetTorrentBlockerStats } from '@shared/api/hooks'
 import { CountryFlag } from '@shared/ui/get-country-flag'
 import { TopLeaderboardCardShared } from '@shared/ui/leaderboard-item-card'
 import { IMetricCardProps, MetricCardShared } from '@shared/ui/metrics/metric-card'
-import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
-import { SectionCard } from '@shared/ui/section-card'
+import { SettingsCardShared } from '@shared/ui/settings-card'
+import { DataTableShared } from '@shared/ui/table'
 import { formatInt } from '@shared/utils/misc'
 
 export function TorrentBlockerStatsWidget() {
@@ -73,13 +73,13 @@ export function TorrentBlockerStatsWidget() {
                     </motion.div>
                 ))}
             </SimpleGrid>
-            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="lg">
                 <TopLeaderboardCardShared
                     emptyText={t('common.message.no-data-available')}
                     formatValue={(value) => formatInt(value)}
                     isLoading={isStatsLoading}
                     items={stats?.topUsers?.map((user) => ({
-                        color: user.color,
+                        color: 'var(--mantine-color-rose-6)',
                         name: user.username,
                         total: user.total,
                         userId: user.userId
@@ -89,19 +89,15 @@ export function TorrentBlockerStatsWidget() {
                         showModal('users_viewUserModal', { userId: user.userId })
                     }}
                     wrapper={(children) => (
-                        <SectionCard.Root>
-                            <SectionCard.Section>
-                                <BaseOverlayHeader
-                                    iconColor="red"
-                                    IconComponent={TbUsers}
-                                    iconVariant="soft"
-                                    subtitle={t('torrent-blocker-stats.widget.by-report-count')}
-                                    title={t('torrent-blocker-stats.widget.top-users')}
-                                    titleOrder={5}
-                                />
-                            </SectionCard.Section>
-                            <SectionCard.Section>{children}</SectionCard.Section>
-                        </SectionCard.Root>
+                        <DataTableShared.Container>
+                            <DataTableShared.Title
+                                description={t('torrent-blocker-stats.widget.by-report-count')}
+                                title={t('torrent-blocker-stats.widget.top-users')}
+                            />
+                            <SettingsCardShared.Container h="100%">
+                                {children}
+                            </SettingsCardShared.Container>
+                        </DataTableShared.Container>
                     )}
                 />
 
@@ -110,7 +106,7 @@ export function TorrentBlockerStatsWidget() {
                     formatValue={(value) => formatInt(value)}
                     isLoading={isStatsLoading}
                     items={stats?.topNodes?.map((node) => ({
-                        color: node.color,
+                        color: 'var(--mantine-color-rose-6)',
                         countryCode: node.countryCode,
                         name: node.name,
                         total: node.total
@@ -118,19 +114,15 @@ export function TorrentBlockerStatsWidget() {
                     maxHeight={230}
                     renderCountryFlag={(item) => <CountryFlag countryCode={item.countryCode} />}
                     wrapper={(children) => (
-                        <SectionCard.Root>
-                            <SectionCard.Section>
-                                <BaseOverlayHeader
-                                    iconColor="teal"
-                                    IconComponent={TbServer}
-                                    iconVariant="soft"
-                                    subtitle={t('torrent-blocker-stats.widget.by-report-count')}
-                                    title={t('statistic-nodes.component.top-nodes')}
-                                    titleOrder={5}
-                                />
-                            </SectionCard.Section>
-                            <SectionCard.Section>{children}</SectionCard.Section>
-                        </SectionCard.Root>
+                        <DataTableShared.Container>
+                            <DataTableShared.Title
+                                description={t('torrent-blocker-stats.widget.by-report-count')}
+                                title={t('statistic-nodes.component.top-nodes')}
+                            />
+                            <SettingsCardShared.Container h="100%">
+                                {children}
+                            </SettingsCardShared.Container>
+                        </DataTableShared.Container>
                     )}
                 />
             </SimpleGrid>

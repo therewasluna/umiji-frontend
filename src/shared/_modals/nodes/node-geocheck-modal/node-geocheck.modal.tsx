@@ -51,9 +51,7 @@ export const NodeGeocheckModal = NiceModal.create((props: IProps) => {
             size={hasReport ? 'min(1000px, 95vw)' : 'min(520px, 95vw)'}
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbMapSearch}
-                    iconVariant="soft"
                     subtitle={node.name}
                     title={t('node-geocheck.title')}
                 />

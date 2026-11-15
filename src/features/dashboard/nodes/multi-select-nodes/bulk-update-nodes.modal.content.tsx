@@ -1,11 +1,8 @@
 import {
     ActionIcon,
     Button,
-    CheckIcon,
-    ComboboxItem,
     Group,
     HoverCard,
-    MultiSelect,
     NumberInput,
     NumberInputHandlers,
     rem,
@@ -23,24 +20,20 @@ import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { HiQuestionMarkCircle } from 'react-icons/hi'
 import { PiTagDuotone } from 'react-icons/pi'
-import { TbCheck, TbMapPin, TbMinus, TbPackage, TbPlus, TbPlugConnected } from 'react-icons/tb'
+import { TbCheck, TbMapPin, TbMinus, TbPackage, TbPlus } from 'react-icons/tb'
 
 import {
     QueryKeys,
     useBulkNodesUpdate,
-    useGetNodeIntegrations,
     useGetNodePlugins,
     useGetNodesTags
 } from '@shared/api/hooks'
 import { queryClient } from '@shared/api/query-client'
 import { getCountries } from '@shared/ui/forms/nodes/base-node-form/constants'
-import integrationsClasses from '@shared/ui/forms/nodes/base-node-form/integrations-select.module.css'
 import { SelectInfraProviderShared } from '@shared/ui/infra-billing/select-infra-provider/select-infra-provider.shared'
 import { LoaderModalShared } from '@shared/ui/loader-modal'
 import { SectionCard } from '@shared/ui/section-card'
 import { TagInputPill } from '@shared/ui/tag-input-pill'
-
-import { useExperimentalFeature } from '@entities/dashboard/view-preferences-store'
 
 type NodeType = GetNodesCommand.Response['response'][number]
 
@@ -53,13 +46,9 @@ export const BulkUpdateNodesModalContent = (props: IProps) => {
     const { selectedRecords, setSelectedRecords } = props
     const { t } = useTranslation()
 
-    const isNodeIntegrationsEnabled = useExperimentalFeature('nodeIntegrations')
-
     const { mutateAsync: bulkUpdate, isPending } = useBulkNodesUpdate()
     const { data: nodePlugins, isLoading: isNodePluginsLoading } = useGetNodePlugins()
     const { data: tags, isLoading: isTagsLoading } = useGetNodesTags()
-    const { data: nodeIntegrations, isLoading: isNodeIntegrationsLoading } =
-        useGetNodeIntegrations()
 
     const consumptionMultiplierRef = useRef<NumberInputHandlers>(null)
     const nodeConsumptionMultiplierRef = useRef<NumberInputHandlers>(null)
@@ -79,7 +68,6 @@ export const BulkUpdateNodesModalContent = (props: IProps) => {
                 nodeConsumptionMultiplier: undefined,
                 providerUuid: undefined,
                 activePluginUuid: undefined,
-                integrationUuids: undefined,
                 note: undefined
             }
         }
@@ -101,7 +89,7 @@ export const BulkUpdateNodesModalContent = (props: IProps) => {
         setSelectedRecords([])
     }
 
-    if (isNodePluginsLoading || isTagsLoading || isNodeIntegrationsLoading || !nodePlugins) {
+    if (isNodePluginsLoading || isTagsLoading || !nodePlugins) {
         return (
             <motion.div
                 animate={{ opacity: 1 }}
@@ -152,64 +140,6 @@ export const BulkUpdateNodesModalContent = (props: IProps) => {
                                 label: { fontWeight: 500 }
                             }}
                         />
-
-                        {isNodeIntegrationsEnabled && (
-                            <MultiSelect
-                                key={form.key('fields.integrationUuids')}
-                                label={t('node-integrations.select.label')}
-                                {...form.getInputProps('fields.integrationUuids')}
-                                clearable
-                                data={(nodeIntegrations?.nodeIntegrations ?? []).map(
-                                    (integration) => ({
-                                        description: integration.description,
-                                        label: integration.name,
-                                        value: integration.uuid
-                                    })
-                                )}
-                                leftSection={<TbPlugConnected size={16} />}
-                                nothingFoundMessage={t('common.message.nothing-found')}
-                                placeholder={t('node-integrations.select.placeholder')}
-                                classNames={{ option: integrationsClasses.option }}
-                                scrollAreaProps={{ styles: { content: { minWidth: '100%' } } }}
-                                renderOption={({ option, checked }) => {
-                                    const { description } = option as ComboboxItem & {
-                                        description?: null | string
-                                    }
-
-                                    return (
-                                        <Group gap="xs" miw={0} wrap="nowrap" w="100%">
-                                            <CheckIcon
-                                                size={12}
-                                                style={{
-                                                    flexShrink: 0,
-                                                    opacity: checked ? 1 : 0.25
-                                                }}
-                                            />
-                                            <Stack flex={1} gap={0} miw={0}>
-                                                <Text size="sm" truncate="end">
-                                                    {option.label}
-                                                </Text>
-                                                {description && (
-                                                    <Text c="dimmed" size="xs" truncate="end">
-                                                        {description}
-                                                    </Text>
-                                                )}
-                                            </Stack>
-                                        </Group>
-                                    )
-                                }}
-                                renderPill={({ option, value, onRemove }) => (
-                                    <TagInputPill
-                                        onRemove={onRemove}
-                                        value={option?.label ?? value}
-                                    />
-                                )}
-                                searchable
-                                styles={{
-                                    label: { fontWeight: 500 }
-                                }}
-                            />
-                        )}
                     </Stack>
                 </SectionCard.Section>
 

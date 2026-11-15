@@ -11,7 +11,8 @@ import {
     GetBrokerBotCommand,
     TopUpBrokerBotWalletCommand,
     UpdateBrokerBotPlanCommand,
-    UpdateBrokerBotSettingsCommand
+    UpdateBrokerBotSettingsCommand,
+    UpdateBrokerBotTextsCommand
 } from '@umiji/backend-contract'
 import { type ParseKeys, t } from 'i18next'
 
@@ -141,5 +142,17 @@ export const useCreateBrokerBotBroadcast = createMutationHook({
                 queryKey: brokerBotQueryKeys.getBrokerBotBroadcasts.queryKey
             }),
         onError: showError('broker-bot.broadcast.title')
+    }
+})
+
+export const useUpdateBrokerBotTexts = createMutationHook({
+    endpoint: UpdateBrokerBotTextsCommand.TSQ_url,
+    bodySchema: UpdateBrokerBotTextsCommand.RequestBodySchema,
+    responseSchema: UpdateBrokerBotTextsCommand.ResponseSchema,
+    requestMethod: UpdateBrokerBotTextsCommand.endpointDetails.REQUEST_METHOD,
+    rMutationParams: {
+        onSuccess: (data) =>
+            queryClient.setQueryData(brokerBotQueryKeys.getBrokerBotTexts.queryKey, data),
+        onError: showError('broker-bot-texts.title')
     }
 })

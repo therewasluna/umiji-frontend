@@ -29,19 +29,15 @@ export const UserSubscriptionRequestsModal = NiceModal.create((props: IProps) =>
             size="min(1000px, 70vw)"
             styles={{
                 body: {
-                    height: 'calc(100% - 60px)',
+                    height: 'calc(100% - 64px)',
                     display: 'flex',
                     flexDirection: 'column'
                 }
             }}
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbTimeline}
-                    iconVariant="soft"
-                    title={t(
-                        'common.field.subscription-request-history'
-                    )}
+                    title={t('common.field.subscription-request-history')}
                 />
             }
         >

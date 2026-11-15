@@ -1,9 +1,9 @@
 import { ActionIcon, Badge, Card, Group, Text } from '@mantine/core'
+import { IconArrowDown, IconArrowUp, IconTrash } from '@tabler/icons-react'
 import {
     TSubscriptionPageBlockConfig,
     TSubscriptionPageLanguageCode
 } from '@umiji/subscription-page-types'
-import { IconArrowDown, IconArrowUp, IconTrash } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 
 import styles from '../subpage-config-visual-editor.module.css'
@@ -45,7 +45,7 @@ export function BlockCard(props: IProps) {
                 </Text>
 
                 <Group gap={4} wrap="nowrap">
-                    <Badge color="teal" size="xs" variant="light" visibleFrom="sm">
+                    <Badge color="gray" size="xs" variant="soft" visibleFrom="sm">
                         {t('block-card.buttons', { count: block.buttons.length })}
                     </Badge>
 

@@ -1,10 +1,7 @@
 import { Badge, Stack, Tooltip } from '@mantine/core'
-import ColorHash from 'color-hash'
 import { TbTag } from 'react-icons/tb'
 
 import { SingleRowOverflowList } from '@shared/ui/single-row-overflow-list'
-
-const ch = new ColorHash({ lightness: [0.65, 0.65, 0.65] })
 
 interface IProps {
     tags: string[]
@@ -22,8 +19,7 @@ export function EntityCardTags({ tags }: IProps) {
             maxVisibleItems={2}
             renderItem={(tag) => (
                 <Badge
-                    autoContrast
-                    color={ch.hex(tag)}
+                    color="gray"
                     key={tag}
                     leftSection={<TbTag size={12} />}
                     px={6}
@@ -39,7 +35,7 @@ export function EntityCardTags({ tags }: IProps) {
                         <Stack gap={4}>
                             {hidden.map((tag) => (
                                 <Badge
-                                    color={ch.hex(tag)}
+                                    color="gray"
                                     fullWidth
                                     key={tag}
                                     leftSection={<TbTag size={12} />}

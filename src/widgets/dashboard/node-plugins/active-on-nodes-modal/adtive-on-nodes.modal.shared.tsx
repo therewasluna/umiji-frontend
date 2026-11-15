@@ -37,9 +37,7 @@ export const ActivePluginsOnNodesModalShared = (props: IProps) => {
                     <SectionCard.Section key={node.uuid}>
                         <BaseOverlayHeader
                             countryCode={node.countryCode}
-                            iconColor="blue"
                             IconComponent={TbServer}
-                            iconVariant="soft"
                             subtitle={node.address}
                             title={node.name}
                             titleOrder={5}

@@ -1,7 +1,7 @@
 import type { IProps } from './interfaces/props.interface'
 
 import { CloseButton, Combobox, InputBase, useCombobox } from '@mantine/core'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PiTagDuotone } from 'react-icons/pi'
 
@@ -16,6 +16,7 @@ export function CreateableTagInputShared(props: IProps) {
     const [data, setData] = useState(tags)
     const [search, setSearch] = useState(value?.toString() || '')
     const [error, setError] = useState('')
+    const [previousProps, setPreviousProps] = useState({ tags, value })
 
     const validateTag = (tag: string) => {
         if (!/^[A-Z0-9_]+$/.test(tag)) {
@@ -29,13 +30,11 @@ export function CreateableTagInputShared(props: IProps) {
         return null
     }
 
-    useEffect(() => {
-        setData(tags)
-    }, [tags])
-
-    useEffect(() => {
-        setSearch(value?.toString() || '')
-    }, [value])
+    if (tags !== previousProps.tags || value !== previousProps.value) {
+        setPreviousProps({ tags, value })
+        if (tags !== previousProps.tags) setData(tags)
+        if (value !== previousProps.value) setSearch(value?.toString() || '')
+    }
 
     const exactOptionMatch = data.some((item) => item === search)
     const filteredOptions = exactOptionMatch

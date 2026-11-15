@@ -171,10 +171,8 @@ export const BrokerFormModal = NiceModal.create((props: IProps) => {
         <SectionCard.Root>
             <SectionCard.Section>
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbUserCog}
                     iconSize={20}
-                    iconVariant="soft"
                     title={t('brokers.account')}
                     titleOrder={5}
                 />
@@ -281,10 +279,8 @@ export const BrokerFormModal = NiceModal.create((props: IProps) => {
         <SectionCard.Root>
             <SectionCard.Section>
                 <BaseOverlayHeader
-                    iconColor="orange"
                     IconComponent={TbChartLine}
                     iconSize={20}
-                    iconVariant="soft"
                     title={t('brokers.limits')}
                     titleOrder={5}
                 />
@@ -319,10 +315,8 @@ export const BrokerFormModal = NiceModal.create((props: IProps) => {
         <SectionCard.Root>
             <SectionCard.Section>
                 <BaseOverlayHeader
-                    iconColor="indigo"
                     IconComponent={TbShield}
                     iconSize={20}
-                    iconVariant="soft"
                     title={t('brokers.access')}
                     titleOrder={5}
                 />
@@ -376,9 +370,7 @@ export const BrokerFormModal = NiceModal.create((props: IProps) => {
             size="900px"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={PiHandshake}
-                    iconVariant="soft"
                     title={broker ? broker.username : t('brokers.create-broker')}
                 />
             }

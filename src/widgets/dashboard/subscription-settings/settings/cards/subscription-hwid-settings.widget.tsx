@@ -2,7 +2,7 @@ import { Button, Group, NumberInput, px, Stack, Switch, Text, Textarea } from '@
 import { useForm, schemaResolver } from '@mantine/form'
 import { UpdateSubscriptionSettingsCommand } from '@umiji/backend-contract'
 import { useTranslation } from 'react-i18next'
-import { PiGear, PiIdentificationBadge } from 'react-icons/pi'
+import { PiGear } from 'react-icons/pi'
 import { TbDevices2 } from 'react-icons/tb'
 import { Link } from 'react-router'
 
@@ -59,9 +59,6 @@ export const SubscriptionHwidSettingsWidget = (props: IProps) => {
             <SettingsCardShared.Container>
                 <SettingsCardShared.Header
                     description={t('subscription-hwid-settings.widget.hwid-card-description')}
-                    icon={<PiIdentificationBadge size={24} />}
-                    iconColor="cyan"
-                    iconVariant="soft"
                     title={t('subscription-hwid-settings.widget.hwid-settings')}
                 />
 

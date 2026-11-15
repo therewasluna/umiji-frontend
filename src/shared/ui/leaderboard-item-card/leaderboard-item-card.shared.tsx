@@ -1,4 +1,5 @@
 import { Box, Group, Text } from '@mantine/core'
+import clsx from 'clsx'
 import { ReactNode } from 'react'
 
 import { prettifyBytesUtil } from '@shared/utils/bytes'
@@ -16,49 +17,37 @@ interface IProps {
     value: number
 }
 
+// A plain row with a thin share bar underneath, instead of a tinted block per row.
 export const LeaderboardItemCardShared = (props: IProps) => {
     const { color, countryFlag, formatValue, value, name, total, uuid, onItemClick } = props
 
-    const width = (total / value) * 100
+    const width = value > 0 ? (total / value) * 100 : 0
 
     return (
         <Box
-            bdrs="sm"
-            bg="var(--mantine-color-default-hover)"
-            className={`${styles.item} ${onItemClick ? styles.clickable : ''}`}
+            className={clsx(styles.item, { [styles.clickable]: onItemClick })}
             key={uuid ?? name}
             onClick={onItemClick}
-            p="xs"
-            pos="relative"
         >
-            <Box
-                bdrs="sm"
-                className={styles.itemBackground}
-                style={{
-                    width: `${width}%`,
-                    background: color
-                }}
-            />
-            <Group gap={10} justify="space-between" style={{ position: 'relative' }} wrap="nowrap">
+            <Group gap={10} justify="space-between" wrap="nowrap">
                 <Group gap={10} style={{ minWidth: 0 }} wrap="nowrap">
-                    <Box
-                        h={8}
-                        style={{
-                            background: color,
-                            borderRadius: '50%',
-                            flexShrink: 0
-                        }}
-                        w={8}
-                    />
+                    <span className={styles.dot} style={{ background: color }} />
                     {countryFlag}
-                    <Text fw={600} size="sm" style={{ minWidth: 0 }} truncate="end">
+                    <Text fw={500} size="sm" style={{ minWidth: 0 }} truncate="end">
                         {name}
                     </Text>
                 </Group>
-                <Text fw={600} size="sm" style={{ flexShrink: 0 }}>
+                <Text
+                    fw={600}
+                    size="sm"
+                    style={{ flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}
+                >
                     {formatValue ? formatValue(total) : prettifyBytesUtil(total)}
                 </Text>
             </Group>
+            <div className={styles.track}>
+                <div className={styles.fill} style={{ width: `${width}%`, background: color }} />
+            </div>
         </Box>
     )
 }

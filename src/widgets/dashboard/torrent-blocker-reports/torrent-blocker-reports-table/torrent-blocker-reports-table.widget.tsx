@@ -8,19 +8,11 @@ import {
 } from '@kastov/mantine-react-table-open'
 import { ActionIcon, ActionIconGroup, Box, Tooltip } from '@mantine/core'
 import { modals } from '@mantine/modals'
-import { githubDarkTheme, JsonEditor } from 'json-edit-react'
+import { JsonEditor } from 'json-edit-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PiUserCircle } from 'react-icons/pi'
-import {
-    TbExternalLink,
-    TbFilterOff,
-    TbFlame,
-    TbJson,
-    TbRefresh,
-    TbRestore,
-    TbTrash
-} from 'react-icons/tb'
+import { TbExternalLink, TbFilterOff, TbJson, TbRefresh, TbRestore, TbTrash } from 'react-icons/tb'
 
 import { showModal } from '@shared/_modals/show-modal'
 import {
@@ -29,10 +21,11 @@ import {
     useGetTorrentBlockerStats,
     useTruncateTorrentBlockerReports
 } from '@shared/api/hooks'
+import { JSON_VIEWER_THEME } from '@shared/constants/theme/json-viewer-theme'
 import { usePreventTableBackScroll } from '@shared/hooks'
 import { DEFAULT_PAGINATION_STATE, useMrtTableBinding } from '@shared/lib/mrt-table-store'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
-import { DataTableShared } from '@shared/ui/table'
+import { DataTableShared, MRT_ROWS_CLASS } from '@shared/ui/table'
 import { sToMs } from '@shared/utils/time-utils'
 
 import {
@@ -136,23 +129,21 @@ export function TorrentBlockerReportsTableWidget() {
         }),
         mantineTopToolbarProps: {
             style: {
-                '--mrt-base-background-color': '#1b2027'
+                '--mrt-base-background-color': 'transparent'
             }
         },
         mantineTableHeadProps: {
             style: {
-                '--mrt-base-background-color': '#1b2027'
+                '--mrt-base-background-color': 'transparent'
             }
         },
         mantineBottomToolbarProps: {
             style: {
-                '--mrt-base-background-color': '#1b2027'
+                '--mrt-base-background-color': 'transparent'
             }
         },
         mantinePaperProps: {
-            style: {
-                '--paper-radius': 'var(--mantine-radius-xs)'
-            },
+            className: MRT_ROWS_CLASS,
             withBorder: false
         },
         renderRowActions: ({ row }) => (
@@ -192,16 +183,14 @@ export function TorrentBlockerReportsTableWidget() {
                                         indent={2}
                                         maxWidth="100%"
                                         rootName=""
-                                        theme={githubDarkTheme}
+                                        theme={JSON_VIEWER_THEME}
                                         viewOnly
                                     />
                                 </Box>
                             ),
                             title: (
                                 <BaseOverlayHeader
-                                    iconColor="shaded-gray"
                                     IconComponent={TbJson}
-                                    iconVariant="soft"
                                     title={t('torrent-blocker-reports-table.raw-report')}
                                 />
                             ),
@@ -324,12 +313,8 @@ export function TorrentBlockerReportsTableWidget() {
                         </Tooltip>
                     </ActionIconGroup>
                 }
-                icon={<TbFlame size={24} />}
-                iconProps={{
-                    color: 'red',
-                    variant: 'soft'
-                }}
-                title={t('constants.tb-reports')}
+                description={t('torrent-blocker-stats.widget.all-reports-description')}
+                title={t('torrent-blocker-stats.widget.all-reports')}
             />
 
             <DataTableShared.Content>

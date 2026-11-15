@@ -30,6 +30,7 @@ export function ConfigEditorActionsFeature(props: Props) {
     const {
         editorRef,
         isConfigValid,
+        isVisual,
         setResult,
         setIsConfigValid,
         configProfile,
@@ -230,12 +231,12 @@ export function ConfigEditorActionsFeature(props: Props) {
                     onOpen={() => handlers.open()}
                     radius="sm"
                     shadow="md"
-                    trigger="click-hover"
+                    trigger="click"
                     withinPortal
                 >
                     <Menu.Target>
                         <ActionIcon
-                            className={classes.actionIconLeft}
+                            className={isVisual ? undefined : classes.actionIconLeft}
                             size={36}
                             variant={opened ? 'outline' : 'default'}
                         >
@@ -266,23 +267,27 @@ export function ConfigEditorActionsFeature(props: Props) {
                             {t('config-editor-actions.feature.copy-all-content')}
                         </Menu.Item>
 
-                        <Menu.Item
-                            leftSection={<TbSelectAll size={14} />}
-                            onClick={handleSelectAll}
-                        >
-                            {t('common.action.select-all')}
-                        </Menu.Item>
+                        {!isVisual && (
+                            <>
+                                <Menu.Item
+                                    leftSection={<TbSelectAll size={14} />}
+                                    onClick={handleSelectAll}
+                                >
+                                    {t('common.action.select-all')}
+                                </Menu.Item>
 
-                        <Menu.Item leftSection={<TbCut size={14} />} onClick={handleCut}>
-                            {t('config-editor-actions.feature.cut-selection')}
-                        </Menu.Item>
+                                <Menu.Item leftSection={<TbCut size={14} />} onClick={handleCut}>
+                                    {t('config-editor-actions.feature.cut-selection')}
+                                </Menu.Item>
 
-                        <Menu.Item
-                            leftSection={<TbClipboardText size={14} />}
-                            onClick={handlePaste}
-                        >
-                            {t('config-editor-actions.feature.paste-from-clipboard')}
-                        </Menu.Item>
+                                <Menu.Item
+                                    leftSection={<TbClipboardText size={14} />}
+                                    onClick={handlePaste}
+                                >
+                                    {t('config-editor-actions.feature.paste-from-clipboard')}
+                                </Menu.Item>
+                            </>
+                        )}
 
                         <Menu.Divider />
 
@@ -292,9 +297,7 @@ export function ConfigEditorActionsFeature(props: Props) {
                                 modals.open({
                                     title: (
                                         <BaseOverlayHeader
-                                            iconColor="teal"
                                             IconComponent={TbTools}
-                                            iconVariant="soft"
                                             title={t('config-editor-actions.feature.tools')}
                                         />
                                     ),
@@ -315,14 +318,16 @@ export function ConfigEditorActionsFeature(props: Props) {
                     </Menu.Dropdown>
                 </Menu>
 
-                <Button
-                    className={classes.centeredButton}
-                    leftSection={<PiCheckSquareOffset size={16} />}
-                    onClick={formatDocument}
-                    variant="default"
-                >
-                    {t('config-editor-actions.feature.format')}
-                </Button>
+                {!isVisual && (
+                    <Button
+                        className={classes.centeredButton}
+                        leftSection={<PiCheckSquareOffset size={16} />}
+                        onClick={formatDocument}
+                        variant="default"
+                    >
+                        {t('config-editor-actions.feature.format')}
+                    </Button>
+                )}
             </Group>
         </Group>
     )

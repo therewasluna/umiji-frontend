@@ -27,10 +27,8 @@ export function BulkContactInformationCard(props: IProps) {
             <SectionCard.Root>
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="teal"
                         IconComponent={TbMail}
                         iconSize={20}
-                        iconVariant="soft"
                         title={t('contact-information-card.contact-information')}
                         titleOrder={5}
                     />

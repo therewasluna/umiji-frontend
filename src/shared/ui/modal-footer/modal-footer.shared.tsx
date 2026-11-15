@@ -11,7 +11,7 @@ export function ModalFooter(props: IProps) {
     const { children, isMobile = false } = props
 
     return (
-        <Modal.Header className={styles.footer} component="footer" h="auto" mt="md" pos="sticky">
+        <Modal.Header className={styles.footer} component="footer" data-modal-footer>
             <Group
                 gap="md"
                 grow={!!isMobile}

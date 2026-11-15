@@ -196,6 +196,48 @@ export const clearVault = async (): Promise<void> => {
     }
 }
 
+export async function replaceVault(
+    meta: Omit<IVaultMeta, 'id'>,
+    records: {
+        hosts: IKnownHostRecord[]
+        keys: INodeKeyRecord[]
+        profiles: IConnectionProfileRecord[]
+        snippets: ISnippetRecord[]
+    }
+): Promise<void> {
+    const db = await open()
+    const transaction = db.transaction(
+        [STORE_META, STORE_KEYS, STORE_HOSTS, STORE_PROFILES, STORE_SNIPPETS, STORE_DEVICE],
+        'readwrite'
+    )
+    const completion = new Promise<void>((resolve, reject) => {
+        transaction.oncomplete = () => resolve()
+        transaction.onabort = () => reject(transaction.error ?? new Error('Vault import aborted'))
+        transaction.onerror = () => reject(transaction.error ?? new Error('Vault import failed'))
+    })
+
+    try {
+        transaction.objectStore(STORE_META).clear()
+        transaction.objectStore(STORE_META).put({ ...meta, id: META_ID })
+
+        for (const [name, values] of [
+            [STORE_KEYS, records.keys],
+            [STORE_HOSTS, records.hosts],
+            [STORE_PROFILES, records.profiles],
+            [STORE_SNIPPETS, records.snippets]
+        ] as const) {
+            const store = transaction.objectStore(name)
+            store.clear()
+            for (const value of values) store.put(value)
+        }
+
+        transaction.objectStore(STORE_DEVICE).clear()
+        await completion
+    } finally {
+        db.close()
+    }
+}
+
 export const putKnownHosts = async (records: IKnownHostRecord[]): Promise<void> => {
     for (const record of records) await putKnownHost(record)
 }

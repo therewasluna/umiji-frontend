@@ -1,4 +1,4 @@
-import { Button, SimpleGrid, Stack, Title, Tooltip } from '@mantine/core'
+import { Button, Stack, Title, Tooltip } from '@mantine/core'
 import { BrokerAccountAlertsWidget } from '@widgets/dashboard/broker-panel/account-alerts'
 import { BrokerAccountCardsWidget } from '@widgets/dashboard/broker-panel/account-cards'
 import { BrokerUsersAttentionWidget } from '@widgets/dashboard/broker-panel/users-attention'
@@ -6,19 +6,14 @@ import { UsersMetrics } from '@widgets/dashboard/users/users-metrics'
 import { motion } from 'motion/react'
 import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-    PiClockCountdownDuotone,
-    PiProhibitDuotone,
-    PiPulseDuotone,
-    PiUsersDuotone
-} from 'react-icons/pi'
-import { TbGauge, TbUserPlus } from 'react-icons/tb'
+import { TbUserPlus } from 'react-icons/tb'
 
 import { showModal } from '@shared/_modals/show-modal'
 import { useGetBrokerMe } from '@shared/api/hooks'
 import { Page, PageHeaderShared } from '@shared/ui'
-import { IMetricCardProps, MetricCardShared } from '@shared/ui/metrics/metric-card'
+import { StatStripShared } from '@shared/ui/stat-strip'
 import { getBrokerStateUtil } from '@shared/utils/brokers'
+import { formatInt } from '@shared/utils/misc'
 
 const Section = ({
     children,
@@ -34,7 +29,7 @@ const Section = ({
         initial={{ opacity: 0, y: 16 }}
         transition={{ duration: 0.35, delay: index * 0.1, ease: 'easeOut' }}
     >
-        <Title c="dimmed" m="xs" ml={0} order={4}>
+        <Title c="dimmed" mb="xs" order={4}>
             {title}
         </Title>
         {children}
@@ -57,35 +52,11 @@ export function BrokerOverviewPage() {
         null
 
     const online = broker?.onlineStats
-    const onlineCards: IMetricCardProps[] = [
-        {
-            IconComponent: PiPulseDuotone,
-            iconColor: 'teal',
-            iconVariant: 'soft',
-            title: t('online-metrics.online-now'),
-            value: online?.onlineNow ?? 0
-        },
-        {
-            IconComponent: PiClockCountdownDuotone,
-            iconColor: 'blue',
-            iconVariant: 'soft',
-            title: t('online-metrics.online-today'),
-            value: online?.lastDay ?? 0
-        },
-        {
-            IconComponent: PiUsersDuotone,
-            iconColor: 'indigo',
-            iconVariant: 'soft',
-            title: t('online-metrics.online-this-week'),
-            value: online?.lastWeek ?? 0
-        },
-        {
-            IconComponent: PiProhibitDuotone,
-            iconColor: 'red',
-            iconVariant: 'soft',
-            title: t('online-metrics.never-online'),
-            value: online?.neverOnline ?? 0
-        }
+    const onlineCells = [
+        { label: t('online-metrics.online-now'), value: formatInt(online?.onlineNow ?? 0) },
+        { label: t('online-metrics.online-today'), value: formatInt(online?.lastDay ?? 0) },
+        { label: t('online-metrics.online-this-week'), value: formatInt(online?.lastWeek ?? 0) },
+        { label: t('online-metrics.never-online'), value: formatInt(online?.neverOnline ?? 0) }
     ]
 
     return (
@@ -105,11 +76,11 @@ export function BrokerOverviewPage() {
                     </Tooltip>
                 }
                 description={t('brokers.panel.status-description')}
-                icon={<TbGauge size={24} />}
                 title={broker ? t('brokers.panel.hello', { username: broker.username }) : ''}
             />
 
-            <Stack gap="sm">
+            {/* Three four-cell strips, so their columns line up down the page. */}
+            <Stack gap="lg">
                 <BrokerAccountAlertsWidget />
 
                 <Section index={0} title={t('brokers.account')}>
@@ -117,15 +88,11 @@ export function BrokerOverviewPage() {
                 </Section>
 
                 <Section index={1} title={t('constants.users')}>
-                    <UsersMetrics />
+                    <UsersMetrics withTotal={false} />
                 </Section>
 
                 <Section index={2} title={t('home.page.online-stats')}>
-                    <SimpleGrid cols={{ base: 1, xs: 2, xl: 4 }} spacing="xs">
-                        {onlineCards.map((card) => (
-                            <MetricCardShared isLoading={isLoading} key={card.title} {...card} />
-                        ))}
-                    </SimpleGrid>
+                    <StatStripShared cells={onlineCells} isLoading={isLoading} />
                 </Section>
 
                 <Section index={3} title={t('brokers.panel.needs-attention')}>

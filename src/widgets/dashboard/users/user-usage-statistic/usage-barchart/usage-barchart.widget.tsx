@@ -74,9 +74,7 @@ export const UserUsageBarchartWidget = (props: IProps) => {
             size: '600px',
             title: (
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbChartBar}
-                    iconVariant="soft"
                     subtitle={`Σ ${prettifyBytesUtil(totalDayTraffic)}`}
                     title={formatTimeUtil({
                         time: category,
@@ -88,7 +86,7 @@ export const UserUsageBarchartWidget = (props: IProps) => {
             children: (
                 <Stack>
                     <ScrollArea h={400} offsetScrollbars type="always">
-                        <Table highlightOnHover striped withTableBorder>
+                        <Table highlightOnHover withTableBorder>
                             <Table.Thead>
                                 <Table.Tr>
                                     <Table.Th>{t('statistic-nodes.component.node')}</Table.Th>

@@ -26,7 +26,7 @@ export const UsersTableTemplatesFeature = (props: IProps) => {
         <Menu position="bottom-end" shadow="md" width={260} withArrow>
             <Menu.Target>
                 <Tooltip label={t('constants.templates')} withArrow>
-                    <ActionIcon color="indigo" size="input-md" variant="soft">
+                    <ActionIcon color="gray" size="input-md" variant="soft">
                         <TbBookmark size="24px" />
                     </ActionIcon>
                 </Tooltip>
@@ -69,9 +69,7 @@ export const UsersTableTemplatesFeature = (props: IProps) => {
                         modals.open({
                             title: (
                                 <BaseOverlayHeader
-                                    iconColor="cyan"
                                     IconComponent={TbBookmark}
-                                    iconVariant="soft"
                                     title={t('constants.templates')}
                                 />
                             ),

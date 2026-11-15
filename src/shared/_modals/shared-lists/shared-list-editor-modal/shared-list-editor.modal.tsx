@@ -103,7 +103,6 @@ export const SharedListEditorModal = NiceModal.create((props: IProps) => {
     const openSyncChoiceModal = (variables: CreateSharedListCommand.RequestBody) => {
         openApplyToNodesModal({
             IconComponent: TbList,
-            iconColor: 'indigo',
             onApply: () =>
                 updateSharedList({
                     variables,
@@ -166,9 +165,7 @@ export const SharedListEditorModal = NiceModal.create((props: IProps) => {
             transitionProps={{ transition: 'fade', duration: 200 }}
             title={
                 <BaseOverlayHeader
-                    iconColor="indigo"
                     IconComponent={TbList}
-                    iconVariant="soft"
                     title={isEditMode ? `ext:${listName}` : t('common.action.create')}
                     withCopy={isEditMode}
                 />

@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Group, SimpleGrid, Stack, Title } from '@mantine/core'
+import { ActionIcon, Group, Progress, SimpleGrid, Stack, Title } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { notifications } from '@mantine/notifications'
 import { useRef, useState } from 'react'
@@ -6,36 +6,27 @@ import { useTranslation } from 'react-i18next'
 import { TbCamera, TbInfoCircle } from 'react-icons/tb'
 
 import { useIsMobile } from '@shared/hooks'
-import { LoadingScreen } from '@shared/ui'
+import { LoadingScreen, PageHeaderShared } from '@shared/ui'
 import { DisclaimerOverlay } from '@shared/ui/disclaimer-overlay'
-import { MetricCardShared, MetricCardWithTrendShared } from '@shared/ui/metrics/metric-card'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { Page } from '@shared/ui/page'
 import { copyScreenshotToClipboard } from '@shared/utils/copy-screenshot.util'
 
 import classes from './home.module.css'
 import { IProps } from './interfaces'
-import {
-    getBandwidthMetrics,
-    getOnlineMetrics,
-    getRuntimeProcessMetrics,
-    getRuntimeSummaryMetrics,
-    getSimpleMetrics,
-    getUsersMetrics
-} from './metrics'
-import { RuntimeDetailCard } from './runtime-detail-card'
+import { getOnlineMetrics, getSimpleMetrics, getUsersMetrics } from './metrics'
 import { RuntimeInfoModalContent } from './runtime-info-modal/runtime-info-modal'
+import { RuntimePanel } from './runtime-panel/runtime-panel'
+import { StatPanel, StatRow } from './stat-panel/stat-panel'
+import { TrafficPanel } from './traffic-panel/traffic-panel'
 
-interface IAnimatedCardProps {
-    children: React.ReactNode
-    index: number
-}
-
-const AnimatedCard = ({ children, index }: IAnimatedCardProps) => (
-    <Box className={classes.card} style={{ '--card-index': index } as React.CSSProperties}>
-        {children}
-    </Box>
-)
+// Same order as getUsersMetrics after the total: active, expired, limited, disabled.
+const USER_STATUS_COLORS = [
+    'var(--mantine-color-rose-8)',
+    'var(--mantine-color-dark-3)',
+    'var(--mantine-color-yellow-5)',
+    'var(--mantine-color-dark-5)'
+]
 
 export const HomePage = (props: IProps) => {
     const { t } = useTranslation()
@@ -72,124 +63,88 @@ export const HomePage = (props: IProps) => {
         return <LoadingScreen />
     }
 
-    const bandwidthMetrics = getBandwidthMetrics(bandwidthStats, t)
     const simpleMetrics = getSimpleMetrics(systemInfo, t)
     const usersMetrics = getUsersMetrics(systemInfo.users, t)
     const onlineMetrics = getOnlineMetrics(systemInfo.onlineStats, t)
-    const runtimeSummaryMetrics = getRuntimeSummaryMetrics(umijiHealth.runtimeMetrics, t)
-    const runtimeProcessMetrics = getRuntimeProcessMetrics(umijiHealth.runtimeMetrics, t)
+
+    const [onlineNow, ...onlineRows] = onlineMetrics
+    const [usersTotal, ...userRows] = usersMetrics
+    const [onlineOnNodes, totalTraffic, ramUsage, totalRam] = simpleMetrics
+    const { statusCounts, totalUsers } = systemInfo.users
+    const userCounts = [
+        statusCounts.ACTIVE,
+        statusCounts.EXPIRED,
+        statusCounts.LIMITED,
+        statusCounts.DISABLED
+    ]
+    const share = (part: number, whole: number) => (whole > 0 ? (part / whole) * 100 : 0)
 
     return (
         <Page title={t('constants.home')}>
-            <Stack gap="sm">
-                {runtimeSummaryMetrics.length > 0 && (
-                    <div className={classes.section}>
-                        <Title className={classes.title} m="xs" ml={0} order={4}>
-                            {t('home.page.umiji-usage')}
-                        </Title>
+            <PageHeaderShared
+                description={t('page-descriptions.home')}
+                title={t('constants.home')}
+            />
 
-                        <SimpleGrid cols={{ base: 1, sm: 2, xl: 4 }} spacing="xs">
-                            {runtimeSummaryMetrics.map((metric, index) => (
-                                <AnimatedCard index={index} key={metric.title}>
-                                    <MetricCardShared {...metric} />
-                                </AnimatedCard>
+            <Stack gap="lg">
+                <TrafficPanel bandwidthStats={bandwidthStats} />
+
+                <SimpleGrid cols={{ base: 1, md: 3 }} spacing="lg">
+                    <StatPanel
+                        caption={onlineNow.title}
+                        title={t('home.page.online-stats')}
+                        value={onlineNow.value}
+                    >
+                        {onlineRows.map((metric) => (
+                            <StatRow key={metric.title} label={metric.title} value={metric.value} />
+                        ))}
+                    </StatPanel>
+
+                    <StatPanel
+                        caption={usersTotal.title}
+                        title={t('user-table.widget.table-title')}
+                        value={usersTotal.value}
+                    >
+                        <Progress.Root mb="xs" size={8}>
+                            {userCounts.map((count, index) => (
+                                <Progress.Section
+                                    color={USER_STATUS_COLORS[index]}
+                                    key={USER_STATUS_COLORS[index]}
+                                    value={share(count, totalUsers)}
+                                />
                             ))}
-                        </SimpleGrid>
-                    </div>
-                )}
-
-                {runtimeProcessMetrics.length > 0 && (
-                    <div className={classes.section}>
-                        <Title className={classes.title} m="xs" ml={0} order={4}>
-                            {t('home.page.process-details')}
-                        </Title>
-                        <SimpleGrid cols={{ base: 1, sm: 2, xl: 4 }} spacing="xs">
-                            {runtimeProcessMetrics.map((metric, index) => (
-                                <AnimatedCard index={index} key={metric.title}>
-                                    <MetricCardShared {...metric} />
-                                </AnimatedCard>
-                            ))}
-                        </SimpleGrid>
-                    </div>
-                )}
-
-                <div className={classes.section}>
-                    <Title className={classes.title} m="xs" ml={0} order={4}>
-                        {t('home.page.bandwidth')}
-                    </Title>
-                    <SimpleGrid cols={{ base: 1, sm: 2, xl: 3 }} spacing="xs">
-                        {bandwidthMetrics.map((metric, index) => (
-                            <AnimatedCard index={index} key={metric.title}>
-                                <MetricCardWithTrendShared {...metric} />
-                            </AnimatedCard>
+                        </Progress.Root>
+                        {userRows.map((metric, index) => (
+                            <StatRow
+                                color={USER_STATUS_COLORS[index]}
+                                key={metric.title}
+                                label={metric.title}
+                                value={metric.value}
+                            />
                         ))}
-                    </SimpleGrid>
-                </div>
+                    </StatPanel>
 
-                <div className={classes.section}>
-                    <Title className={classes.title} m="xs" ml={0} order={4}>
-                        {t('home.page.online-stats')}
-                    </Title>
-                    <SimpleGrid cols={{ base: 1, sm: 2, xl: 4 }} spacing="xs">
-                        {onlineMetrics.map((metric, index) => (
-                            <AnimatedCard index={index} key={metric.title}>
-                                <MetricCardShared
-                                    iconColor={metric.iconColor}
-                                    IconComponent={metric.IconComponent}
-                                    iconVariant={metric.iconVariant}
-                                    isLoading={false}
-                                    title={metric.title}
-                                    value={metric.value}
-                                />
-                            </AnimatedCard>
+                    <StatPanel
+                        caption={ramUsage.title}
+                        title={t('common.field.system')}
+                        value={ramUsage.value}
+                    >
+                        <Progress
+                            color="rose.8"
+                            mb="xs"
+                            size={8}
+                            value={share(systemInfo.memory.used, systemInfo.memory.total)}
+                        />
+                        {[totalRam, onlineOnNodes, totalTraffic].map((metric) => (
+                            <StatRow key={metric.title} label={metric.title} value={metric.value} />
                         ))}
-                    </SimpleGrid>
-                </div>
-
-                <div className={classes.section}>
-                    <Title className={classes.title} m="xs" ml={0} order={4}>
-                        {t('common.field.system')}
-                    </Title>
-                    <SimpleGrid cols={{ base: 1, sm: 2, xl: 4 }} spacing="xs">
-                        {simpleMetrics.map((metric, index) => (
-                            <AnimatedCard index={index} key={metric.title}>
-                                <MetricCardShared
-                                    iconColor={metric.iconColor}
-                                    IconComponent={metric.IconComponent}
-                                    iconVariant={metric.iconVariant}
-                                    isLoading={false}
-                                    title={metric.title}
-                                    value={metric.value}
-                                />
-                            </AnimatedCard>
-                        ))}
-                    </SimpleGrid>
-                </div>
-
-                <div className={classes.section}>
-                    <Title className={classes.title} m="xs" ml={0} order={4}>
-                        {t('user-table.widget.table-title')}
-                    </Title>
-                    <SimpleGrid cols={{ base: 1, sm: 2, xl: 5 }} spacing="xs">
-                        {usersMetrics.map((metric, index) => (
-                            <AnimatedCard index={index} key={metric.title}>
-                                <MetricCardShared
-                                    iconColor={metric.iconColor}
-                                    IconComponent={metric.IconComponent}
-                                    iconVariant={metric.iconVariant}
-                                    isLoading={false}
-                                    title={metric.title}
-                                    value={metric.value}
-                                />
-                            </AnimatedCard>
-                        ))}
-                    </SimpleGrid>
-                </div>
+                    </StatPanel>
+                </SimpleGrid>
 
                 {umijiHealth.runtimeMetrics && umijiHealth.runtimeMetrics.length > 0 && (
                     <div className={classes.section}>
-                        <Group align="center" gap="xs" m="xs" ml={0}>
-                            <Title className={classes.title} order={4}>
+                        <Group align="center" gap="xs" mb="sm">
+                            <Title className={classes.title} fw={600} fz={18} me={4} order={2}>
                                 {t('home.runtime')}
                             </Title>
 
@@ -198,10 +153,10 @@ export const HomePage = (props: IProps) => {
                                 loading={copying}
                                 onClick={() => copyRuntimeScreenshot()}
                                 radius="md"
-                                size="sm"
-                                variant="transparent"
+                                size="lg"
+                                variant="soft"
                             >
-                                <TbCamera size={24} />
+                                <TbCamera size={18} />
                             </ActionIcon>
 
                             <ActionIcon
@@ -210,10 +165,8 @@ export const HomePage = (props: IProps) => {
                                     modals.open({
                                         title: (
                                             <BaseOverlayHeader
-                                                iconColor="cyan"
                                                 IconComponent={TbInfoCircle}
                                                 iconSize={20}
-                                                iconVariant="soft"
                                                 subtitle={t('home.runtime-info.subtitle')}
                                                 title={t('home.runtime-info.title')}
                                             />
@@ -225,19 +178,13 @@ export const HomePage = (props: IProps) => {
                                     })
                                 }}
                                 radius="md"
-                                size="sm"
-                                variant="transparent"
+                                size="lg"
+                                variant="soft"
                             >
-                                <TbInfoCircle size={24} />
+                                <TbInfoCircle size={18} />
                             </ActionIcon>
                         </Group>
-                        <SimpleGrid cols={{ base: 1, sm: 1, xl: 2 }} ref={runtimeRef} spacing="xs">
-                            {umijiHealth.runtimeMetrics.map((metric, index) => (
-                                <AnimatedCard index={index} key={metric.pid}>
-                                    <RuntimeDetailCard metric={metric} />
-                                </AnimatedCard>
-                            ))}
-                        </SimpleGrid>
+                        <RuntimePanel metrics={umijiHealth.runtimeMetrics} ref={runtimeRef} />
                     </div>
                 )}
             </Stack>

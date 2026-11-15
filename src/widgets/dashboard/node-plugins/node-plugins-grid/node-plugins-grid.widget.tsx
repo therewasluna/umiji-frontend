@@ -122,9 +122,7 @@ export function NodePluginsGridWidget(props: IProps) {
             children: <ActivePluginsOnNodesModalShared nodes={activeOnNodes} />,
             title: (
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbPackage}
-                    iconVariant="soft"
                     title={t('node-plugin-card.widget.active-on-nodes')}
                     titleOrder={5}
                 />
@@ -139,9 +137,7 @@ export function NodePluginsGridWidget(props: IProps) {
             <SectionCard.Root p="xl">
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="orange"
                         IconComponent={TbAlertTriangle}
-                        iconVariant="soft"
                         subtitle={t(
                             'node-plugins-grid.widget.node-plugins-are-an-advanced-feature-please-review-the-documentation-before-use'
                         )}
@@ -170,37 +166,38 @@ export function NodePluginsGridWidget(props: IProps) {
 
                             <Group gap="sm" justify="center">
                                 <Badge
+                                    color="gray"
                                     leftSection={<TbFlame size={16} />}
                                     radius="md"
                                     size="lg"
-                                    variant="light"
+                                    variant="soft"
                                 >
                                     {t('node-plugins-grid.torrent-blocker')}
                                 </Badge>
                                 <Badge
-                                    color="teal"
+                                    color="gray"
                                     leftSection={<TbLogin size={16} />}
                                     radius="md"
                                     size="lg"
-                                    variant="light"
+                                    variant="soft"
                                 >
                                     {t('node-plugins-grid.ingress-filter')}
                                 </Badge>
                                 <Badge
-                                    color="orange"
+                                    color="gray"
                                     leftSection={<TbLogout size={16} />}
                                     radius="md"
                                     size="lg"
-                                    variant="light"
+                                    variant="soft"
                                 >
                                     {t('node-plugins-grid.egress-filter')}
                                 </Badge>
                                 <Badge
-                                    color="grape"
+                                    color="gray"
                                     leftSection={<TbPlugConnectedX size={16} />}
                                     radius="md"
                                     size="lg"
-                                    variant="light"
+                                    variant="soft"
                                 >
                                     {t('node-plugins-grid.connection-drop')}
                                 </Badge>

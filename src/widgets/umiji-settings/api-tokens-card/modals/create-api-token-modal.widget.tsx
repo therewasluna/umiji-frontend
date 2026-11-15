@@ -93,14 +93,7 @@ export const CreateApiTokenContentWidget = ({ isMobile }: IProps) => {
                 await sleep(300)
 
                 modals.open({
-                    title: (
-                        <BaseOverlayHeader
-                            iconColor="teal"
-                            IconComponent={TbCookie}
-                            iconVariant="soft"
-                            title={data.name}
-                        />
-                    ),
+                    title: <BaseOverlayHeader IconComponent={TbCookie} title={data.name} />,
                     fullScreen: isMobile,
                     centered: true,
                     size: 'min(800px, 90vw)',

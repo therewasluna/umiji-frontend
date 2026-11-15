@@ -67,9 +67,7 @@ export const NodeTrackingAndBillingCard = <
             <SectionCard.Root>
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="yellow"
                         IconComponent={TbChartBar}
-                        iconVariant="soft"
                         title={t('base-node-form.tracking-and-billing')}
                         titleOrder={5}
                     />

@@ -18,7 +18,7 @@ function HttpStatRowBase({ route, percentOfTotal }: HttpStatRowProps) {
             <div
                 className={classes.fill}
                 style={{
-                    background: `var(--mantine-color-${color}-6)`,
+                    background: 'var(--mantine-color-rose-8)',
                     width: `${Math.max(percentOfTotal, 1.5)}%`
                 }}
             />

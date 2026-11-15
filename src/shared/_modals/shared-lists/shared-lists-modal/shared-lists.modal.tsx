@@ -37,9 +37,7 @@ export const SharedListsModal = NiceModal.create(() => {
             size="min(700px, 90vw)"
             title={
                 <BaseOverlayHeader
-                    iconColor="indigo"
                     IconComponent={TbList}
-                    iconVariant="soft"
                     subtitle={t('shared-lists.modal.subtitle')}
                     title={t('common.field.shared-lists')}
                 />

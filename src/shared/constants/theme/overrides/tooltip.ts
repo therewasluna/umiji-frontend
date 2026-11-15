@@ -13,6 +13,13 @@ export default {
                     border: '1px solid var(--mantine-color-dark-4)'
                 }
             }
-        }
+        },
+        // Tooltips stay neutral whatever colour a caller passes (many pass teal).
+        vars: () => ({
+            tooltip: {
+                '--tooltip-bg': 'var(--mantine-color-dark-6)',
+                '--tooltip-color': 'var(--mantine-color-dark-0)'
+            }
+        })
     })
 }

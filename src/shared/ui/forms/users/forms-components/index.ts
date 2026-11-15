@@ -1,6 +1,7 @@
 export * from './access-settings-card'
 export * from './contact-information-card'
 export * from './device-tag-settings-card'
+export * from './telegram-proxy-card'
 export * from './traffic-limits-card'
 export * from './user-identification-card'
 export * from './user-indentity-creation-card'

@@ -15,7 +15,7 @@ import {
 } from '@mantine/core'
 import { GetExternalSquadByUuidCommand } from '@umiji/backend-contract'
 import { TFunction } from 'i18next'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PiPlus, PiTrash } from 'react-icons/pi'
 import { TbDeviceFloppy } from 'react-icons/tb'
@@ -58,7 +58,11 @@ export function ExternalSquadOverridesTab<T extends Record<string, unknown>>(pro
     const [errors, setErrors] = useState<Record<string, string>>({})
     const [fieldOrder, setFieldOrder] = useState<string[]>([])
 
-    useEffect(() => {
+    const [previousExternalSquad, setPreviousExternalSquad] = useState<typeof externalSquad | null>(
+        null
+    )
+    if (externalSquad !== previousExternalSquad) {
+        setPreviousExternalSquad(externalSquad)
         const currentOverrides = config.getCurrentOverrides(externalSquad)
         if (currentOverrides) {
             const newKeys = Object.keys(currentOverrides)
@@ -73,7 +77,7 @@ export function ExternalSquadOverridesTab<T extends Record<string, unknown>>(pro
         }
 
         setErrors({})
-    }, [externalSquad, config])
+    }
 
     const { mutate: updateExternalSquad, isPending: isUpdatingExternalSquad } =
         useUpdateExternalSquad({

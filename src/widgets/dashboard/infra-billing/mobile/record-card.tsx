@@ -40,9 +40,7 @@ export function RecordCard(props: RecordCardProps) {
                                 src={faviconResolver(record.provider.faviconLink)}
                             />
                         }
-                        iconColor="teal"
                         IconComponent={TbCreditCard}
-                        iconVariant="soft"
                         subtitle={formatTimeUtil({
                             language: i18n.language,
                             template: 'FULL_DATE',

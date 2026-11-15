@@ -5,7 +5,9 @@ import {
     Divider,
     Group,
     NumberInput,
+    PasswordInput,
     Popover,
+    SegmentedControl,
     Select,
     Stack,
     TagsInput,
@@ -18,13 +20,17 @@ import { CreateNodeCommand } from '@umiji/backend-contract'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PiArrowRight, PiTagDuotone } from 'react-icons/pi'
+import { SiDocker } from 'react-icons/si'
 import {
     TbCertificate,
     TbChevronDown,
     TbId,
+    TbLock,
     TbMapPin,
     TbPackage,
+    TbRocket,
     TbSettings,
+    TbShieldLock,
     TbWorld
 } from 'react-icons/tb'
 
@@ -36,16 +42,31 @@ import { TagInputPill } from '@shared/ui/tag-input-pill'
 
 import { CopyDockerComposeWidget } from './copy-docker-compose.widget'
 
+export type TCreateNodeMode = 'auto' | 'manual'
+
+export interface ISshLogin {
+    password: string
+    port: number | string
+}
+
 interface IProps {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     form: UseFormReturnType<CreateNodeCommand.RequestBody, any>
+    mode: TCreateNodeMode
+    onModeChange: (mode: TCreateNodeMode) => void
     onNext: () => void
+    onSshChange: (ssh: ISshLogin) => void
     port: number
     secretKey: string | undefined
+    ssh: ISshLogin
 }
 
-export const CreateNodeStep1Connection = ({ form, onNext, secretKey, port }: IProps) => {
+export const CreateNodeStep1Connection = (props: IProps) => {
+    const { form, mode, onModeChange, onNext, onSshChange, port, secretKey, ssh } = props
     const { t } = useTranslation()
+
+    const isAuto = mode === 'auto'
+    const [sshErrors, setSshErrors] = useState<{ password?: string; port?: string }>({})
 
     const { data: nodePlugins } = useGetNodePlugins()
     const { data: nodesTags } = useGetNodesTags()
@@ -58,11 +79,25 @@ export const CreateNodeStep1Connection = ({ form, onNext, secretKey, port }: IPr
         const addressErrors = form.validateField('address')
         const portErrors = form.validateField('port')
 
+        const sshPort = Number(ssh.port)
+        const nextSshErrors = isAuto
+            ? {
+                  password: ssh.password ? undefined : t('node-install.password-required'),
+                  port:
+                      Number.isInteger(sshPort) && sshPort >= 1 && sshPort <= 65535
+                          ? undefined
+                          : t('node-install.ssh-port')
+              }
+            : {}
+        setSshErrors(nextSshErrors)
+
         if (
             nameErrors.hasError ||
             countryCodeErrors.hasError ||
             addressErrors.hasError ||
-            portErrors.hasError
+            portErrors.hasError ||
+            nextSshErrors.password ||
+            nextSshErrors.port
         ) {
             return
         }
@@ -78,32 +113,67 @@ export const CreateNodeStep1Connection = ({ form, onNext, secretKey, port }: IPr
             }}
         >
             <Stack gap="xs" mih={400}>
-                <Text c="dimmed" size="sm">
-                    {t('create-node-step-1-connection.copy-the')}{' '}
-                    <Code c="white" color="gray.8">
-                        docker-compose.yml
-                    </Code>{' '}
-                    {t('create-node-step-1-connection.content-for-the-umiji-node-below')}{' '}
-                    <Anchor
-                        fw="700"
-                        href="https://github.com/therewasluna/umiji"
-                        inherit
-                        rel="noopener noreferrer"
-                        target="_blank"
-                        underline="hover"
-                    >
-                        {t('create-node-step-1-connection.learn-more')}
-                    </Anchor>
-                </Text>
+                <SegmentedControl
+                    data={[
+                        {
+                            value: 'auto',
+                            label: (
+                                <Group gap={8} justify="center" wrap="nowrap">
+                                    <TbRocket size={16} />
+                                    <span>{t('node-install.mode-auto')}</span>
+                                </Group>
+                            )
+                        },
+                        {
+                            value: 'manual',
+                            label: (
+                                <Group gap={8} justify="center" wrap="nowrap">
+                                    <SiDocker size={15} />
+                                    <span>{t('node-install.mode-manual')}</span>
+                                </Group>
+                            )
+                        }
+                    ]}
+                    fullWidth
+                    mb={6}
+                    onChange={(value) => onModeChange(value as TCreateNodeMode)}
+                    value={mode}
+                />
+
+                {isAuto ? (
+                    <Text c="dimmed" size="sm">
+                        {t('node-install.auto-description')}
+                    </Text>
+                ) : (
+                    <Text c="dimmed" size="sm">
+                        {t('create-node-step-1-connection.copy-the')}{' '}
+                        <Code c="white" color="gray.8">
+                            docker-compose.yml
+                        </Code>{' '}
+                        {t('create-node-step-1-connection.content-for-the-umiji-node-below')}{' '}
+                        <Anchor
+                            fw="700"
+                            href="https://github.com/therewasluna/umiji"
+                            inherit
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            underline="hover"
+                        >
+                            {t('create-node-step-1-connection.learn-more')}
+                        </Anchor>
+                    </Text>
+                )}
 
                 <Divider />
-                <Stack gap="xs">
-                    <CopyableFieldShared
-                        label={t('create-node-step-1-connection.secret-key-secret-key')}
-                        leftSection={<TbCertificate size={16} />}
-                        size="sm"
-                        value={secretKey ?? ''}
-                    />
+                <Stack gap="md">
+                    {!isAuto && (
+                        <CopyableFieldShared
+                            label={t('create-node-step-1-connection.secret-key-secret-key')}
+                            leftSection={<TbCertificate size={16} />}
+                            size="sm"
+                            value={secretKey ?? ''}
+                        />
+                    )}
 
                     <TextInput
                         key={form.key('name')}
@@ -135,7 +205,11 @@ export const CreateNodeStep1Connection = ({ form, onNext, secretKey, port }: IPr
                     <Group align="flex-start" gap="xs" w="100%">
                         <TextInput
                             key={form.key('address')}
-                            label={t('create-node-step-1-connection.domain-or-ip')}
+                            label={
+                                isAuto
+                                    ? t('node-install.server-ip')
+                                    : t('create-node-step-1-connection.domain-or-ip')
+                            }
                             {...form.getInputProps('address')}
                             leftSection={<TbWorld size={16} />}
                             placeholder="192.168.1.1"
@@ -166,6 +240,64 @@ export const CreateNodeStep1Connection = ({ form, onNext, secretKey, port }: IPr
                             w="25%"
                         />
                     </Group>
+
+                    {isAuto && (
+                        <>
+                            <Group align="flex-start" gap="xs" w="100%">
+                                <PasswordInput
+                                    autoComplete="new-password"
+                                    error={sshErrors.password}
+                                    label={t('node-install.root-password')}
+                                    leftSection={<TbLock size={16} />}
+                                    name="server-root-password"
+                                    onChange={(event) => {
+                                        onSshChange({ ...ssh, password: event.currentTarget.value })
+                                        setSshErrors((errors) => ({
+                                            ...errors,
+                                            password: undefined
+                                        }))
+                                    }}
+                                    required
+                                    size="sm"
+                                    styles={{
+                                        label: { fontWeight: 500 }
+                                    }}
+                                    value={ssh.password}
+                                    w="70%"
+                                />
+
+                                <NumberInput
+                                    allowDecimal={false}
+                                    allowNegative={false}
+                                    clampBehavior="strict"
+                                    decimalScale={0}
+                                    error={sshErrors.port}
+                                    hideControls
+                                    label={t('node-install.ssh-port')}
+                                    max={65535}
+                                    onChange={(value) => {
+                                        onSshChange({ ...ssh, port: value })
+                                        setSshErrors((errors) => ({ ...errors, port: undefined }))
+                                    }}
+                                    placeholder="22"
+                                    required
+                                    size="sm"
+                                    styles={{
+                                        label: { fontWeight: 500 }
+                                    }}
+                                    value={ssh.port}
+                                    w="25%"
+                                />
+                            </Group>
+
+                            <Group c="dimmed" gap={6} wrap="nowrap">
+                                <TbShieldLock size={14} style={{ flexShrink: 0 }} />
+                                <Text inherit size="xs">
+                                    {t('node-install.password-note')}
+                                </Text>
+                            </Group>
+                        </>
+                    )}
 
                     <Popover
                         closeOnClickOutside={false}
@@ -209,7 +341,7 @@ export const CreateNodeStep1Connection = ({ form, onNext, secretKey, port }: IPr
                         />
 
                         <Popover.Dropdown>
-                            <Stack gap="sm">
+                            <Stack gap="md">
                                 <SelectInfraProviderShared
                                     selectedInfraProviderUuid={form.getValues().providerUuid}
                                     setSelectedInfraProviderUuid={(providerUuid) => {
@@ -274,7 +406,7 @@ export const CreateNodeStep1Connection = ({ form, onNext, secretKey, port }: IPr
                 </Stack>
 
                 <Stack gap="xs" mt="auto">
-                    <CopyDockerComposeWidget port={port} />
+                    {!isAuto && <CopyDockerComposeWidget port={port} />}
 
                     <Group justify="flex-end" mt="auto">
                         <Button

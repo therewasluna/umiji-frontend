@@ -12,7 +12,7 @@ import {
     TextInput
 } from '@mantine/core'
 import { GetExternalSquadByUuidCommand } from '@umiji/backend-contract'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PiInfo, PiPlus, PiTrash } from 'react-icons/pi'
 import { TbDeviceFloppy, TbPrescription } from 'react-icons/tb'
@@ -61,7 +61,11 @@ export const ExternalSquadsResponseHeadersTabWidget = (props: IProps) => {
         disrespectUserMotionPreference: false
     })
 
-    useEffect(() => {
+    const [previousExternalSquad, setPreviousExternalSquad] = useState<typeof externalSquad | null>(
+        null
+    )
+    if (externalSquad !== previousExternalSquad) {
+        setPreviousExternalSquad(externalSquad)
         setAddHeaders(
             sortResponseHeadersByPriority(
                 Object.entries(externalSquad.responseHeadersAdd ?? {}).map(([key, value]) => ({
@@ -71,7 +75,7 @@ export const ExternalSquadsResponseHeadersTabWidget = (props: IProps) => {
             )
         )
         setRemoveKeys(externalSquad.responseHeadersRemove ?? [])
-    }, [externalSquad])
+    }
 
     const { mutate: updateExternalSquad, isPending: isUpdatingExternalSquad } =
         useUpdateExternalSquad({
@@ -118,7 +122,9 @@ export const ExternalSquadsResponseHeadersTabWidget = (props: IProps) => {
             }
 
             if (header.value.includes('\n') && !header.value.startsWith('umijiEncodeBase64:')) {
-                setError(`Multiline value of "${header.key}" requires the umijiEncodeBase64: prefix`)
+                setError(
+                    `Multiline value of "${header.key}" requires the umijiEncodeBase64: prefix`
+                )
                 return
             }
 
@@ -188,12 +194,11 @@ export const ExternalSquadsResponseHeadersTabWidget = (props: IProps) => {
     }, [])
 
     return (
-        <SectionCard.Root>
+        <SectionCard.Root p="lg">
             <SectionCard.Section>
                 <Group justify="space-between" wrap="nowrap">
                     <BaseOverlayHeader
                         IconComponent={TbPrescription}
-                        iconVariant="soft"
                         title={t('external-squads-response-headers.widget.response-headers')}
                     />
                     <Group>

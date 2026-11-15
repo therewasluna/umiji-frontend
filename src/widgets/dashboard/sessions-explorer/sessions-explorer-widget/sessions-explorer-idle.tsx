@@ -26,9 +26,7 @@ export function SessionsExplorerIdle({ onlineNodesCount, onStart }: IProps) {
             <SectionCard.Root gap="md">
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="yellow"
                         IconComponent={TbAlertTriangle}
-                        iconVariant="soft"
                         title={t('active-sessions-drawer.widget.requirements')}
                     />
                 </SectionCard.Section>
@@ -46,7 +44,7 @@ export function SessionsExplorerIdle({ onlineNodesCount, onStart }: IProps) {
                         </Text>
                     </Group>
                     <CodeHighlight
-                        background="rgba(22, 27, 35)"
+                        background="var(--mantine-color-dark-7)"
                         code={DOCKER_SNIPPET}
                         language="yaml"
                         radius="md"

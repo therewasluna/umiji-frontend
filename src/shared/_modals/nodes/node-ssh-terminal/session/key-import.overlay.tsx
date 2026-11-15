@@ -48,9 +48,7 @@ export const KeyImportOverlay = (props: IProps) => {
             <SectionCard.Root>
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="cyan"
                         IconComponent={TbKey}
-                        iconVariant="soft"
                         subtitle={t('node-ssh.key-import-description')}
                         title={t('node-ssh.key-import-title')}
                         titleOrder={5}

@@ -147,15 +147,15 @@ export const NodeMetricsWidget = () => {
             <Paper
                 p="md"
                 style={{
-                    background: 'rgba(59, 130, 246, 0.05)',
-                    border: '1px solid rgba(59, 130, 246, 0.2)'
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.07)'
                 }}
             >
                 <Group align="center" gap="sm" wrap="wrap">
                     <Group align="center" gap="sm">
                         <HoverCard position="bottom" shadow="lg" width={320} withArrow>
                             <HoverCard.Target>
-                                <ThemeIcon color="teal" size="md" variant="light">
+                                <ThemeIcon color="gray" size="md" variant="light">
                                     <PiInfo size={px('1.2rem')} />
                                 </ThemeIcon>
                             </HoverCard.Target>

@@ -84,9 +84,7 @@ export const BulkManyUsersActionsModal = NiceModal.create((props: IProps) => {
         modals.open({
             title: (
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbCalendarUp}
-                    iconVariant="soft"
                     title={t('bulk-user-actions.actions.tab.feature.extend-expiration-date')}
                     titleOrder={5}
                 />
@@ -148,9 +146,7 @@ export const BulkManyUsersActionsModal = NiceModal.create((props: IProps) => {
             size="lg"
             title={
                 <BaseOverlayHeader
-                    iconColor="cyan"
                     IconComponent={TbDots}
-                    iconVariant="soft"
                     subtitle={t('bulk-user-actions.actions.tab.feature.perform-action-on-users', {
                         usersCount
                     })}

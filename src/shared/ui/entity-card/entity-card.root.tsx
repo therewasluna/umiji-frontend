@@ -1,5 +1,4 @@
-import { Box, Card } from '@mantine/core'
-import clsx from 'clsx'
+import { Card } from '@mantine/core'
 
 import classes from './entity-card.module.css'
 
@@ -15,6 +14,7 @@ export function EntityCardRoot(props: EntityCardProps) {
     return (
         <Card
             className={classes.card}
+            data-active={isActive || undefined}
             data-clickable={onClick ? true : undefined}
             data-layout="row"
             onClick={onClick}
@@ -29,14 +29,9 @@ export function EntityCardRoot(props: EntityCardProps) {
                       }
                     : undefined
             }
-            pb={6}
-            pl={12}
-            pr={10}
-            pt={6}
             role={onClick ? 'button' : undefined}
             tabIndex={onClick ? 0 : undefined}
         >
-            <Box className={clsx(classes.rail, { [classes.railInactive]: !isActive })} />
             {children}
         </Card>
     )

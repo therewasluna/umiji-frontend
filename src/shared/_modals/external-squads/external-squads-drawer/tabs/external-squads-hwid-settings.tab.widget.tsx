@@ -16,7 +16,7 @@ import {
     HwidSettingsSchema,
     THwidSettings
 } from '@umiji/backend-contract'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbDeviceFloppy, TbDevices2 } from 'react-icons/tb'
 
@@ -40,7 +40,11 @@ export const ExternalSquadsHwidSettingsTabWidget = (props: IProps) => {
     })
     const [errors, setErrors] = useState<Record<string, string>>({})
 
-    useEffect(() => {
+    const [previousExternalSquad, setPreviousExternalSquad] = useState<typeof externalSquad | null>(
+        null
+    )
+    if (externalSquad !== previousExternalSquad) {
+        setPreviousExternalSquad(externalSquad)
         const currentSettings = externalSquad.hwidSettings
         if (currentSettings) {
             setIsOverrideEnabled(true)
@@ -58,7 +62,7 @@ export const ExternalSquadsHwidSettingsTabWidget = (props: IProps) => {
             })
         }
         setErrors({})
-    }, [externalSquad])
+    }
 
     const { mutate: updateExternalSquad, isPending: isUpdatingExternalSquad } =
         useUpdateExternalSquad({

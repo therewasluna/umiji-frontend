@@ -31,12 +31,7 @@ function FilterTab(props: ITabProps) {
             leftSection={icon}
             onClick={onClick}
             rightSection={
-                <Badge
-                    color={isActive ? 'cyan' : 'gray'}
-                    radius="sm"
-                    size="sm"
-                    variant={isActive ? 'soft' : 'light'}
-                >
+                <Badge color="gray" radius="sm" size="sm" variant="light">
                     {count}
                 </Badge>
             }

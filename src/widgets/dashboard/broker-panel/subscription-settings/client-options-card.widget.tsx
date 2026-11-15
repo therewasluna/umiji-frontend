@@ -3,7 +3,7 @@ import { GetExternalSquadByUuidCommand } from '@umiji/backend-contract'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PiBracketsCurlyDuotone, PiChatTextDuotone, PiShuffleDuotone } from 'react-icons/pi'
-import { TbAdjustmentsHorizontal, TbDeviceFloppy } from 'react-icons/tb'
+import { TbDeviceFloppy } from 'react-icons/tb'
 
 import { queryClient } from '@shared/api'
 import { QueryKeys, useUpdateExternalSquad } from '@shared/api/hooks'
@@ -81,9 +81,6 @@ export function ClientOptionsCardWidget({ externalSquad }: IProps) {
         <SettingsCardShared.Container>
             <SettingsCardShared.Header
                 description={t('brokers.panel.client-options-description')}
-                icon={<TbAdjustmentsHorizontal size={24} />}
-                iconColor="cyan"
-                iconVariant="soft"
                 title={t('brokers.panel.client-options')}
             />
 

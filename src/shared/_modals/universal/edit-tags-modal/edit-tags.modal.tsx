@@ -1,7 +1,7 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react'
-import { ActionIcon, ModalProps, TagsInput } from '@mantine/core'
-import { TagsSchema } from '@umiji/backend-contract'
+import { Button, ModalProps, TagsInput } from '@mantine/core'
 import { UseQueryResult } from '@tanstack/react-query'
+import { TagsSchema } from '@umiji/backend-contract'
 import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbDeviceFloppy, TbTag, TbTags } from 'react-icons/tb'
@@ -24,6 +24,7 @@ import {
 } from '@shared/api/hooks'
 import { queryClient } from '@shared/api/query-client'
 import { CompoundModalShared } from '@shared/ui/compound-modal/compound-modal.shared'
+import { ModalFooter } from '@shared/ui/modal-footer'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { TagInputPill } from '@shared/ui/tag-input-pill'
 
@@ -90,29 +91,8 @@ function makeBody(
 
         return (
             <CompoundModalShared
-                buttons={
-                    <ActionIcon
-                        color="teal"
-                        disabled={!!error}
-                        form={formId}
-                        loading={isPending}
-                        type="submit"
-                        size="lg"
-                        variant="soft"
-                    >
-                        <TbDeviceFloppy size="20px" />
-                    </ActionIcon>
-                }
-
                 modalProps={modalProps}
-                title={
-                    <BaseOverlayHeader
-                        iconColor="teal"
-                        IconComponent={TbTags}
-                        iconVariant="soft"
-                        title={t('common.field.tags')}
-                    />
-                }
+                title={<BaseOverlayHeader IconComponent={TbTags} title={t('common.field.tags')} />}
             >
                 <form
                     id={formId}
@@ -140,6 +120,21 @@ function makeBody(
                         splitChars={[',', ' ', ';']}
                         value={value}
                     />
+                    <ModalFooter>
+                        <Button color="gray" onClick={modalProps.onClose} variant="soft">
+                            {t('common.action.cancel')}
+                        </Button>
+                        <Button
+                            color="teal"
+                            disabled={!!error}
+                            leftSection={<TbDeviceFloppy size={16} />}
+                            loading={isPending}
+                            type="submit"
+                            variant="default"
+                        >
+                            {t('common.action.save')}
+                        </Button>
+                    </ModalFooter>
                 </form>
             </CompoundModalShared>
         )

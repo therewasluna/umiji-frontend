@@ -1,4 +1,4 @@
-import { Stack, TextInput, Group, Button } from '@mantine/core'
+import { Stack, TextInput, Button } from '@mantine/core'
 import { useField } from '@mantine/form'
 import { CreateExternalSquadCommand } from '@umiji/backend-contract'
 import { useTranslation } from 'react-i18next'
@@ -7,6 +7,7 @@ import { showModal } from '@shared/_modals/show-modal'
 import { queryClient } from '@shared/api'
 import { useCreateExternalSquad } from '@shared/api/hooks/external-squads/external-squads.mutation.hooks'
 import { QueryKeys } from '@shared/api/hooks/keys-factory'
+import { ModalFooter } from '@shared/ui/modal-footer'
 
 interface IProps {
     onClose: () => void
@@ -68,22 +69,22 @@ export const CreateExternalSquadContent = (props: IProps) => {
                     required
                     {...nameField.getInputProps()}
                 />
-                <Group justify="flex-end">
-                    <Button color="gray" onClick={onClose} variant="subtle">
-                        {t('common.action.cancel')}
-                    </Button>
-
-                    <Button
-                        color="teal"
-                        disabled={!!nameField.error || nameField.getValue().length === 0}
-                        loading={isPending}
-                        type="submit"
-                        variant="soft"
-                    >
-                        {t('common.action.create')}
-                    </Button>
-                </Group>
             </Stack>
+            <ModalFooter>
+                <Button color="gray" onClick={onClose} variant="soft">
+                    {t('common.action.cancel')}
+                </Button>
+
+                <Button
+                    color="teal"
+                    disabled={!!nameField.error || nameField.getValue().length === 0}
+                    loading={isPending}
+                    type="submit"
+                    variant="soft"
+                >
+                    {t('common.action.create')}
+                </Button>
+            </ModalFooter>
         </form>
     )
 }

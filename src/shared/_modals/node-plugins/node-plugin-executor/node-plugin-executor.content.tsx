@@ -235,9 +235,7 @@ export const NodePluginExecutorContent = (props: IProps) => {
                     <SectionCard.Root>
                         <SectionCard.Section>
                             <BaseOverlayHeader
-                                iconColor="orange"
                                 IconComponent={TbAlertTriangle}
-                                iconVariant="soft"
                                 subtitle={t('node-plugin-executor.content.executor-description')}
                                 title={t('common.message.warning')}
                                 titleOrder={5}
@@ -291,9 +289,7 @@ export const NodePluginExecutorContent = (props: IProps) => {
                     <SectionCard.Section>
                         <Group align="flex-start" justify="space-between">
                             <BaseOverlayHeader
-                                iconColor={isBlock ? 'cyan' : 'teal'}
                                 IconComponent={isBlock ? TbLock : TbLockOpen}
-                                iconVariant="soft"
                                 subtitle={
                                     isBlock
                                         ? t('node-plugin-executor.content.block-ips-description')
@@ -371,9 +367,7 @@ export const NodePluginExecutorContent = (props: IProps) => {
                 <SectionCard.Section>
                     <Group align="flex-start" justify="space-between">
                         <BaseOverlayHeader
-                            iconColor="violet"
                             IconComponent={TbServer2}
-                            iconVariant="soft"
                             subtitle={t('node-plugin-executor.selected', {
                                 count: selectedNodeUuids.size
                             })}
@@ -401,10 +395,10 @@ export const NodePluginExecutorContent = (props: IProps) => {
                                             radius="md"
                                             style={{
                                                 border: isSelected
-                                                    ? '1px solid var(--mantine-color-cyan-6)'
-                                                    : '1px solid rgba(255,255,255,0.06)',
+                                                    ? '1px solid rgba(255,255,255,0.12)'
+                                                    : '1px solid rgba(255,255,255,0.07)',
                                                 background: isSelected
-                                                    ? 'var(--mantine-color-cyan-light)'
+                                                    ? 'var(--mantine-color-dark-6)'
                                                     : 'transparent',
                                                 transition: 'all 0.15s ease'
                                             }}
@@ -412,7 +406,7 @@ export const NodePluginExecutorContent = (props: IProps) => {
                                             <Group gap="sm" wrap="nowrap">
                                                 <Checkbox.Indicator size="sm" />
                                                 <ThemeIcon
-                                                    color={isSelected ? 'cyan' : 'gray'}
+                                                    color="gray"
                                                     radius="md"
                                                     size="md"
                                                     variant="light"

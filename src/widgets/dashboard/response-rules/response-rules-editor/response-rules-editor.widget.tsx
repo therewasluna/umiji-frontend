@@ -51,10 +51,8 @@ export function ResponseRulesEditorWidget(props: IProps) {
             modals.openConfirmModal({
                 title: (
                     <BaseOverlayHeader
-                        iconColor="red"
                         IconComponent={TbAlertTriangle}
                         iconSize={20}
-                        iconVariant="soft"
                         title={t('config-editor.widget.unsaved-changes')}
                     />
                 ),

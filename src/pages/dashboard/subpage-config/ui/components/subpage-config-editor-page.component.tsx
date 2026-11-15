@@ -3,10 +3,8 @@ import {
     Button,
     CopyButton,
     FileButton,
-    Group,
     SimpleGrid,
     Stack,
-    ThemeIcon,
     Tooltip
 } from '@mantine/core'
 import { useForm, schemaResolver } from '@mantine/form'
@@ -40,9 +38,7 @@ import {
     TbCloudDownload,
     TbDeviceFloppy,
     TbDownload,
-    TbFile,
     TbFileImport,
-    TbPalette,
     TbUpload
 } from 'react-icons/tb'
 import { useNavigate } from 'react-router'
@@ -56,8 +52,6 @@ import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { sleep } from '@shared/utils/misc'
 
 import { useIsBroker } from '@entities/auth/session-store'
-
-import styles from './subpage-config-editor-page.module.css'
 
 interface Props {
     config: GetSubpageConfigCommand.Response['response']
@@ -207,10 +201,8 @@ export const SubpageConfigEditorPageComponent = (props: Props) => {
             modals.open({
                 title: (
                     <BaseOverlayHeader
-                        iconColor="cyan"
                         IconComponent={TbFileImport}
                         iconSize={20}
-                        iconVariant="soft"
                         title={t('subpage-config-editor-page.component.import-config')}
                         titleOrder={5}
                     />
@@ -245,24 +237,19 @@ export const SubpageConfigEditorPageComponent = (props: Props) => {
     })
 
     return (
-        <Page title={config.name}>
+        <Page title={isBroker ? t('constants.subscription-page') : config.name}>
             <PageHeaderShared
                 actions={
-                    <Group>
+                    <>
                         {!isBroker && (
                             <CopyEntityLinkButton
                                 entity={OPEN_ENTITY.SUBPAGE_CONFIG}
-                                iconSize={24}
+                                iconSize={20}
                                 id={config.uuid}
                                 size="input-md"
                                 variant="soft"
                             />
                         )}
-
-                        {/* <HelpActionIconShared
-                            hidden={!isHelpDrawerVisible}
-                            screen="EDITOR_TEMPLATES_XRAY_JSON"
-                        /> */}
 
                         <FileButton
                             accept="application/json,.json"
@@ -276,10 +263,10 @@ export const SubpageConfigEditorPageComponent = (props: Props) => {
                                     <ActionIcon
                                         color="gray"
                                         size="input-md"
-                                        variant="light"
+                                        variant="soft"
                                         {...props}
                                     >
-                                        <TbUpload size={24} />
+                                        <TbUpload size={20} />
                                     </ActionIcon>
                                 </Tooltip>
                             )}
@@ -290,9 +277,9 @@ export const SubpageConfigEditorPageComponent = (props: Props) => {
                                 color="gray"
                                 onClick={handleDownloadConfig}
                                 size="input-md"
-                                variant="light"
+                                variant="soft"
                             >
-                                <TbDownload size={24} />
+                                <TbDownload size={20} />
                             </ActionIcon>
                         </Tooltip>
 
@@ -303,9 +290,9 @@ export const SubpageConfigEditorPageComponent = (props: Props) => {
                                         color={copied ? 'teal' : 'gray'}
                                         onClick={copy}
                                         size="input-md"
-                                        variant="light"
+                                        variant="soft"
                                     >
-                                        {copied ? <PiCheck size={24} /> : <PiCopy size={24} />}
+                                        {copied ? <PiCheck size={20} /> : <PiCopy size={20} />}
                                     </ActionIcon>
                                 </Tooltip>
                             )}
@@ -318,33 +305,23 @@ export const SubpageConfigEditorPageComponent = (props: Props) => {
                                 size="input-md"
                                 variant="soft"
                             >
-                                <TbArrowBackUp size={24} />
+                                <TbArrowBackUp size={20} />
                             </ActionIcon>
                         )}
-                    </Group>
-                }
-                description={config.uuid}
-                icon={<TbFile size={24} />}
-                title={config.name}
-            />
 
-            <PageHeaderShared
-                actions={
-                    <Group justify="space-between">
                         <Button
-                            className={styles.saveButton}
-                            leftSection={<TbCloudDownload size={24} />}
+                            leftSection={<TbCloudDownload size={20} />}
                             onClick={openDownloadModal}
                             size="md"
-                            variant="light"
+                            variant="default"
                         >
                             {t('common.action.load-from-github')}
                         </Button>
 
                         <Button
-                            className={styles.saveButton}
+                            color="teal"
                             disabled={isUpdatingSubscriptionPageConfig}
-                            leftSection={<TbDeviceFloppy size={24} />}
+                            leftSection={<TbDeviceFloppy size={20} />}
                             loading={isUpdatingSubscriptionPageConfig}
                             onClick={handleSave}
                             size="md"
@@ -352,28 +329,24 @@ export const SubpageConfigEditorPageComponent = (props: Props) => {
                         >
                             {t('common.action.save')}
                         </Button>
-                    </Group>
+                    </>
                 }
-                className={styles.headerCard}
-                customThemeIcon={
-                    <ThemeIcon color="cyan" size="lg" variant="soft">
-                        <TbPalette size={24} />
-                    </ThemeIcon>
+                // A broker has one page, so it gets a plain title instead of the config's name and UUID.
+                description={
+                    isBroker ? t('page-descriptions.subscription-page-broker') : config.uuid
                 }
-                description={t(
-                    'subpage-config-visual-editor.widget.edit-your-subscription-page-configuration'
-                )}
-                title={t('subpage-config-visual-editor.widget.subpage-editor')}
+                title={isBroker ? t('constants.subscription-page') : config.name}
+                wrapActions
             />
 
             <Stack gap="lg">
-                <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
+                <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
                     <BrandingBlockComponent form={form} />
                     <LocalizationBlockComponent form={form} />
+                    <SvgLibraryBlockComponent form={form} />
+                    <BaseTranslationsBlockComponent form={form} />
                 </SimpleGrid>
                 <BaseSettingsBlockComponent form={form} />
-                <SvgLibraryBlockComponent form={form} />
-                <BaseTranslationsBlockComponent form={form} />
                 <UiConfigBlockComponent form={form} />
                 <PlatformBlockComponent form={form} />
             </Stack>

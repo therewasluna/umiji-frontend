@@ -8,7 +8,6 @@ import { motion } from 'motion/react'
 /* eslint-disable no-nested-ternary */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbListCheck } from 'react-icons/tb'
 
 import { queryClient } from '@shared/api'
 import { hostsQueryKeys, useReorderHosts } from '@shared/api/hooks'
@@ -111,7 +110,7 @@ export default function HostsPageComponent(props: IProps) {
                         viewMode={viewMode}
                     />
                 }
-                icon={<TbListCheck size={24} />}
+                description={t('page-descriptions.hosts')}
                 title={t('constants.hosts')}
             />
             {isLoading ? (

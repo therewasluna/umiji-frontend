@@ -64,15 +64,7 @@ export const CreateNodeStep3Status = ({ nodeUuid, onClose }: IProps) => {
 
     return (
         <Stack gap="lg" mih={400}>
-            <Paper
-                p="xl"
-                shadow="sm"
-                style={{
-                    background:
-                        'linear-gradient(to top, var(--mantine-color-dark-6) 0%, var(--mantine-color-dark-7) 100%)'
-                }}
-                withBorder
-            >
+            <Paper bg="dark.7" p="xl" withBorder>
                 <Stack align="center" gap="xl">
                     <div style={{ height: 120, display: 'flex', alignItems: 'center' }}>
                         {status === STATUS.CONNECTING && <LottieLinkShared />}

@@ -5,7 +5,7 @@ import { SrhInspectorTableWidget } from '@widgets/dashboard/srh-inspector/srh-in
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 
-import { Page } from '@shared/ui'
+import { Page, PageHeaderShared } from '@shared/ui'
 import { MobileWarningOverlay } from '@shared/ui/mobile-warning-overlay/mobile-warning-overlay'
 
 export default function SrhInspectorPageComponent() {
@@ -14,7 +14,12 @@ export default function SrhInspectorPageComponent() {
 
     return (
         <Page title={t('constants.srh-inspector')}>
-            <Stack>
+            <PageHeaderShared
+                description={t('page-descriptions.srh-inspector')}
+                title={t('constants.srh-inspector')}
+            />
+
+            <Stack gap="xl">
                 {isMobile && <MobileWarningOverlay />}
                 <SrhInspectorMetrics />
 

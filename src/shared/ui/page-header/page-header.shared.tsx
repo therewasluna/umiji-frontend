@@ -1,35 +1,21 @@
-import { Box, Card, CardProps, Group, Stack, Text, ThemeIcon, Title } from '@mantine/core'
+import { Box, BoxProps, Group, Text, Title } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
-import { motion } from 'motion/react'
+import clsx from 'clsx'
 import { forwardRef, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import classes from './page-header.module.css'
 
-export interface PageHeaderSharedProps extends Omit<CardProps, 'c' | 'fw' | 'size' | 'tt'> {
+export interface PageHeaderSharedProps extends BoxProps {
     actions?: ReactNode
-    customThemeIcon?: ReactNode
     description?: string
-    icon?: ReactNode
     title: ReactNode
     wrapActions?: boolean
 }
 
 export const PageHeaderShared = forwardRef<HTMLDivElement, PageHeaderSharedProps>(
-    (
-        {
-            icon,
-            title,
-            description,
-            actions,
-            customThemeIcon,
-            wrapActions = false,
-            withBorder = true,
-            ...props
-        },
-        ref
-    ) => {
+    ({ title, description, actions, wrapActions = false, className, ...props }, ref) => {
         const { copy } = useClipboard()
         const { t } = useTranslation()
 
@@ -45,97 +31,29 @@ export const PageHeaderShared = forwardRef<HTMLDivElement, PageHeaderSharedProps
         }
 
         return (
-            <Card
-                className={classes.card}
-                mb="md"
-                padding="md"
-                ref={ref}
-                shadow="xl"
-                withBorder={withBorder}
-                {...props}
-            >
-                <motion.div
-                    animate={{ opacity: 1, y: 0 }}
-                    initial={{ opacity: 0, y: -10 }}
-                    style={{ position: 'relative', zIndex: 1 }}
-                    transition={{ duration: 0.5, ease: [0, 0.71, 0.2, 1.01] }}
-                >
-                    <Box className={classes.headerWrapper}>
-                        <Box className={classes.contentSection}>
-                            <Group align="center" gap="md" wrap="nowrap">
-                                <motion.div
-                                    animate={{ opacity: 1, y: 0 }}
-                                    initial={{ opacity: 0, y: -10 }}
-                                    transition={{
-                                        duration: 0.5,
-                                        ease: [0, 0.71, 0.2, 1.01]
-                                    }}
-                                >
-                                    {customThemeIcon || (
-                                        <ThemeIcon size="xl" variant="soft">
-                                            {icon}
-                                        </ThemeIcon>
-                                    )}
-                                </motion.div>
+            <Box className={clsx(classes.header, className)} mb="lg" ref={ref} {...props}>
+                <div className={classes.titleBlock}>
+                    <Title className={classes.title} order={1}>
+                        {title}
+                    </Title>
+                    {description && (
+                        <Text c="dimmed" fz="sm" onClick={handleCopy} style={{ cursor: 'copy' }}>
+                            {description}
+                        </Text>
+                    )}
+                </div>
 
-                                <Stack gap={0}>
-                                    <motion.div
-                                        animate={{ opacity: 1, y: 0 }}
-                                        initial={{ opacity: 0, y: -10 }}
-                                        transition={{
-                                            duration: 0.5,
-                                            ease: [0, 0.71, 0.2, 1.01]
-                                        }}
-                                    >
-                                        <Title order={4} pt={0}>
-                                            {title}
-                                        </Title>
-                                    </motion.div>
-                                    {description && (
-                                        <motion.div
-                                            animate={{ opacity: 1, y: 0 }}
-                                            initial={{ opacity: 0, y: -10 }}
-                                            transition={{
-                                                duration: 0.5,
-                                                ease: [0, 0.71, 0.2, 1.01]
-                                            }}
-                                        >
-                                            <Text
-                                                c="dimmed"
-                                                fz="sm"
-                                                onClick={handleCopy}
-                                                style={{ cursor: 'copy' }}
-                                            >
-                                                {description}
-                                            </Text>
-                                        </motion.div>
-                                    )}
-                                </Stack>
-                            </Group>
-                        </Box>
-
-                        {actions && (
-                            <motion.div
-                                animate={{ opacity: 1, y: 0 }}
-                                className={classes.actionsSection}
-                                initial={{ opacity: 0, y: -10 }}
-                                transition={{
-                                    duration: 0.5,
-                                    ease: [0, 0.71, 0.2, 1.01]
-                                }}
-                            >
-                                <Group
-                                    gap="sm"
-                                    justify="flex-end"
-                                    wrap={wrapActions ? 'wrap' : 'nowrap'}
-                                >
-                                    {actions}
-                                </Group>
-                            </motion.div>
-                        )}
-                    </Box>
-                </motion.div>
-            </Card>
+                {actions && (
+                    <Group
+                        className={classes.actions}
+                        gap="xs"
+                        justify="flex-end"
+                        wrap={wrapActions ? 'wrap' : 'nowrap'}
+                    >
+                        {actions}
+                    </Group>
+                )}
+            </Box>
         )
     }
 )

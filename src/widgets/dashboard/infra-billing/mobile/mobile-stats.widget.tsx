@@ -25,25 +25,22 @@ export function MobileStatsWidget() {
     const stats = [
         {
             icon: TbAlertTriangle,
-            color: overdueCount > 0 ? 'red' : 'teal',
+            color: overdueCount > 0 ? 'red' : 'gray',
             value: overdueCount,
             label: t('common.message.overdue')
         },
         {
             icon: FaServer,
-            color: 'orange',
             value: nodes?.stats.upcomingNodesCount ?? 0,
             label: t('mobile-stats.widget.upcoming')
         },
         {
             icon: MdPayment,
-            color: 'green',
             value: formatCurrency(nodes?.stats.currentMonthPayments ?? 0),
             label: t('mobile-stats.widget.per-month')
         },
         {
             icon: MdTrendingUp,
-            color: 'violet',
             value: formatCurrency(nodes?.stats.totalSpent ?? 0),
             label: t('mobile-stats.widget.total-spent')
         }
@@ -53,9 +50,14 @@ export function MobileStatsWidget() {
         <Grid gap="xs" mb="md">
             {stats.map((stat, index) => (
                 <Grid.Col key={index} span={6}>
-                    <Card padding="sm">
+                    <Card padding="md">
                         <Group gap="xs" wrap="nowrap">
-                            <ThemeIcon color={stat.color} radius="md" size="lg" variant="soft">
+                            <ThemeIcon
+                                color={stat.color ?? 'gray'}
+                                radius="md"
+                                size="lg"
+                                variant="soft"
+                            >
                                 <stat.icon size={18} />
                             </ThemeIcon>
                             <Stack gap={0} miw={0}>

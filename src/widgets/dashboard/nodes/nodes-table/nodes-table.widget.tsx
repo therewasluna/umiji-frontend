@@ -9,8 +9,8 @@ import {
 } from '@dnd-kit/react'
 import { Box, Container, Stack } from '@mantine/core'
 import { useListState } from '@mantine/hooks'
-import { GetNodesCommand } from '@umiji/backend-contract'
 import { useWindowVirtualizer } from '@tanstack/react-virtual'
+import { GetNodesCommand } from '@umiji/backend-contract'
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { TbCpu } from 'react-icons/tb'
 
@@ -23,7 +23,6 @@ import { EmptyPageLayout } from '@shared/ui/layouts/empty-page'
 import { sToMs } from '@shared/utils/time-utils'
 
 import {
-    useExperimentalFeature,
     useNodesActiveTag,
     useViewPreferencesStoreActions
 } from '@entities/dashboard/view-preferences-store'
@@ -33,14 +32,11 @@ import { NodesSpotlightSearchWidget } from '../nodes-spotlight-search'
 import { IProps } from './interfaces'
 import styles from './NodesTable.module.css'
 
-const EMPTY_NAMES: string[] = []
-
 export const NodesTableWidget = memo((props: IProps) => {
-    const { nodes, nodePlugins, nodeIntegrations } = props
+    const { nodes, nodePlugins } = props
 
     const activeTag = useNodesActiveTag()
     const { setNodesActiveTag } = useViewPreferencesStoreActions()
-    const isNodeIntegrationsEnabled = useExperimentalFeature('nodeIntegrations')
 
     const visibleNodes = useMemo(() => {
         if (!nodes) return []
@@ -61,8 +57,11 @@ export const NodesTableWidget = memo((props: IProps) => {
     const isDraggingRef = useRef(false)
     const dragSnapshotRef = useRef<typeof state | null>(null)
     const activeTagRef = useRef(activeTag)
-    activeTagRef.current = activeTag
     const isMobile = useIsMobile()
+
+    useEffect(() => {
+        activeTagRef.current = activeTag
+    }, [activeTag])
 
     useGetNodes({
         rQueryParams: {
@@ -84,7 +83,7 @@ export const NodesTableWidget = memo((props: IProps) => {
 
     const virtualizer = useWindowVirtualizer({
         count: state.length,
-        estimateSize: () => (isMobile ? 190 : 90),
+        estimateSize: () => (isMobile ? 200 : 104),
         overscan: 7,
         scrollMargin,
         getItemKey: (index) => state[index].uuid
@@ -184,37 +183,24 @@ export const NodesTableWidget = memo((props: IProps) => {
         const pluginNameByUuid = new Map(
             (nodePlugins?.nodePlugins ?? []).map((plugin) => [plugin.uuid, plugin.name])
         )
-        const integrationNameByUuid = isNodeIntegrationsEnabled
-            ? new Map(
-                  (nodeIntegrations?.nodeIntegrations ?? []).map((integration) => [
-                      integration.uuid,
-                      integration.name
-                  ])
-              )
-            : null
 
         return new Map(
             (nodes ?? []).map((node) => [
                 node.uuid,
                 {
-                    integrationsNames: integrationNameByUuid
-                        ? (node.integrationUuids ?? [])
-                              .map((uuid) => integrationNameByUuid.get(uuid))
-                              .filter((name): name is string => name !== undefined)
-                        : EMPTY_NAMES,
                     pluginsName: node.activePluginUuid
                         ? pluginNameByUuid.get(node.activePluginUuid)
                         : undefined
                 }
             ])
         )
-    }, [nodes, nodePlugins, nodeIntegrations, isNodeIntegrationsEnabled])
+    }, [nodes, nodePlugins])
 
     const handleViewNode = (nodeUuid: string) => {
         showModal('nodes_editNodeModal', { nodeUuid })
     }
 
-    if (!nodes || !nodePlugins || !nodeIntegrations) {
+    if (!nodes || !nodePlugins) {
         return null
     }
 
@@ -252,10 +238,9 @@ export const NodesTableWidget = memo((props: IProps) => {
                                         <Box
                                             data-index={virtualItem.index}
                                             key={item.uuid}
+                                            ref={virtualizer.measureElement}
                                             style={{
                                                 position: 'absolute',
-                                                marginLeft: isMobile ? '0px' : '16px',
-                                                marginRight: isMobile ? '0px' : '16px',
                                                 top: 0,
                                                 left: 0,
                                                 right: 0,
@@ -271,11 +256,7 @@ export const NodesTableWidget = memo((props: IProps) => {
                                                     disableReordering={activeTag !== null}
                                                     handleViewNode={handleViewNode}
                                                     index={virtualItem.index}
-                                                    isMobile={isMobile}
                                                     node={item}
-                                                    integrationsNames={
-                                                        names?.integrationsNames ?? EMPTY_NAMES
-                                                    }
                                                     pluginsName={names?.pluginsName}
                                                 />
                                             </div>
@@ -292,12 +273,7 @@ export const NodesTableWidget = memo((props: IProps) => {
                             <NodeCardWidget
                                 handleViewNode={handleViewNode}
                                 index={0}
-                                integrationsNames={
-                                    nodeNames.get(draggedNode.uuid)?.integrationsNames ??
-                                    EMPTY_NAMES
-                                }
                                 isDragOverlay
-                                isMobile={isMobile}
                                 node={draggedNode}
                                 pluginsName={nodeNames.get(draggedNode.uuid)?.pluginsName}
                             />

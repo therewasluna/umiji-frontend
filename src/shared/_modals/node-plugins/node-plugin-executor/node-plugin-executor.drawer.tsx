@@ -25,9 +25,7 @@ export const NodePluginExecutorDrawer = NiceModal.create(() => {
             size="800px"
             title={
                 <BaseOverlayHeader
-                    iconColor="cyan"
                     IconComponent={TbTerminal}
-                    iconVariant="soft"
                     title={t('node-plugin-executor.executor')}
                 />
             }

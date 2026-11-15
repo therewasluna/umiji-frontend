@@ -1,12 +1,11 @@
+/* The chosen day fills rose like any other chosen control; today is a quiet neutral ring. */
 .day[data-selected] {
-    background-color: transparent;
-    color: var(--mantine-primary-color-contrast);
-    border: 2px solid var(--mantine-primary-color-filled);
+    background-color: var(--mantine-color-rose-8);
+    color: var(--mantine-color-white);
 }
 
 .day[data-today]:not([data-selected]) {
     background-color: transparent;
-    color: var(--mantine-primary-color-contrast);
-    border: 2px solid var(--mantine-color-red-9);
+    border: 1px solid var(--mantine-color-dark-2);
     border-radius: 50%;
 }

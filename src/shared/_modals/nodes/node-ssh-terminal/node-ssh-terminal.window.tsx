@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { TbServer, TbSettings, TbShieldLock, TbTerminal2 } from 'react-icons/tb'
 
 import { useGetNodes } from '@shared/api/hooks'
+import { useIsMobile } from '@shared/hooks'
 import { useSingleInstanceLock } from '@shared/hooks/use-single-instance-lock'
 import { registerScrollLockShard } from '@shared/utils/scroll-lock-shards'
 import { sToMs } from '@shared/utils/time-utils'
@@ -41,12 +42,15 @@ import {
     SshTabsProvider,
     useSshActiveStatus,
     useSshActiveTabId,
+    useSshCtrlArmed,
     useSshTabs,
     useSshTabsActions
 } from './tabs/ssh-tabs.store'
 import { useTerminalFontActions } from './terminal-font.store'
 import { useIsVaultGateOpen, VaultGate } from './vault/vault-gate'
+import { TerminalKeysBar } from './window/terminal-keys.bar'
 import { TrafficLights } from './window/traffic-lights'
+import { useVisualViewport } from './window/use-visual-viewport'
 import { defaultGeometry, IWindowGeometry, useWindowGeometry } from './window/use-window-geometry'
 
 const SSH_TERMINAL_LOCK = 'umiji-ssh-terminal'
@@ -71,6 +75,10 @@ const SshTerminalWindow = (props: IWindowProps) => {
     const hasInstance = instanceLock === 'acquired'
     const vaultActions = useSshVaultActions()
 
+    // Phones get a fixed full-screen window: no dragging, resizing or minimizing.
+    const isMobile = useIsMobile()
+    const viewport = useVisualViewport(isMobile)
+
     const {
         isMaximized,
         isMinimized,
@@ -88,6 +96,7 @@ const SshTerminalWindow = (props: IWindowProps) => {
     const tabs = useSshTabs()
     const activeId = useSshActiveTabId()
     const status = useSshActiveStatus()
+    const isCtrlArmed = useSshCtrlArmed()
     const tabActions = useSshTabsActions()
     const fontActions = useTerminalFontActions()
     const isVaultGateOpen = useIsVaultGateOpen(instanceLock, isManagingVault)
@@ -247,10 +256,20 @@ const SshTerminalWindow = (props: IWindowProps) => {
             data-ssh-window
             ref={registerShard}
             {...windowProps}
+            data-maximized={isMaximized || isMobile || undefined}
             dragHandleSelector={`.${classes.header}`}
+            enabled={!isMobile}
             excludeDragHandleSelector="button"
             radius="md"
             shadow="xl"
+            style={
+                viewport
+                    ? {
+                          '--ssh-viewport-height': `${viewport.height}px`,
+                          '--ssh-viewport-top': `${viewport.top}px`
+                      }
+                    : undefined
+            }
             zIndex={500}
             withBorder
             withinPortal
@@ -258,10 +277,11 @@ const SshTerminalWindow = (props: IWindowProps) => {
             <Group
                 className={classes.header}
                 gap="xs"
-                onDoubleClick={onHeaderDoubleClick}
+                onDoubleClick={isMobile ? undefined : onHeaderDoubleClick}
                 wrap="nowrap"
             >
                 <TrafficLights
+                    isCloseOnly={isMobile}
                     isMaximized={isMaximized}
                     isMinimized={isMinimized}
                     onClose={close}
@@ -397,6 +417,14 @@ const SshTerminalWindow = (props: IWindowProps) => {
                         tabActions.getHandle(activeId)?.write(`${snippet.command}\n`)
                     }
                     snippets={visibleSnippets}
+                />
+            )}
+
+            {isMobile && status?.stage === 'session' && (
+                <TerminalKeysBar
+                    isCtrlArmed={isCtrlArmed}
+                    onKey={(key) => tabActions.getHandle(activeId)?.sendKey(key)}
+                    onToggleCtrl={() => tabActions.setCtrlArmed(!isCtrlArmed)}
                 />
             )}
 

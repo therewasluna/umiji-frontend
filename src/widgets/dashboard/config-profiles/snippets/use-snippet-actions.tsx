@@ -61,9 +61,7 @@ export function useSnippetActions() {
             modalId: EDIT_SNIPPET_MODAL_ID,
             title: (
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbCode}
-                    iconVariant="soft"
                     title={t('snippets.drawer.widget.edit-snippet')}
                 />
             ),

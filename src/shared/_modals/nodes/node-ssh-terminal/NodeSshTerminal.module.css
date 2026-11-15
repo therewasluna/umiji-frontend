@@ -6,9 +6,11 @@
 }
 
 .window[data-maximized] {
-    inset: 0 !important;
+    inset: var(--ssh-viewport-top, 0) 0 auto 0 !important;
     width: 100% !important;
-    height: 100% !important;
+    height: var(--ssh-viewport-height, 100%) !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
     max-width: none !important;
     max-height: none !important;
     transform: none !important;
@@ -60,12 +62,12 @@
 }
 
 .body {
-    --surface: #1a1b26;
-    --surface-dim: #414868;
-    --surface-text: #a9b1d6;
-    --accent: #7dcfff;
-    --ok: #9ece6a;
-    --danger: #f7768e;
+    --surface: var(--mantine-color-dark-8);
+    --surface-dim: var(--mantine-color-dark-4);
+    --surface-text: var(--mantine-color-dark-1);
+    --accent: var(--mantine-color-rose-4);
+    --ok: #3dd68c;
+    --danger: #ff5b4f;
     --surface-muted: color-mix(in srgb, var(--surface-text) 62%, var(--surface));
     --surface-faint: color-mix(in srgb, var(--surface-dim) 60%, var(--surface-muted));
     --line: color-mix(in srgb, var(--surface-dim) 55%, var(--surface));
@@ -360,7 +362,7 @@
     flex: 1 1 auto;
     min-height: 0;
     overflow: hidden;
-    background-color: #1a1b26;
+    background-color: var(--mantine-color-dark-8);
 }
 
 .terminalHost :global(.xterm) {
@@ -499,7 +501,7 @@
     padding: 10px 12px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--mantine-radius-sm);
-    background: rgba(22, 27, 35, 0.6);
+    background: color-mix(in srgb, var(--mantine-color-dark-7) 60%, transparent);
     cursor: pointer;
     transition: border-color 150ms ease;
 }
@@ -518,7 +520,8 @@
     word-break: break-all;
 }
 
-.snippetsBar {
+.snippetsBar,
+.keysBar {
     flex: 0 0 auto;
     border-top: 1px solid var(--mantine-color-dark-4);
     background-color: var(--mantine-color-dark-6);

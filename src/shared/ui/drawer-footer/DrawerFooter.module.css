@@ -1,19 +1,18 @@
+/* Sticky action bar at the foot of a drawer, same as ModalFooter. The drawer theme makes the drawer a
+   column when it holds one of these, so `margin-top: auto` pins it to the bottom on short content. */
 .footer {
     position: sticky;
-    bottom: -1px;
+    bottom: 0;
     z-index: 2;
-
-    width: calc(100% + 2 * var(--mantine-spacing-sm));
-    margin-top: var(--mantine-spacing-md);
-    margin-left: calc(-1 * var(--mantine-spacing-sm));
-
-    padding: var(--mantine-spacing-sm) var(--mantine-spacing-lg);
+    margin: auto calc(-1 * var(--mb-padding)) calc(-1 * var(--mb-padding));
+    padding: 14px var(--mb-padding);
+    background: color-mix(in srgb, var(--mantine-color-dark-7) 82%, transparent);
+    backdrop-filter: blur(14px);
     border-top: 1px solid rgba(255, 255, 255, 0.06);
-    background-color: var(--mantine-color-body);
 }
 
 @supports (padding: env(safe-area-inset-bottom)) {
     .footer {
-        padding-bottom: max(var(--mantine-spacing-sm), env(safe-area-inset-bottom, 0px));
+        padding-bottom: max(14px, env(safe-area-inset-bottom, 0px));
     }
 }

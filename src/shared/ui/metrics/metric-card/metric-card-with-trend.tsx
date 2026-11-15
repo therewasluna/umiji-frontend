@@ -1,4 +1,4 @@
-import { Box, Card, Group, px, Stack, Text, ThemeIcon, ThemeIconProps } from '@mantine/core'
+import { Box, Card, Group, px, Text, ThemeIconProps } from '@mantine/core'
 import { PiTrendDown, PiTrendUp } from 'react-icons/pi'
 
 import { ShimmerSkeleton } from '@shared/ui/shimmer-skeleton'
@@ -65,54 +65,32 @@ const getTrendData = (difference: number | string) => {
 }
 
 export function MetricCardWithTrendShared(props: IMetricCardWithTrendProps) {
-    const {
-        themeIconProps,
-        IconComponent,
-        iconSize = 24,
-        iconVariant,
-        iconColor,
-        isLoading,
-        title,
-        value,
-        difference,
-        period
-    } = props
+    const { IconComponent, isLoading, title, value, difference, period } = props
 
     const { color, TrendIcon, valuePrinted } = getTrendData(difference)
 
     return (
-        <Card>
-            <Group gap="md" wrap="nowrap">
-                <ThemeIcon
-                    color={iconColor}
-                    radius="lg"
-                    size="xl"
-                    variant={iconVariant}
-                    {...themeIconProps}
-                >
-                    <IconComponent size={iconSize} />
-                </ThemeIcon>
-
-                <Stack gap={0} miw={0}>
-                    <Text className={classes.title} truncate="end">
-                        {title}
-                    </Text>
-                    {isLoading ? (
-                        <ShimmerSkeleton height={24} width={80} />
-                    ) : (
-                        <Text className={classes.value} truncate="end">
-                            {value}
-                        </Text>
-                    )}
-                    <Box className={classes.trendContainer} component="div">
-                        <TrendIcon color={color} size={px('0.85rem')} />
-                        <Text className={classes.trendValue} component="span" style={{ color }}>
-                            {valuePrinted}
-                        </Text>
-                        {period && <Text className={classes.trendText}>{period}</Text>}
-                    </Box>
-                </Stack>
+        <Card className={classes.card} padding="lg">
+            <Group className={classes.head} gap={8} wrap="nowrap">
+                <IconComponent size={16} />
+                <Text className={classes.title} truncate="end">
+                    {title}
+                </Text>
             </Group>
+            {isLoading ? (
+                <ShimmerSkeleton height={30} width={80} />
+            ) : (
+                <Text className={classes.value} truncate="end">
+                    {value}
+                </Text>
+            )}
+            <Box className={classes.trendContainer} component="div">
+                <TrendIcon color={color} size={px('0.85rem')} />
+                <Text className={classes.trendValue} component="span" style={{ color }}>
+                    {valuePrinted}
+                </Text>
+                {period && <Text className={classes.trendText}>{period}</Text>}
+            </Box>
         </Card>
     )
 }

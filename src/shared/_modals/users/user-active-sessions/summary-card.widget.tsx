@@ -33,9 +33,7 @@ export const SummaryCardWidget = ({
             children: <RequirementsWidget />,
             title: (
                 <BaseOverlayHeader
-                    iconColor="yellow"
                     IconComponent={TbAlertTriangle}
-                    iconVariant="soft"
                     title={t('active-sessions-drawer.widget.requirements')}
                 />
             )
@@ -46,9 +44,7 @@ export const SummaryCardWidget = ({
             <SectionCard.Section>
                 <Group align="flex-center" justify="space-between">
                     <BaseOverlayHeader
-                        iconColor="teal"
                         IconComponent={TbRadar}
-                        iconVariant="soft"
                         subtitle={t('active-sessions-drawer.widget.active-ips-across-nodes')}
                         title={formatInt(totalIps)}
                     />
@@ -87,9 +83,7 @@ export const SummaryCardWidget = ({
             {distinctIps > 0 && (
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="yellow"
                         IconComponent={TbAlertTriangle}
-                        iconVariant="soft"
                         subtitle={t('active-sessions-drawer.widget.distinct-ips')}
                         title={formatInt(distinctIps)}
                     />

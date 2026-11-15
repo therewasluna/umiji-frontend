@@ -1,14 +1,14 @@
-import { Accordion, Card, Divider, Group, Select, Stack, Text } from '@mantine/core'
+import { Accordion, Select, Text } from '@mantine/core'
 import { UseFormReturnType } from '@mantine/form'
+import { IconDeviceDesktop, IconPlus } from '@tabler/icons-react'
 import {
     TSubscriptionPagePlatformKey,
     TSubscriptionPagePlatformSchema,
     TSubscriptionPageRawConfig
 } from '@umiji/subscription-page-types'
-import { IconDeviceDesktop, IconPlus } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 
-import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
+import { SettingsCardShared } from '@shared/ui/settings-card'
 
 import { PlatformEditor } from '../editor-components/platform-editor.component'
 import styles from '../subpage-config-visual-editor.module.css'
@@ -58,27 +58,14 @@ export function PlatformBlockComponent(props: IProps) {
     }
 
     return (
-        <Card className={styles.sectionCard} p="lg" radius="lg">
-            <Stack gap="md">
-                <Group justify="space-between">
-                    <BaseOverlayHeader
-                        iconColor="violet"
-                        IconComponent={IconDeviceDesktop}
-                        iconSize={20}
-                        iconVariant="soft"
-                        subtitle={t(
-                            'subpage-config-visual-editor.widget.configure-apps-for-each-platform'
-                        )}
-                        title={t('subpage-config-visual-editor.widget.platforms')}
-                        titleOrder={5}
-                    />
-
-                    {availablePlatformsToAdd.length > 0 && (
+        <SettingsCardShared.Container>
+            <SettingsCardShared.Header
+                actions={
+                    availablePlatformsToAdd.length > 0 && (
                         <Select
                             allowDeselect={false}
-                            classNames={{ input: styles.selectDark }}
                             data={availablePlatformsToAdd}
-                            leftSection={<IconPlus size={20} />}
+                            leftSection={<IconPlus size={16} />}
                             onChange={(value) => {
                                 if (value) handleAddPlatform(value as TSubscriptionPagePlatformKey)
                             }}
@@ -86,46 +73,53 @@ export function PlatformBlockComponent(props: IProps) {
                             value={null}
                             w={180}
                         />
-                    )}
-                </Group>
-
-                <Divider className={styles.divider} />
-
-                {existingPlatforms.length === 0 ? (
-                    <div className={styles.emptyState}>
-                        <IconDeviceDesktop size={32} stroke={1.5} />
-                        <Text mt="sm" size="sm">
-                            {t('subpage-config-visual-editor.widget.no-platforms-configured')}
-                        </Text>
-                        <Text c="dimmed" size="xs">
-                            {t('subpage-config-visual-editor.widget.add-a-platform-to-get-started')}
-                        </Text>
-                    </div>
-                ) : (
-                    <Accordion
-                        chevronPosition="right"
-                        className={styles.accordion}
-                        multiple
-                        variant="separated"
-                    >
-                        {existingPlatforms.map((platformKey) => {
-                            const platform = values.platforms[platformKey]
-                            if (!platform) return null
-                            return (
-                                <PlatformEditor
-                                    enabledLocales={enabledLocales}
-                                    key={platformKey}
-                                    onChange={(p) => handlePlatformChange(platformKey, p)}
-                                    onDelete={() => handlePlatformDelete(platformKey)}
-                                    platform={platform}
-                                    platformKey={platformKey}
-                                    svgLibrary={values.svgLibrary}
-                                />
-                            )
-                        })}
-                    </Accordion>
+                    )
+                }
+                description={t(
+                    'subpage-config-visual-editor.widget.configure-apps-for-each-platform'
                 )}
-            </Stack>
-        </Card>
+                title={t('subpage-config-visual-editor.widget.platforms')}
+            />
+
+            {existingPlatforms.length === 0 ? (
+                <div className={styles.emptyState}>
+                    <IconDeviceDesktop size={32} stroke={1.5} />
+                    <Text mt="sm" size="sm">
+                        {t('subpage-config-visual-editor.widget.no-platforms-configured')}
+                    </Text>
+                    <Text c="dimmed" size="xs">
+                        {t('subpage-config-visual-editor.widget.add-a-platform-to-get-started')}
+                    </Text>
+                </div>
+            ) : (
+                <Accordion
+                    chevronPosition="right"
+                    classNames={{
+                        item: styles.accordionItem,
+                        control: styles.accordionControl,
+                        label: styles.accordionLabel
+                    }}
+                    mt="xs"
+                    multiple
+                    variant="separated"
+                >
+                    {existingPlatforms.map((platformKey) => {
+                        const platform = values.platforms[platformKey]
+                        if (!platform) return null
+                        return (
+                            <PlatformEditor
+                                enabledLocales={enabledLocales}
+                                key={platformKey}
+                                onChange={(p) => handlePlatformChange(platformKey, p)}
+                                onDelete={() => handlePlatformDelete(platformKey)}
+                                platform={platform}
+                                platformKey={platformKey}
+                                svgLibrary={values.svgLibrary}
+                            />
+                        )
+                    })}
+                </Accordion>
+            )}
+        </SettingsCardShared.Container>
     )
 }

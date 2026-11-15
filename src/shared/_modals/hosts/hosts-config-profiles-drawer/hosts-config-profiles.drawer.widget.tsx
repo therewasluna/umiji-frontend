@@ -136,16 +136,14 @@ export const HostsConfigProfilesDrawer = NiceModal.create((props: IProps) => {
             size="480px"
             styles={{
                 body: {
-                    height: 'calc(100% - 60px)',
+                    height: 'calc(100% - 64px)',
                     display: 'flex',
                     flexDirection: 'column'
                 }
             }}
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={XrayLogo}
-                    iconVariant="soft"
                     title={t('constants.config-profiles')}
                 />
             }
@@ -163,12 +161,12 @@ export const HostsConfigProfilesDrawer = NiceModal.create((props: IProps) => {
                         <Box>
                             {selectedInbound && selectedProfileUuid ? (
                                 <>
-                                    <Text ff="monospace" fw={700} size="sm">
+                                    <Text fw={700} size="sm">
                                         {filteredProfiles.find(
                                             (p) => p.uuid === selectedProfileUuid
                                         )?.name || t('common.message.no-profile-selected')}
                                     </Text>
-                                    <Text c="white" ff="monospace" size="xs">
+                                    <Text c="white" size="xs">
                                         {filteredProfiles
                                             .find((p) => p.uuid === selectedProfileUuid)
                                             ?.inbounds.find((i) => i.uuid === selectedInbound)
@@ -183,7 +181,7 @@ export const HostsConfigProfilesDrawer = NiceModal.create((props: IProps) => {
                                     <Text fw={700} size="sm">
                                         {t('common.message.no-inbound-selected')}
                                     </Text>
-                                    <Text c="dimmed" ff="monospace" size="xs">
+                                    <Text c="dimmed" size="xs">
                                         {t(
                                             'hosts-config-profiles.drawer.widget.assign-an-inbound-to-the-host'
                                         )}

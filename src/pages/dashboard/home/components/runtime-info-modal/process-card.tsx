@@ -4,24 +4,20 @@ import { ComponentType, ReactNode } from 'react'
 import classes from './runtime-info-modal.module.css'
 
 interface IProps {
-    color: string
     description: ReactNode
     Icon: ComponentType<{ size: number }>
     title: string
 }
 
 export const ProcessCard = (props: IProps) => {
-    const { color, description, Icon, title } = props
+    const { description, Icon, title } = props
     return (
-        <Box
-            className={classes.processCard}
-            style={{ '--process-color': `var(--mantine-color-${color}-6)` } as React.CSSProperties}
-        >
+        <Box className={classes.processCard}>
             <Group gap="xs" mb={6} wrap="nowrap">
-                <ThemeIcon color={color} radius="md" size="md" variant="soft">
+                <ThemeIcon color="gray" radius="md" size="md" variant="soft">
                     <Icon size={16} />
                 </ThemeIcon>
-                <Text c="white" ff="monospace" fw={700} size="sm">
+                <Text c="white" fw={700} size="sm">
                     {title}
                 </Text>
             </Group>

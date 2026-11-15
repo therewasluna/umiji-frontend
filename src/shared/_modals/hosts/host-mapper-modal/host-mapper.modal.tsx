@@ -98,9 +98,7 @@ export const HostMapperModal = NiceModal.create((props: IProps) => {
             transitionProps={{ transition: 'fade', duration: 200 }}
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbArrowsExchange}
-                    iconVariant="soft"
                     title={t('base-host-form.mapper')}
                 />
             }

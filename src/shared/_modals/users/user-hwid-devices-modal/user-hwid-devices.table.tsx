@@ -267,7 +267,6 @@ export const UserHwidDevicesTable = (props: IProps) => {
                 striped
                 sortStatus={sortStatus}
                 storeColumnsKey={CACHE_KEY}
-                withColumnBorders
                 withRowBorders
                 withTableBorder
                 columnResizeMode="expand"

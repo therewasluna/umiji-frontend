@@ -14,7 +14,8 @@ import {
     HOST_OPTION_KEY_BY_NAME,
     HOST_OPTION_FIELDS,
     IHostOptionField,
-    isOptionSet
+    isOptionSet,
+    TELEGRAM_HOST_OPTIONS
 } from './host-option-fields'
 
 const SETTLE_MS = 1600
@@ -52,10 +53,11 @@ interface Props {
     children: ReactNode
     form: THostForm
     isBulkEdit?: boolean
+    isTelegram?: boolean
 }
 
 export function HostOptionsProvider(props: Props) {
-    const { children, form, isBulkEdit = false } = props
+    const { children, form, isBulkEdit = false, isTelegram = false } = props
 
     const [added, setAdded] = useState<Set<string>>(new Set())
     const [justAdded, setJustAdded] = useState<null | string>(null)
@@ -101,6 +103,8 @@ export function HostOptionsProvider(props: Props) {
 
     const isActive = useCallback(
         (name: string) => {
+            if (isTelegram && !TELEGRAM_HOST_OPTIONS.has(name)) return false
+
             const field = HOST_OPTION_FIELD_BY_NAME.get(name)
 
             if (!field) return true
@@ -109,7 +113,7 @@ export function HostOptionsProvider(props: Props) {
 
             return field.fields.some((formKey) => touchedKeys[formKey.key])
         },
-        [added, hasValue, touchedKeys]
+        [added, hasValue, isTelegram, touchedKeys]
     )
 
     const isFilled = useCallback(
@@ -208,8 +212,12 @@ export function HostOptionsProvider(props: Props) {
     )
 
     const inactiveFields = useMemo(
-        () => HOST_OPTION_FIELDS.filter((field) => !isActive(field.name)),
-        [isActive]
+        () =>
+            HOST_OPTION_FIELDS.filter(
+                (field) =>
+                    !isActive(field.name) && (!isTelegram || TELEGRAM_HOST_OPTIONS.has(field.name))
+            ),
+        [isActive, isTelegram]
     )
 
     const value = useMemo(

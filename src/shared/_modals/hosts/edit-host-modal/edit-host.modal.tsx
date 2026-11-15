@@ -44,10 +44,8 @@ export const EditHostDrawer = NiceModal.create((props: IProps) => {
             size="700px"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     openEntity={{ entity: OPEN_ENTITY.HOST, id: hostUuid }}
                     IconComponent={PiListChecks}
-                    iconVariant="soft"
                     subtitle={hostUuid}
                     title={host?.remark ?? t('edit-host-modal.widget.edit-host')}
                     withCopy={true}

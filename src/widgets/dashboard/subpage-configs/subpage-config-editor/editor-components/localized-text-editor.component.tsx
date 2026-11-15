@@ -10,12 +10,12 @@ import {
     UnstyledButton
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import { IconLanguage } from '@tabler/icons-react'
 import {
     getLanguageName,
     TSubscriptionPageLanguageCode,
     TSubscriptionPageLocalizedText
 } from '@umiji/subscription-page-types'
-import { IconLanguage } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
@@ -71,8 +71,9 @@ export function LocalizedTextEditor(props: IProps) {
                         </div>
                     </Group>
                     <Badge
-                        color={filledCount === enabledLocales.length ? 'green' : 'gray'}
+                        color={filledCount === enabledLocales.length ? 'gray' : 'yellow'}
                         size="sm"
+                        variant="soft"
                     >
                         {filledCount}/{enabledLocales.length}
                     </Badge>
@@ -87,7 +88,6 @@ export function LocalizedTextEditor(props: IProps) {
                     <BaseOverlayHeader
                         IconComponent={IconLanguage}
                         iconSize={18}
-                        iconVariant="default"
                         title={label}
                         titleOrder={5}
                     />
@@ -97,7 +97,6 @@ export function LocalizedTextEditor(props: IProps) {
                     {enabledLocales.map((locale, index) => (
                         <InputComponent
                             autosize={!!multiline}
-                            classNames={{ input: styles.inputDark }}
                             data-autofocus={index === 0}
                             description={
                                 index === 0
@@ -115,7 +114,7 @@ export function LocalizedTextEditor(props: IProps) {
                             value={value[locale] || ''}
                         />
                     ))}
-                    <Button fullWidth onClick={close} variant="light">
+                    <Button fullWidth onClick={close}>
                         {t('localized-text-editor.component.done')}
                     </Button>
                 </Stack>

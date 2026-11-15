@@ -82,9 +82,7 @@ export const VaultUnlockScreen = (props: IProps) => {
             <SectionCard.Root maw={450} mx="auto" w="100%">
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="blue"
                         IconComponent={TbLock}
-                        iconVariant="soft"
                         subtitle={t('node-ssh.passcode-unlock-description')}
                         title={t('node-ssh.vault-unlock-title')}
                         titleOrder={5}
@@ -123,9 +121,7 @@ export const VaultUnlockScreen = (props: IProps) => {
         <SectionCard.Root maw={450} mx="auto" w="100%">
             <SectionCard.Section>
                 <BaseOverlayHeader
-                    iconColor="cyan"
                     IconComponent={TbBook}
-                    iconVariant="soft"
                     subtitle={t('node-ssh.unlock-description')}
                     title={t('node-ssh.vault-unlock-title')}
                     titleOrder={5}

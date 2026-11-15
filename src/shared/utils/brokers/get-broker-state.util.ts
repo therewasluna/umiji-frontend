@@ -30,5 +30,5 @@ export const getUsagePercentUtil = (used: number, limit: number): number =>
 export const getUsageColorUtil = (percent: number): string => {
     if (percent >= 95) return 'red'
     if (percent >= 80) return 'yellow'
-    return 'teal'
+    return 'rose'
 }

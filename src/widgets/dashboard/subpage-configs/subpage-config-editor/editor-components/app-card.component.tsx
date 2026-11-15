@@ -1,9 +1,5 @@
 import { ActionIcon, Badge, Box, Card, Group, Text } from '@mantine/core'
 import {
-    TSubscriptionPageAppConfig,
-    TSubscriptionPageSvgLibrary
-} from '@umiji/subscription-page-types'
-import {
     IconArrowDown,
     IconArrowUp,
     IconCopy,
@@ -11,6 +7,10 @@ import {
     IconStar,
     IconTrash
 } from '@tabler/icons-react'
+import {
+    TSubscriptionPageAppConfig,
+    TSubscriptionPageSvgLibrary
+} from '@umiji/subscription-page-types'
 import isSvg from 'is-svg'
 import { useTranslation } from 'react-i18next'
 
@@ -71,7 +71,7 @@ export function AppCard(props: IProps) {
                     )}
                 </Group>
                 <Group gap={4} wrap="nowrap">
-                    <Badge color="violet" size="xs" variant="light">
+                    <Badge color="gray" size="xs" variant="soft" visibleFrom="xs">
                         {t('app-card.blocks', { count: app.blocks.length })}
                     </Badge>
                     <ActionIcon

@@ -24,9 +24,7 @@ export const NodeSessionsCardWidget = ({ node, onDropIp, onDropNode }: IProps) =
                 <Group gap="xs" justify="space-between">
                     <BaseOverlayHeader
                         countryCode={node.countryCode}
-                        iconColor="blue"
                         IconComponent={TbServer}
-                        iconVariant="soft"
                         title={node.nodeName}
                     />
                     <Group gap="xs">

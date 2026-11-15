@@ -60,7 +60,9 @@ export const ROUTES = {
             SUBSCRIPTION_PAGE: '/dashboard/broker/subscription-page',
             SUBSCRIPTION_SETTINGS: '/dashboard/broker/subscription-settings',
             TELEGRAM_BOT: '/dashboard/broker/telegram-bot',
-            TELEGRAM_ORDERS: '/dashboard/broker/telegram-orders'
+            TELEGRAM_TEXTS: '/dashboard/broker/telegram-texts',
+            TELEGRAM_ORDERS: '/dashboard/broker/telegram-orders',
+            TELEGRAM_STATS: '/dashboard/broker/telegram-stats'
         }
     }
 } as const

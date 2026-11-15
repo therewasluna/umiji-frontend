@@ -32,15 +32,7 @@ export function ConfigProfileByUuidPageConnector() {
 
     const { data: snippets, isLoading: isSnippetsLoading } = useGetSnippets({})
 
-    const initWasm = useCallback(async (isRestart = false) => {
-        if (isRestart) {
-            setIsWasmRestarting(true)
-            setIsWasmCrashed(false)
-        } else {
-            setIsLoading(true)
-            setDownloadProgress(0)
-        }
-
+    const initWasm = useCallback(async () => {
         try {
             const go = new window.Go()
             const wasmInitialized = new Promise<void>((resolve) => {
@@ -81,13 +73,16 @@ export function ConfigProfileByUuidPageConnector() {
     }, [])
 
     const restartWasm = useCallback(() => {
-        initWasm(true)
+        setIsWasmRestarting(true)
+        setIsWasmCrashed(false)
+        initWasm()
     }, [initWasm])
 
     useLayoutEffect(() => {
-        initWasm()
+        const timer = setTimeout(() => void initWasm(), 0)
 
         return () => {
+            clearTimeout(timer)
             delete window.onWasmInitialized
         }
     }, [])

@@ -20,7 +20,6 @@ import { TbAlertCircle, TbLink, TbStar } from 'react-icons/tb'
 import { queryClient } from '@shared/api'
 import { QueryKeys } from '@shared/api/hooks/keys-factory'
 import { useUpdateUmijiSettings } from '@shared/api/hooks/umiji-settings/umiji-settings.mutation.hooks'
-import { Logo } from '@shared/ui'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { SettingsCardShared } from '@shared/ui/settings-card'
 import { handleFormErrors } from '@shared/utils/misc'
@@ -71,9 +70,7 @@ export const BrandingSettingsCardWidget = (props: IProps) => {
                 modals.open({
                     title: (
                         <BaseOverlayHeader
-                            iconColor="red"
                             IconComponent={TbAlertCircle}
-                            iconVariant="soft"
                             title={t('auth-settings.error-modal.title')}
                         />
                     ),
@@ -186,9 +183,6 @@ export const BrandingSettingsCardWidget = (props: IProps) => {
                         description={t(
                             'branding-settings-card.widget.customize-your-umiji-instance'
                         )}
-                        icon={<Logo size={24} />}
-                        iconColor="cyan"
-                        iconVariant="soft"
                         title={t('branding-settings-card.widget.branding-settings')}
                     />
 

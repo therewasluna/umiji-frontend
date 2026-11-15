@@ -5,18 +5,20 @@ import { CreateNodeCommand } from '@umiji/backend-contract'
 import { useTranslation } from 'react-i18next'
 import { PiArrowLeft } from 'react-icons/pi'
 import { SiSecurityscorecard } from 'react-icons/si'
-import { TbCheck } from 'react-icons/tb'
+import { TbCheck, TbRocket } from 'react-icons/tb'
 
 import { useGetConfigProfiles } from '@shared/api/hooks'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { SectionCard } from '@shared/ui/section-card'
 
 import { CopyDockerComposeWidget } from './copy-docker-compose.widget'
+import { TCreateNodeMode } from './create-node-step-1-connection'
 
 interface IProps {
     // oxlint-disable-next-line
     form: UseFormReturnType<CreateNodeCommand.RequestBody, any>
     isCreating: boolean
+    mode: TCreateNodeMode
     onCreateNode: () => void
     onPrev: () => void
     port: number
@@ -25,6 +27,7 @@ interface IProps {
 export const CreateNodeStep2ConfigProfiles = ({
     form,
     isCreating,
+    mode,
     onCreateNode,
     onPrev,
     port
@@ -71,9 +74,7 @@ export const CreateNodeStep2ConfigProfiles = ({
             <SectionCard.Root>
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="teal"
                         IconComponent={SiSecurityscorecard}
-                        iconVariant="soft"
                         title={t('base-node-form.core-configuration')}
                         titleOrder={5}
                     />
@@ -105,7 +106,7 @@ export const CreateNodeStep2ConfigProfiles = ({
             </SectionCard.Root>
 
             <Stack gap="xs" mt="auto">
-                <CopyDockerComposeWidget port={port} />
+                {mode === 'manual' && <CopyDockerComposeWidget port={port} />}
 
                 <Group justify="space-between">
                     <Button
@@ -118,13 +119,17 @@ export const CreateNodeStep2ConfigProfiles = ({
                     </Button>
                     <Button
                         color="teal"
-                        leftSection={<TbCheck size={18} />}
+                        leftSection={
+                            mode === 'auto' ? <TbRocket size={18} /> : <TbCheck size={18} />
+                        }
                         loading={isCreating}
                         onClick={handleCreateNode}
                         size="md"
                         type="submit"
                     >
-                        {t('create-node-modal.widget.create-node')}
+                        {mode === 'auto'
+                            ? t('node-install.install-node')
+                            : t('create-node-modal.widget.create-node')}
                     </Button>
                 </Group>
             </Stack>

@@ -7,7 +7,6 @@ import {
     PiListBulletsDuotone,
     PiSlidersHorizontalDuotone
 } from 'react-icons/pi'
-import { TbWebhook } from 'react-icons/tb'
 
 import { ExternalSquadsCustomRemarksTabWidget } from '@shared/_modals/external-squads/external-squads-drawer/tabs/external-squads-custom-remarks.widget'
 import { ExternalSquadsResponseHeadersTabWidget } from '@shared/_modals/external-squads/external-squads-drawer/tabs/external-squads-response-headers.widget'
@@ -59,7 +58,6 @@ export function BrokerSubscriptionSettingsPage() {
         <Page title={t('brokers.panel.subscription-settings')}>
             <PageHeaderShared
                 description={t('brokers.panel.subscription-settings-description')}
-                icon={<TbWebhook size={24} />}
                 title={t('brokers.panel.subscription-settings')}
             />
 
@@ -69,7 +67,7 @@ export function BrokerSubscriptionSettingsPage() {
                 </Text>
             ) : (
                 <Stack gap="md">
-                    <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xs">
+                    <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
                         <MetricCardShared
                             IconComponent={PiSlidersHorizontalDuotone}
                             iconColor="cyan"

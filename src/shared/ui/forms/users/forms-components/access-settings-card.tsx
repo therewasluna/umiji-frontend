@@ -59,10 +59,8 @@ export const AccessSettingsCard = <
             <SectionCard.Root>
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="indigo"
                         IconComponent={TbShield}
                         iconSize={20}
-                        iconVariant="soft"
                         title={t('access-settings-card.access-settings')}
                         titleOrder={5}
                     />

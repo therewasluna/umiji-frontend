@@ -89,10 +89,6 @@ export default defineConfig({
                             test: /node_modules[\\/]@stablelib[\\/](base64|x25519)[\\/]/
                         },
                         {
-                            name: 'charts',
-                            test: /node_modules[\\/](recharts|highcharts|@highcharts[\\/]react)[\\/]/
-                        },
-                        {
                             name: 'dnd',
                             test: /node_modules[\\/]@dnd-kit[\\/](abstract|dom|helpers|react)[\\/]/
                         },

@@ -32,15 +32,12 @@ export function RuntimeInfoModalContent() {
             </Text>
 
             <SectionShell
-                accent="rgba(59, 130, 246, 0.25)"
-                color="blue"
                 description={t('home.runtime-info.instance-types-description')}
                 Icon={TbCpu}
                 title={t('home.runtime-info.instance-types-title')}
             >
                 <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
                     <ProcessCard
-                        color="blue"
                         description={
                             <Trans
                                 components={TRANS_COMPONENTS}
@@ -51,7 +48,6 @@ export function RuntimeInfoModalContent() {
                         title="API"
                     />
                     <ProcessCard
-                        color="violet"
                         description={
                             <Trans
                                 components={TRANS_COMPONENTS}
@@ -62,7 +58,6 @@ export function RuntimeInfoModalContent() {
                         title={t('runtime-info-modal.scheduler')}
                     />
                     <ProcessCard
-                        color="teal"
                         description={
                             <Trans
                                 components={TRANS_COMPONENTS}
@@ -76,15 +71,12 @@ export function RuntimeInfoModalContent() {
             </SectionShell>
 
             <SectionShell
-                accent="rgba(45, 212, 191, 0.25)"
-                color="teal"
                 description={t('home.runtime-info.memory-description')}
                 Icon={TbServer}
                 title={t('runtime-info-modal.memory')}
             >
                 <Stack gap="md">
                     <MetricEntry
-                        color="teal"
                         description={
                             <Trans
                                 components={TRANS_COMPONENTS}
@@ -95,7 +87,6 @@ export function RuntimeInfoModalContent() {
                         title={t('runtime-info-modal.heap')}
                     />
                     <MetricEntry
-                        color="cyan"
                         description={
                             <Trans
                                 components={TRANS_COMPONENTS}
@@ -106,7 +97,6 @@ export function RuntimeInfoModalContent() {
                         title="RSS"
                     />
                     <MetricEntry
-                        color="lime"
                         description={
                             <Trans
                                 components={TRANS_COMPONENTS}
@@ -117,7 +107,6 @@ export function RuntimeInfoModalContent() {
                         title={t('runtime-info-modal.external')}
                     />
                     <MetricEntry
-                        color="green"
                         description={
                             <Trans
                                 components={TRANS_COMPONENTS}
@@ -131,15 +120,12 @@ export function RuntimeInfoModalContent() {
             </SectionShell>
 
             <SectionShell
-                accent="rgba(139, 92, 246, 0.25)"
-                color="violet"
                 description={t('home.runtime-info.event-loop-description')}
                 Icon={TbBolt}
                 title={t('runtime-info-modal.event-loop')}
             >
                 <Stack gap="md">
                     <MetricEntry
-                        color="violet"
                         description={
                             <Trans
                                 components={TRANS_COMPONENTS}
@@ -150,7 +136,6 @@ export function RuntimeInfoModalContent() {
                         title={t('runtime-info-modal.delay')}
                     />
                     <MetricEntry
-                        color="grape"
                         description={
                             <Trans
                                 components={TRANS_COMPONENTS}
@@ -161,7 +146,6 @@ export function RuntimeInfoModalContent() {
                         title="P99"
                     />
                     <MetricEntry
-                        color="indigo"
                         description={
                             <Trans
                                 components={TRANS_COMPONENTS}

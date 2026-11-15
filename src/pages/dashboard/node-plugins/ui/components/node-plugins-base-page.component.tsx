@@ -4,7 +4,6 @@ import { NodePluginsGridWidget } from '@widgets/dashboard/node-plugins/node-plug
 import { NodePluginsSpotlightWidget } from '@widgets/dashboard/node-plugins/node-plugins-spotlight'
 import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
-import { TbPackage } from 'react-icons/tb'
 
 import { Page, PageHeaderShared } from '@shared/ui'
 
@@ -21,7 +20,7 @@ export const NodePluginsBasePageComponent = (props: Props) => {
         <Page title={t('constants.node-plugins')}>
             <PageHeaderShared
                 actions={<NodePluginsHeaderActionButtonsFeature />}
-                icon={<TbPackage size={24} />}
+                description={t('page-descriptions.node-plugins')}
                 title={`${t('constants.node-plugins')} β`}
             />
 

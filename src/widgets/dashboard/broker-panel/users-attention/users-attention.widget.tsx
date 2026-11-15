@@ -26,7 +26,6 @@ const LIST_SIZE = 5
 interface IListCardProps {
     emptyText: string
     Icon: React.ComponentType<{ size: number }>
-    iconColor: string
     isLoading: boolean
     renderRow: (user: TUser) => ReactNode
     subtitle: string
@@ -35,25 +34,19 @@ interface IListCardProps {
 }
 
 const ListCard = (props: IListCardProps) => {
-    const { emptyText, Icon, iconColor, isLoading, renderRow, subtitle, title, users } = props
+    const { emptyText, Icon, isLoading, renderRow, subtitle, title, users } = props
 
     const { t } = useTranslation()
     const navigate = useNavigate()
 
     return (
-        <SectionCard.Root gap="sm" h="100%">
+        <SectionCard.Root gap="sm" h="100%" p="lg">
             <SectionCard.Section>
                 <Group justify="space-between" wrap="nowrap">
-                    <BaseOverlayHeader
-                        iconColor={iconColor}
-                        IconComponent={Icon}
-                        iconVariant="soft"
-                        subtitle={subtitle}
-                        title={title}
-                        titleOrder={5}
-                    />
+                    <BaseOverlayHeader IconComponent={Icon} title={title} titleOrder={5} />
                     <Button
                         color="gray"
+                        flex="none"
                         onClick={() => navigate(ROUTES.DASHBOARD.MANAGEMENT.USERS)}
                         rightSection={<TbArrowRight size={16} />}
                         size="compact-sm"
@@ -62,6 +55,10 @@ const ListCard = (props: IListCardProps) => {
                         {t('brokers.panel.all-users')}
                     </Button>
                 </Group>
+                {/* Under the row, not beside the icon: the icon centres on the title alone. */}
+                <Text c="dimmed" mt="xs" size="xs">
+                    {subtitle}
+                </Text>
             </SectionCard.Section>
 
             <SectionCard.Section>
@@ -121,11 +118,10 @@ export function BrokerUsersAttentionWidget() {
     const heavyUsers = (heavy?.users ?? []).filter((user) => user.trafficLimitBytes > 0)
 
     return (
-        <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="xs">
+        <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="md">
             <ListCard
                 emptyText={t('brokers.panel.no-active-users')}
                 Icon={TbHourglassLow}
-                iconColor="yellow"
                 isLoading={isExpiringLoading}
                 renderRow={(user) => {
                     const daysLeft = dayjs(user.expireAt).diff(dayjs(), 'day', true)
@@ -154,7 +150,6 @@ export function BrokerUsersAttentionWidget() {
             <ListCard
                 emptyText={t('brokers.panel.no-limited-users')}
                 Icon={TbChartBar}
-                iconColor="orange"
                 isLoading={isHeavyLoading}
                 renderRow={(user) => {
                     const used = user.userTraffic.usedTrafficBytes
@@ -162,7 +157,10 @@ export function BrokerUsersAttentionWidget() {
 
                     return (
                         <Stack gap={6}>
-                            <Group justify="space-between" wrap="nowrap">
+                            <Group
+                                justify="space-between"
+                                style={{ gap: '2px var(--mantine-spacing-xs)' }}
+                            >
                                 <Group gap="xs" miw={0} wrap="nowrap">
                                     <Text fw={600} size="sm" truncate="end">
                                         {user.username}
@@ -171,9 +169,16 @@ export function BrokerUsersAttentionWidget() {
                                         <UserStatusBadge size="xs" status={user.status} />
                                     )}
                                 </Group>
-                                <Text c="dimmed" ff="monospace" size="xs" style={{ flexShrink: 0 }}>
-                                    {prettifyBytesUtil(used, true)} /{' '}
-                                    {prettifyBytesUtil(user.trafficLimitBytes, true)}
+                                <Text
+                                    c="dimmed"
+                                    ms="auto"
+                                    size="xs"
+                                    style={{ fontVariantNumeric: 'tabular-nums' }}
+                                >
+                                    <bdi>
+                                        {prettifyBytesUtil(used, true)} /{' '}
+                                        {prettifyBytesUtil(user.trafficLimitBytes, true)}
+                                    </bdi>
                                 </Text>
                             </Group>
                             <Progress

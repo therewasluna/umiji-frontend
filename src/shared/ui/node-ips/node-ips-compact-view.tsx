@@ -48,7 +48,7 @@ export const NodeIpsCompactView = (props: IProps) => {
 
             <HoverCard.Dropdown p="xs">
                 <Stack gap={6}>
-                    <Text c="dimmed" fw={600} size="xs" tt="uppercase">
+                    <Text c="dimmed" fw={600} size="xs">
                         {t('common.field.ip-addresses')} · {ips.length}
                     </Text>
 

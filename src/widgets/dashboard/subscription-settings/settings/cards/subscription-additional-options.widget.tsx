@@ -2,7 +2,6 @@ import { Button, Group, Stack, Switch } from '@mantine/core'
 import { useForm, schemaResolver } from '@mantine/form'
 import { UpdateSubscriptionSettingsCommand } from '@umiji/backend-contract'
 import { useTranslation } from 'react-i18next'
-import { PiGear } from 'react-icons/pi'
 
 import { queryClient } from '@shared/api'
 import { QueryKeys, useUpdateSubscriptionSettings } from '@shared/api/hooks'
@@ -62,9 +61,6 @@ export const SubscriptionAdditionalOptionsWidget = (props: IProps) => {
                     description={t(
                         'subscription-tabs.widget.configure-additional-subscription-options'
                     )}
-                    icon={<PiGear size={24} />}
-                    iconColor="cyan"
-                    iconVariant="soft"
                     title={t('subscription-tabs.widget.additional-options')}
                 />
 

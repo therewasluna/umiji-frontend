@@ -10,10 +10,8 @@ type IProps = {
     countryCode?: string
     hideIcon?: boolean
     icon?: ReactNode
-    iconColor?: ThemeIconProps['color']
     IconComponent: React.ComponentType<{ size: number }>
     iconSize?: number
-    iconVariant: ThemeIconProps['variant']
     openEntity?: { entity: TOpenEntity; id: number | string }
     subtitle?: ReactNode | string
     themeIconProps?: ThemeIconProps
@@ -29,8 +27,6 @@ export const BaseOverlayHeader = (props: IProps) => {
         IconComponent,
         countryCode,
         iconSize = 20,
-        iconVariant,
-        iconColor = 'cyan',
         openEntity,
         subtitle,
         title,
@@ -46,7 +42,7 @@ export const BaseOverlayHeader = (props: IProps) => {
     return (
         <Group gap="sm" style={truncateTitle ? { minWidth: 0 } : undefined} wrap="nowrap">
             {!hideIcon && (
-                <ThemeIcon color={iconColor} size="lg" variant={iconVariant} {...themeIconProps}>
+                <ThemeIcon color="gray" size="lg" variant="soft" {...themeIconProps}>
                     <IconComponent size={iconSize} />
                 </ThemeIcon>
             )}

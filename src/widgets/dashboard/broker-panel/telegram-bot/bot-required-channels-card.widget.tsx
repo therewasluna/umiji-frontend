@@ -1,6 +1,6 @@
 import { BrokerBotRequiredChannelSchema, GetBrokerBotCommand } from '@umiji/backend-contract'
 import { useTranslation } from 'react-i18next'
-import { TbLock } from 'react-icons/tb'
+import { TbBrandTelegram } from 'react-icons/tb'
 
 import { useUpdateBrokerBotSettings } from '@shared/api/hooks'
 import { SettingsCardShared } from '@shared/ui/settings-card'
@@ -20,9 +20,6 @@ export function BotRequiredChannelsCardWidget({ bot }: IProps) {
         <SettingsCardShared.Container>
             <SettingsCardShared.Header
                 description={t('broker-bot.channels.description')}
-                icon={<TbLock size={24} />}
-                iconColor="orange"
-                iconVariant="soft"
                 title={t('broker-bot.channels.title')}
             />
 
@@ -32,9 +29,20 @@ export function BotRequiredChannelsCardWidget({ bot }: IProps) {
                     emptyLabel={t('broker-bot.channels.empty')}
                     fields={[
                         { key: 'title', label: t('broker-bot.channels.label') },
-                        { key: 'chatRef', label: t('broker-bot.channels.ref'), mono: true },
-                        { key: 'url', label: t('broker-bot.channels.link'), mono: true }
+                        {
+                            invalid: t('broker-bot.channels.ref-invalid'),
+                            key: 'chatRef',
+                            label: t('broker-bot.channels.ref'),
+                            mono: true
+                        },
+                        {
+                            invalid: t('broker-bot.channels.link-invalid'),
+                            key: 'url',
+                            label: t('broker-bot.channels.link'),
+                            mono: true
+                        }
                     ]}
+                    Icon={TbBrandTelegram}
                     isPending={isPending}
                     items={bot.requiredChannels}
                     max={10}
@@ -42,6 +50,7 @@ export function BotRequiredChannelsCardWidget({ bot }: IProps) {
                         updateSettings({ variables: { requiredChannels } })
                     }
                     schema={BrokerBotRequiredChannelSchema}
+                    title={t('broker-bot.channels.list')}
                 />
             </SettingsCardShared.Content>
         </SettingsCardShared.Container>

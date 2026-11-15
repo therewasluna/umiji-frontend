@@ -27,6 +27,7 @@ import {
     AccessSettingsCard,
     ContactInformationCard,
     DeviceTagSettingsCard,
+    TelegramProxyCard,
     TrafficLimitsCard,
     UserIdentificationCard
 } from '@shared/ui/forms/users/forms-components'
@@ -84,11 +85,19 @@ export const ViewUserModalContent = (props: IProps) => {
             if (typeof values.email === 'string' && values.email === '') {
                 form.setFieldValue('email', null)
             }
+            // forceUpdate would remount the input and take the focus away mid-edit.
+            if (values.mtprotoSecret === '') {
+                form.setFieldValue('mtprotoSecret', null, { forceUpdate: false })
+            }
+            if (values.mtprotoAdTag === '') {
+                form.setFieldValue('mtprotoAdTag', null, { forceUpdate: false })
+            }
         },
         validate: schemaResolver(
             z.object(UpdateUserCommand.RequestBodySchema.shape).omit({
                 expireAt: true,
-                hwidDeviceLimit: true
+                hwidDeviceLimit: true,
+                ipLimit: true
             })
         )
     })
@@ -104,6 +113,11 @@ export const ViewUserModalContent = (props: IProps) => {
             onSuccess: (data) => {
                 queryClient.refetchQueries({
                     queryKey: usersQueryKeys.getUserAccessibleNodes({
+                        userId: userId
+                    }).queryKey
+                })
+                queryClient.invalidateQueries({
+                    queryKey: usersQueryKeys.getTelegramLinksByUserId({
                         userId: userId
                     }).queryKey
                 })
@@ -138,11 +152,23 @@ export const ViewUserModalContent = (props: IProps) => {
                 telegramId: user.telegramId ?? undefined,
                 email: user.email ?? undefined,
                 hwidDeviceLimit: user.hwidDeviceLimit ?? undefined,
+                ipLimit: user.ipLimit ?? undefined,
                 tag: user.tag ?? undefined,
-                externalSquadUuid: user.externalSquadUuid ?? undefined
+                externalSquadUuid: user.externalSquadUuid ?? undefined,
+                mtprotoSecret: user.mtprotoSecret,
+                mtprotoAdTag: user.mtprotoAdTag
             })
         }
     }, [user, internalSquads])
+
+    // Saving and revoking both change these on the server, and a revoke replaces the secret.
+    useEffect(() => {
+        if (!user) return
+
+        form.setFieldValue('mtprotoSecret', user.mtprotoSecret)
+        form.setFieldValue('mtprotoAdTag', user.mtprotoAdTag)
+        form.resetDirty()
+    }, [user?.mtprotoSecret, user?.mtprotoAdTag])
 
     const handleSubmit = form.onSubmit(async (values) => {
         const touchedFields = form.getTouched()
@@ -167,11 +193,16 @@ export const ViewUserModalContent = (props: IProps) => {
                 email: values.email === '' ? null : values.email,
                 // @ts-expect-error - TODO: fix ZOD schema
                 hwidDeviceLimit: values.hwidDeviceLimit === '' ? null : values.hwidDeviceLimit,
+                // @ts-expect-error - NumberInput gives '' when cleared
+                ipLimit: values.ipLimit === '' ? null : values.ipLimit,
                 // eslint-disable-next-line no-nested-ternary
                 tag: touchedFields.tag ? (values.tag === '' ? null : values.tag) : undefined,
                 externalSquadUuid: touchedFields.externalSquadUuid
                     ? values.externalSquadUuid
-                    : undefined
+                    : undefined,
+                // The form shows the generated secret, which must not get saved as a chosen one.
+                mtprotoSecret: form.isDirty('mtprotoSecret') ? values.mtprotoSecret : undefined,
+                mtprotoAdTag: form.isDirty('mtprotoAdTag') ? values.mtprotoAdTag : undefined
             }
         })
     })
@@ -223,6 +254,13 @@ export const ViewUserModalContent = (props: IProps) => {
                         form={form}
                         internalSquads={internalSquads}
                         motionWrapper={MotionWrapper}
+                    />
+                    <TelegramProxyCard
+                        cardVariants={cardVariants}
+                        form={form}
+                        internalSquads={internalSquads}
+                        motionWrapper={MotionWrapper}
+                        user={user}
                     />
                     <ContactInformationCard
                         cardVariants={cardVariants}
@@ -284,6 +322,13 @@ export const ViewUserModalContent = (props: IProps) => {
                             form={form}
                             internalSquads={internalSquads}
                             motionWrapper={MotionWrapper}
+                        />
+                        <TelegramProxyCard
+                            cardVariants={cardVariants}
+                            form={form}
+                            internalSquads={internalSquads}
+                            motionWrapper={MotionWrapper}
+                            user={user}
                         />
                     </MotionStack>
                 </Group>

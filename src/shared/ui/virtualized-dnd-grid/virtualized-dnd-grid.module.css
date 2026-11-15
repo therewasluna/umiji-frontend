@@ -1,7 +1,7 @@
 .list {
     display: flex;
     flex-wrap: wrap;
-    padding-inline: calc(var(--mantine-spacing-md) - 4px);
+    margin-inline: -4px;
     container-type: inline-size;
 }
 
@@ -12,9 +12,22 @@
     padding: 4px;
 }
 
-@container (min-width: 1000px) {
+/* Cards render as tiles from 560px (entity-card.module.css), so more of them share a row. */
+@container (min-width: 560px) {
     .item {
         width: 50%;
+    }
+}
+
+@container (min-width: 900px) {
+    .item {
+        width: calc(100% / 3);
+    }
+}
+
+@container (min-width: 1280px) {
+    .item {
+        width: 25%;
     }
 }
 

@@ -1,25 +1,17 @@
 .PHONY: download-monaco-deps clean bump-patch bump-minor bump-major tag-release
 
 MONACO_FILES = \
-	public/wasm_exec.js \
-	public/xray.schema.json \
-	public/main.wasm
-
-MONACO_BASE_URL = https://github.com/therewasluna/umiji/releases/download/assets-1
+	public/assets/wasm_exec.js \
+	public/assets/xray.schema.json \
+	public/assets/xray.schema.cn.json \
+	public/assets/main.wasm
 
 download-monaco-deps: $(MONACO_FILES)
 
-public/wasm_exec.js:
-	@mkdir -p public
-	curl -fL -o $@ $(MONACO_BASE_URL)/wasm_exec.js
-
-public/xray.schema.json:
-	@mkdir -p public 
-	curl -fL -o $@ $(MONACO_BASE_URL)/xray.schema.json
-
-public/main.wasm:
-	@mkdir -p public
-	curl -fL -o $@ $(MONACO_BASE_URL)/main.wasm
+# The app loads these from /assets/ (src/config.ts). The release is private, so fetch it with gh, not curl.
+$(MONACO_FILES):
+	@mkdir -p public/assets
+	gh release download assets-1 --repo therewasluna/umiji --dir public/assets --pattern $(notdir $@) --clobber
 
 clean:
 	rm -f $(MONACO_FILES)

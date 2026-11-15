@@ -8,6 +8,7 @@ import { useGetBrokerMe } from './brokers.query.hooks'
 
 export interface IAssignableInternalSquads {
     internalSquads: {
+        inbounds?: { type: string }[]
         info?: { inboundsCount: number; membersCount: number }
         name: string
         uuid: string

@@ -1,12 +1,12 @@
 import { Button, Card, Group, Stack, Switch, TextInput } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import { IconChevronRight, IconPlus, IconStar } from '@tabler/icons-react'
 import {
     TSubscriptionPageAppConfig,
     TSubscriptionPageBlockConfig,
     TSubscriptionPageLanguageCode,
     TSubscriptionPageSvgLibrary
 } from '@umiji/subscription-page-types'
-import { IconChevronRight, IconPlus, IconStar } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -103,17 +103,14 @@ export function AppEditorDrawerContent(props: IProps) {
                     <Stack gap="md">
                         <Group gap="sm" justify="space-between">
                             <BaseOverlayHeader
-                                iconColor="cyan"
                                 IconComponent={IconStar}
-                                iconSize={16}
-                                iconVariant="soft"
+                                hideIcon
                                 title={t('app-editor-drawer-content.component.app-settings')}
                                 titleOrder={5}
                             />
 
                             <Switch
                                 checked={app.featured}
-                                color="teal"
                                 label={t('app-editor-drawer-content.component.featured')}
                                 onChange={(e) =>
                                     onChange({
@@ -125,7 +122,6 @@ export function AppEditorDrawerContent(props: IProps) {
                         </Group>
 
                         <TextInput
-                            classNames={{ input: styles.inputDark }}
                             label={t('app-editor-drawer-content.component.app-name')}
                             onChange={(e) => onChange({ ...app, name: e.target.value })}
                             placeholder={t('app-editor-drawer-content.component.app-name')}
@@ -145,10 +141,8 @@ export function AppEditorDrawerContent(props: IProps) {
                 <Card className={styles.sectionCard} p="md" radius="md">
                     <Stack gap="md">
                         <BaseOverlayHeader
-                            iconColor="violet"
                             IconComponent={IconChevronRight}
-                            iconSize={16}
-                            iconVariant="soft"
+                            hideIcon
                             subtitle={t('app-editor-drawer-content.blocks', {
                                 count: app.blocks.length
                             })}

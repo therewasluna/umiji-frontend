@@ -15,12 +15,11 @@ import {
     Progress,
     SimpleGrid,
     Text,
-    ThemeIconProps,
     Tooltip
 } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { GetNodeCommand, UpdateNodeCommand } from '@umiji/backend-contract'
-import { githubDarkTheme, JsonEditor } from 'json-edit-react'
+import { JsonEditor } from 'json-edit-react'
 import { memo, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -33,6 +32,7 @@ import { TbJson, TbPower, TbWifi, TbWifiOff } from 'react-icons/tb'
 
 import { queryClient } from '@shared/api'
 import { QueryKeys, useDisableNode, useEnableNode, useGetNodeMetadata } from '@shared/api/hooks'
+import { JSON_VIEWER_THEME } from '@shared/constants/theme/json-viewer-theme'
 import { Logo } from '@shared/ui'
 import { XrayLogo } from '@shared/ui/logos'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
@@ -76,34 +76,18 @@ export const NodeDetailsCardWidget = memo((props: IProps) => {
         )
     }, [node.configProfile])
 
-    const { IconComponent, themeIconColor } = useMemo(() => {
-        let IconComponent: React.ComponentType<{ size: number }>
-        let themeIconColor: ThemeIconProps['color'] = 'red'
-
+    const IconComponent = useMemo((): React.ComponentType<{ size: number }> => {
         if (isConfigMissing) {
-            IconComponent = PiWarningCircle
-            themeIconColor = 'red'
-            return { IconComponent, themeIconColor }
+            return PiWarningCircle
         }
 
         if (node.isDisabled) {
-            IconComponent = TbWifiOff
-            themeIconColor = 'gray'
-            return { IconComponent, themeIconColor }
+            return TbWifiOff
         }
 
-        if (node.isConnected) {
-            IconComponent = TbWifi
-            themeIconColor = 'teal'
-        } else if (node.isConnecting) {
-            IconComponent = PiCloudArrowUpDuotone
-            themeIconColor = 'yellow'
-        } else {
-            IconComponent = PiWarningCircle
-            themeIconColor = 'red'
-        }
-
-        return { IconComponent, themeIconColor }
+        if (node.isConnected) return TbWifi
+        if (node.isConnecting) return PiCloudArrowUpDuotone
+        return PiWarningCircle
     }, [node.isConnected, node.isConnecting, node.isDisabled, isConfigMissing])
 
     const trafficData = useMemo(() => {
@@ -132,10 +116,10 @@ export const NodeDetailsCardWidget = memo((props: IProps) => {
     }, [node.trafficUsedBytes, node.trafficLimitBytes, node.isTrafficTrackingActive])
 
     const getProgressColor = useCallback(() => {
-        if (trafficData.isUnlimited) return 'teal'
+        if (trafficData.isUnlimited) return 'rose'
         if (trafficData.percentage > 95) return 'red'
         if (trafficData.percentage > 80) return 'yellow.4'
-        return 'teal'
+        return 'rose'
     }, [trafficData.percentage, trafficData.isUnlimited])
 
     const handleToggleNodeStatus = () => {
@@ -151,10 +135,8 @@ export const NodeDetailsCardWidget = memo((props: IProps) => {
             <SectionCard.Section>
                 <Group align="flex-center" justify="space-between">
                     <BaseOverlayHeader
-                        iconColor={themeIconColor}
                         IconComponent={IconComponent}
                         iconSize={20}
-                        iconVariant="soft"
                         title={t('node-details-card.widget.node-details')}
                         titleOrder={5}
                     />
@@ -189,21 +171,6 @@ export const NodeDetailsCardWidget = memo((props: IProps) => {
                                     disabled={isDisableNodePending || isEnableNodePending}
                                     onClick={handleToggleNodeStatus}
                                     size="md"
-                                    style={{
-                                        backgroundColor: node.isDisabled
-                                            ? 'rgba(45, 212, 191, 0.15)'
-                                            : 'rgba(239, 68, 68, 0.15)',
-                                        border: `1px solid ${
-                                            node.isDisabled
-                                                ? 'rgba(45, 212, 191, 0.3)'
-                                                : 'rgba(239, 68, 68, 0.3)'
-                                        }`,
-                                        boxShadow: `0 0 10px ${
-                                            node.isDisabled
-                                                ? 'rgba(45, 212, 191, 0.2)'
-                                                : 'rgba(239, 68, 68, 0.2)'
-                                        }`
-                                    }}
                                     variant="light"
                                 >
                                     {isDisableNodePending || isEnableNodePending ? (
@@ -231,18 +198,7 @@ export const NodeDetailsCardWidget = memo((props: IProps) => {
                                     'node-details-card.widget.config-profile-or-inbounds-is-missing'
                                 )}
                             >
-                                <ActionIcon
-                                    color="gray"
-                                    disabled
-                                    size="md"
-                                    style={{
-                                        backgroundColor: 'rgba(107, 114, 128, 0.15)',
-                                        border: `1px solid rgba(107, 114, 128, 0.3)`,
-                                        boxShadow: `0 0 10px rgba(107, 114, 128, 0.2)`,
-                                        opacity: 0.7
-                                    }}
-                                    variant="light"
-                                >
+                                <ActionIcon color="gray" disabled size="md" variant="light">
                                     <TbPower
                                         size={16}
                                         style={{
@@ -271,9 +227,7 @@ export const NodeDetailsCardWidget = memo((props: IProps) => {
                                         size: 'auto',
                                         title: (
                                             <BaseOverlayHeader
-                                                iconColor="teal"
                                                 IconComponent={TbJson}
-                                                iconVariant="soft"
                                                 title={t('node-details-card.metadata')}
                                             />
                                         ),
@@ -285,7 +239,7 @@ export const NodeDetailsCardWidget = memo((props: IProps) => {
                                                     indent={4}
                                                     maxWidth="100%"
                                                     rootName=""
-                                                    theme={githubDarkTheme}
+                                                    theme={JSON_VIEWER_THEME}
                                                     viewOnly
                                                 />
                                             </Box>
@@ -322,7 +276,7 @@ export const NodeDetailsCardWidget = memo((props: IProps) => {
                 <Box>
                     <Group gap="xs" justify="space-between" mb={6}>
                         <Group gap={6}>
-                            <Text c="gray.3" ff="monospace" fw={600} size="sm">
+                            <Text fw={600} size="sm">
                                 {trafficData.prettyUsedData}
                             </Text>
                         </Group>
@@ -335,7 +289,7 @@ export const NodeDetailsCardWidget = memo((props: IProps) => {
                         color={getProgressColor()}
                         radius="sm"
                         size="sm"
-                        value={trafficData.isUnlimited ? 100 : trafficData.percentage}
+                        value={trafficData.isUnlimited ? 0 : trafficData.percentage}
                     />
 
                     {node.isTrafficTrackingActive && node.trafficResetDay && (
@@ -366,15 +320,8 @@ export const NodeDetailsCardWidget = memo((props: IProps) => {
                             p="xs"
                             radius="md"
                             style={{
-                                background:
-                                    node.usersOnline! > 0
-                                        ? 'rgba(45, 212, 191, 0.08)'
-                                        : 'rgba(107, 114, 128, 0.08)',
-                                border: `1px solid ${
-                                    node.usersOnline! > 0
-                                        ? 'rgba(45, 212, 191, 0.2)'
-                                        : 'rgba(107, 114, 128, 0.2)'
-                                }`
+                                background: 'var(--mantine-color-dark-6)',
+                                border: '1px solid rgba(255, 255, 255, 0.07)'
                             }}
                         >
                             <Group gap="xs" justify="center">
@@ -401,14 +348,14 @@ export const NodeDetailsCardWidget = memo((props: IProps) => {
                                 p="xs"
                                 radius="md"
                                 style={{
-                                    background: 'rgba(139, 92, 246, 0.08)',
-                                    border: '1px solid rgba(139, 92, 246, 0.2)'
+                                    background: 'var(--mantine-color-dark-6)',
+                                    border: '1px solid rgba(255, 255, 255, 0.07)'
                                 }}
                             >
                                 <Tooltip label={t('node-details-card.widget.xray-core-version')}>
                                     <Group gap="xs" justify="center">
-                                        <XrayLogo color="var(--mantine-color-violet-5)" size={16} />
-                                        <Text c="violet.5" fw={600} size="sm">
+                                        <XrayLogo color="var(--mantine-color-dark-1)" size={16} />
+                                        <Text c="dark.1" fw={600} size="sm">
                                             {node.versions.xray}
                                         </Text>
                                     </Group>
@@ -422,8 +369,8 @@ export const NodeDetailsCardWidget = memo((props: IProps) => {
                                 p="xs"
                                 radius="md"
                                 style={{
-                                    background: 'rgba(20, 184, 166, 0.08)', // teal-500 at 8%
-                                    border: '1px solid rgba(20, 184, 166, 0.2)' // teal-500 at 20%
+                                    background: 'var(--mantine-color-dark-6)',
+                                    border: '1px solid rgba(255, 255, 255, 0.07)'
                                 }}
                             >
                                 <Tooltip
@@ -451,13 +398,11 @@ export const NodeDetailsCardWidget = memo((props: IProps) => {
                                 p="xs"
                                 radius="md"
                                 style={{
-                                    background: 'rgba(99, 102, 241, 0.08)',
-                                    border: '1px solid rgba(99, 102, 241, 0.2)'
+                                    background: 'var(--mantine-color-dark-6)',
+                                    border: '1px solid rgba(255, 255, 255, 0.07)'
                                 }}
                             >
-                                <Tooltip
-                                    label={t('node-details-card.widget.umiji-node-version')}
-                                >
+                                <Tooltip label={t('node-details-card.widget.umiji-node-version')}>
                                     <Group gap="xs" justify="center">
                                         <Logo color="var(--mantine-color-indigo-5)" size={16} />
                                         <Text c="indigo.5" fw={600} size="sm">

@@ -60,9 +60,7 @@ export const useDownloadTemplate = (props: IProps) => {
         const modalId = modals.open({
             title: (
                 <BaseOverlayHeader
-                    iconColor="cyan"
                     IconComponent={TbDownload}
-                    iconVariant="soft"
                     title={t('use-download-template.select-template-to-load')}
                 />
             ),

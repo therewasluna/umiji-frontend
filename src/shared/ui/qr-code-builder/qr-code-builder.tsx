@@ -59,8 +59,8 @@ interface IProps {
 export function QrCodeBuilder({ data, title }: IProps) {
     const { t } = useTranslation()
 
-    const [fgColor, setFgColor] = useState('#3CC9DB')
-    const [bgColor, setBgColor] = useState('#161B22')
+    const [fgColor, setFgColor] = useState('#FF7DB5')
+    const [bgColor, setBgColor] = useState('#1B1218')
     const [copying, setCopying] = useState(false)
     const [downloading, setDownloading] = useState(false)
 
@@ -169,25 +169,26 @@ export function QrCodeBuilder({ data, title }: IProps) {
             {isScreenshotSupported && (
                 <Group gap="xs">
                     <Button
-                        color={fgColor}
+                        color="teal"
                         fullWidth
                         leftSection={<TbCopy size={14} />}
                         loading={copying}
                         onClick={handleCopy}
                         radius="md"
                         size="sm"
-                        variant="filled"
+                        variant="soft"
                     >
                         {t('common.action.copy')}
                     </Button>
                     <Button
+                        color="gray"
                         fullWidth
                         leftSection={<TbDownload size={14} />}
                         loading={downloading}
                         onClick={handleDownload}
                         radius="md"
                         size="sm"
-                        variant="default"
+                        variant="soft"
                     >
                         {t('common.action.download')}
                     </Button>

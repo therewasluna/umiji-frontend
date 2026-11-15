@@ -24,9 +24,11 @@ import { Suspense, useEffect } from 'react'
 import { I18nextProvider } from 'react-i18next'
 
 import { theme } from '@shared/constants'
+import modalClasses from '@shared/constants/theme/overrides/modal/modal.module.css'
 import { AuthProvider } from '@shared/hocs/auth-provider'
 // import { StrictMode } from 'react'
 import { IsMobileProvider } from '@shared/hocs/is-mobile-provider'
+import { acceptLocalDigits } from '@shared/lib/accept-local-digits'
 import { LoadingScreen } from '@shared/ui'
 import { ConnectionStatusOverlay } from '@shared/ui/connection-status-overlay'
 
@@ -39,6 +41,8 @@ dayjs.extend(customParseFormat)
 polyfillCountryFlagEmojis()
 
 initConnectionWatchdog()
+
+acceptLocalDigits()
 
 export function App() {
     const isDev = __NODE_ENV__ === 'development'
@@ -70,7 +74,9 @@ export function App() {
                                 theme={theme}
                                 deduplicateInlineStyles
                             >
-                                <ModalsProvider>
+                                <ModalsProvider
+                                    modalProps={{ classNames: { body: modalClasses.managedBody } }}
+                                >
                                     <Notifications position="top-right" />
                                     <ConnectionStatusOverlay />
                                     <NavigationProgress />

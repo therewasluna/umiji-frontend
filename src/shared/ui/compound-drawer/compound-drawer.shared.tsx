@@ -1,8 +1,6 @@
 import { Drawer, DrawerProps, Group, useProps } from '@mantine/core'
 import { ReactNode } from 'react'
 
-import classes from '@shared/constants/theme/overrides/drawer/drawer.module.css'
-
 interface IProps {
     drawerProps: Omit<DrawerProps, 'children' | 'title'>
     children: ReactNode
@@ -18,15 +16,15 @@ export const CompoundDrawerShared = (props: IProps) => {
     return (
         <Drawer.Root {...rootProps}>
             <Drawer.Overlay />
-            <Drawer.Content className={classes.drawerContent}>
-                <Drawer.Header className={classes.drawerHeader}>
+            <Drawer.Content>
+                <Drawer.Header>
                     <Drawer.Title>{title}</Drawer.Title>
                     <Group gap="xs" justify="flex-end" wrap="nowrap">
                         {buttons}
-                        <Drawer.CloseButton />
+                        <Drawer.CloseButton iconSize={18} size="lg" />
                     </Group>
                 </Drawer.Header>
-                <Drawer.Body className={classes.drawerBody}>{children}</Drawer.Body>
+                <Drawer.Body>{children}</Drawer.Body>
             </Drawer.Content>
         </Drawer.Root>
     )

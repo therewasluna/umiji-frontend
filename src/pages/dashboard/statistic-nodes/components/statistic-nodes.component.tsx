@@ -4,15 +4,15 @@ import { NodesStatisticBarchartWidget } from '@widgets/dashboard/nodes-statistic
 import { NodesStatisticSparklineCardWidget } from '@widgets/dashboard/nodes-statistic/statistic-sparkline-card'
 import dayjs from 'dayjs'
 import { TFunction } from 'i18next'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { HiChartPie } from 'react-icons/hi'
 import { TbCalendar, TbRefresh, TbServer2 } from 'react-icons/tb'
 
 import { useGetStatsNodesUsage } from '@shared/api/hooks'
 import { Page, PageHeaderShared } from '@shared/ui'
 import { CountryFlag } from '@shared/ui/get-country-flag'
 import { TopLeaderboardCardShared } from '@shared/ui/leaderboard-item-card'
+import { OTHER_SERIES_COLOR, seriesColorMap } from '@shared/utils/misc'
 import { getDefaultDateRange } from '@shared/utils/time-utils'
 
 const getTopNodesLimitOptions = (t: TFunction) => [
@@ -58,6 +58,12 @@ export const StatisticNodesPage = () => {
             enabled: Boolean(queryRange.start && queryRange.end)
         }
     })
+
+    // Ranked by traffic: the busiest nodes get the five chart colours, the rest one quiet tone.
+    const colorByUuid = useMemo(
+        () => seriesColorMap(nodesStats?.topNodes?.map((node) => node.uuid) ?? []),
+        [nodesStats?.topNodes]
+    )
 
     const handleDateRangeChange = (value: DatesRangeValue<string>) => {
         if (value[0] === null && value[1] === null) {
@@ -184,7 +190,7 @@ export const StatisticNodesPage = () => {
                         </ActionIcon>
                     </>
                 }
-                icon={<HiChartPie size={24} />}
+                description={t('page-descriptions.statistics')}
                 title={t('constants.nodes-statistics')}
                 wrapActions
             />
@@ -200,7 +206,7 @@ export const StatisticNodesPage = () => {
                         emptyText={t('common.message.no-data-available')}
                         isLoading={isLoading}
                         items={nodesStats?.topNodes?.map((node) => ({
-                            color: node.color,
+                            color: colorByUuid.get(node.uuid) ?? OTHER_SERIES_COLOR,
                             countryCode: node.countryCode,
                             name: node.name,
                             total: node.total
@@ -213,7 +219,10 @@ export const StatisticNodesPage = () => {
                 <NodesStatisticBarchartWidget
                     categories={nodesStats?.categories}
                     isLoading={isLoading}
-                    series={nodesStats?.series}
+                    series={nodesStats?.series.map((s) => ({
+                        ...s,
+                        color: colorByUuid.get(s.uuid) ?? OTHER_SERIES_COLOR
+                    }))}
                 />
             </Stack>
         </Page>

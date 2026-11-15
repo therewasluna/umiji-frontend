@@ -69,9 +69,7 @@ export const HelpDrawerShared = NiceModal.create((props: IProps) => {
             size="lg"
             title={
                 <BaseOverlayHeader
-                    iconColor="yellow"
                     IconComponent={TbQuestionMark}
-                    iconVariant="soft"
                     title={t('help-action-icon.shared.help-article')}
                 />
             }

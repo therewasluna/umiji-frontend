@@ -16,28 +16,30 @@ const TERMINAL_FONT = 'Fira Mono'
 const FALLBACK_STACK = 'ui-monospace, SFMono-Regular, Menlo, monospace'
 const TERMINAL_STACK = `'${TERMINAL_FONT}', ${FALLBACK_STACK}`
 
+// Surface, text and selection come from the Umiji dark scale (xterm needs literal hex, not CSS vars).
+// ANSI hues stay distinct so command output keeps its meaning; yellow becomes coral (no yellow in Umiji).
 const THEME: ITheme = {
-    background: '#1a1b26',
-    black: '#15161e',
+    background: '#130C11',
+    black: '#0A0609',
     blue: '#7aa2f7',
-    brightBlack: '#414868',
+    brightBlack: '#7D6A75',
     brightBlue: '#7aa2f7',
     brightCyan: '#7dcfff',
     brightGreen: '#9ece6a',
     brightMagenta: '#bb9af7',
     brightRed: '#f7768e',
-    brightWhite: '#c0caf5',
-    brightYellow: '#e0af68',
-    cursor: '#c0caf5',
-    cursorAccent: '#1a1b26',
+    brightWhite: '#E3D5DD',
+    brightYellow: '#FFA684',
+    cursor: '#FF7DB5',
+    cursorAccent: '#130C11',
     cyan: '#7dcfff',
-    foreground: '#c0caf5',
+    foreground: '#E3D5DD',
     green: '#9ece6a',
     magenta: '#bb9af7',
     red: '#f7768e',
-    selectionBackground: '#33467c',
-    white: '#a9b1d6',
-    yellow: '#e0af68'
+    selectionBackground: '#4F3E48',
+    white: '#C9B6C1',
+    yellow: '#FF8A5C'
 }
 
 async function loadTerminalFont(family: string): Promise<void> {

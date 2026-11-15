@@ -1,7 +1,16 @@
-import { InputBase, PasswordInput, Select, TextInput } from '@mantine/core'
+import { InputBase, InputWrapper, PasswordInput, Select, TextInput } from '@mantine/core'
 import { DateTimePicker } from '@mantine/dates'
 
+import classes from './inputs.module.css'
+
 export default {
+    // Reaches every labelled field in the app: all input types and standalone Input.Label.
+    InputWrapper: InputWrapper.extend({
+        classNames: {
+            description: classes.description,
+            label: classes.label
+        }
+    }),
     InputBase: InputBase.extend({
         defaultProps: {
             radius: 'md'

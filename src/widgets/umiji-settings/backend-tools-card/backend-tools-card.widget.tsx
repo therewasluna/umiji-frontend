@@ -1,17 +1,16 @@
-import { Button, Card, Code, Group, Stack, Text, ThemeIcon } from '@mantine/core'
+import { Button, Group, Stack, Text, ThemeIcon } from '@mantine/core'
 import { useOs } from '@mantine/hooks'
 import { BULLBOARD_ROOT, ROOT, SCALAR_ROOT, SWAGGER_ROOT } from '@umiji/backend-contract'
 import { TFunction } from 'i18next'
 import { ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbApi, TbBook2, TbExternalLink, TbServer, TbStack2 } from 'react-icons/tb'
+import { TbApi, TbBook2, TbExternalLink, TbStack2 } from 'react-icons/tb'
 
 import { getBackendDomain } from '@shared/api'
 import { useIssueOtt } from '@shared/api/hooks/api-tokens/api-tokens.mutation.hooks'
 import { SettingsCardShared } from '@shared/ui/settings-card'
 
 interface BackendTool {
-    color: string
     description: string
     icon: ReactNode
     key: string
@@ -25,7 +24,6 @@ const getBackendTools = (t: TFunction): BackendTool[] => [
         title: t('backend-tools-card.widget.queue-viewer'),
         description: t('backend-tools-card.widget.queue-viewer-description'),
         icon: <TbStack2 size={20} />,
-        color: 'red',
         path: `${ROOT}${BULLBOARD_ROOT}`
     },
     {
@@ -33,7 +31,6 @@ const getBackendTools = (t: TFunction): BackendTool[] => [
         title: 'Scalar',
         description: t('backend-tools-card.widget.scalar-description'),
         icon: <TbBook2 size={20} />,
-        color: 'violet',
         path: `${ROOT}${SCALAR_ROOT}`
     },
     {
@@ -41,7 +38,6 @@ const getBackendTools = (t: TFunction): BackendTool[] => [
         title: 'Swagger',
         description: t('backend-tools-card.widget.swagger-description'),
         icon: <TbApi size={20} />,
-        color: 'green',
         path: `${ROOT}${SWAGGER_ROOT}`
     }
 ]
@@ -77,47 +73,46 @@ export const BackendToolsCardWidget = () => {
         <SettingsCardShared.Container>
             <SettingsCardShared.Header
                 description={t('backend-tools-card.widget.backend-tools-description')}
-                icon={<TbServer size={24} />}
-                iconColor="blue"
-                iconVariant="soft"
                 title={t('backend-tools-card.widget.backend-tools')}
             />
 
             <SettingsCardShared.Content>
                 {backendTools.map((tool) => (
-                    <Card key={tool.key} radius="md" withBorder>
-                        <Group justify="space-between" wrap="nowrap">
-                            <Group gap="md" wrap="nowrap">
-                                <ThemeIcon color={tool.color} size="lg" variant="soft">
-                                    {tool.icon}
-                                </ThemeIcon>
-
-                                <Stack gap={2}>
-                                    <Group gap="xs">
-                                        <Text fw={600} size="sm">
-                                            {tool.title}
-                                        </Text>
-                                        <Code c="dimmed" fz="xs" color="gray">
-                                            {tool.path}
-                                        </Code>
-                                    </Group>
-                                    <Text c="dimmed" size="xs">
-                                        {tool.description}
-                                    </Text>
-                                </Stack>
-                            </Group>
-
-                            <Button
-                                loading={pendingTool === tool.key}
-                                onClick={() => handleLogin(tool)}
-                                rightSection={<TbExternalLink size={16} />}
-                                size="xs"
+                    <Group gap="md" justify="space-between" key={tool.key} py="xs" wrap="nowrap">
+                        <Group gap="md" miw={0} wrap="nowrap">
+                            <ThemeIcon
+                                color="gray"
+                                size="lg"
+                                style={{ flexShrink: 0 }}
                                 variant="soft"
                             >
-                                {t('backend-tools-card.widget.login')}
-                            </Button>
+                                {tool.icon}
+                            </ThemeIcon>
+
+                            <Stack gap={2} miw={0}>
+                                <Text fw={600} size="sm">
+                                    {tool.title}
+                                </Text>
+                                <Text c="dimmed" size="xs">
+                                    {tool.description}
+                                </Text>
+                                <Text c="dimmed" ff="monospace" size="xs" truncate="end">
+                                    {tool.path}
+                                </Text>
+                            </Stack>
                         </Group>
-                    </Card>
+
+                        <Button
+                            loading={pendingTool === tool.key}
+                            onClick={() => handleLogin(tool)}
+                            rightSection={<TbExternalLink size={16} />}
+                            size="xs"
+                            style={{ flexShrink: 0 }}
+                            variant="soft"
+                        >
+                            {t('backend-tools-card.widget.login')}
+                        </Button>
+                    </Group>
                 ))}
             </SettingsCardShared.Content>
         </SettingsCardShared.Container>

@@ -112,7 +112,7 @@ export const ExternalSquadsDrawer = NiceModal.create((props: IProps) => {
                                 <Stack gap={6} style={{ flex: 1, minWidth: 0 }}>
                                     <Text
                                         className={classes.title}
-                                        ff="monospace"
+
                                         fw={700}
                                         lineClamp={1}
                                         size="lg"

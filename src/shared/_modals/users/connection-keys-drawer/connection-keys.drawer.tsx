@@ -13,7 +13,7 @@ import {
     Button
 } from '@mantine/core'
 import { modals } from '@mantine/modals'
-import { githubDarkTheme } from 'json-edit-react'
+import {} from 'json-edit-react'
 import { JsonEditor } from 'json-edit-react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -30,6 +30,7 @@ import { TbJson } from 'react-icons/tb'
 
 import { useNiceMantineModal } from '@shared/_modals/use-nice-modal'
 import { useGetConnectionKeysByUserId, useGetRawSubscription } from '@shared/api/hooks'
+import { JSON_VIEWER_THEME } from '@shared/constants/theme/json-viewer-theme'
 import { EmptyPageLayout } from '@shared/ui/layouts/empty-page'
 import { LoaderModalShared } from '@shared/ui/loader-modal'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
@@ -66,21 +67,16 @@ export const ConnectionKeysDrawer = NiceModal.create((props: IProps) => {
         modals.open({
             centered: true,
             size: 'auto',
-            title: (
-                <BaseOverlayHeader
-                    iconColor="teal"
-                    IconComponent={PiQrCodeDuotone}
-                    iconVariant="soft"
-                    title={remark}
-                />
-            ),
+            title: <BaseOverlayHeader IconComponent={PiQrCodeDuotone} title={remark} />,
             children: <QrCodeBuilder data={link} title={remark} />
         })
     }
 
     const renderLinkItem = (link: string) => {
-        const encodedName = link.split('#').at(-1) || t('connection-keys.host')
-        const name = decodeURIComponent(encodedName)
+        // Telegram links carry their name in a parameter, because # would break them.
+        const name = link.startsWith('tg://')
+            ? new URLSearchParams(link.split('?')[1]).get('remark') || t('connection-keys.host')
+            : decodeURIComponent(link.split('#').at(-1) || t('connection-keys.host'))
 
         return (
             <TextInput
@@ -174,9 +170,7 @@ export const ConnectionKeysDrawer = NiceModal.create((props: IProps) => {
             size: 'xl',
             title: (
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbJson}
-                    iconVariant="soft"
                     title={t('connection-keys.raw-subscription')}
                 />
             ),
@@ -197,7 +191,7 @@ export const ConnectionKeysDrawer = NiceModal.create((props: IProps) => {
                         }}
                         maxWidth="100%"
                         rootName=""
-                        theme={githubDarkTheme}
+                        theme={JSON_VIEWER_THEME}
                         viewOnly
                         jsonStringify={(data) => JSON.stringify(data)}
                     />
@@ -214,9 +208,7 @@ export const ConnectionKeysDrawer = NiceModal.create((props: IProps) => {
             size="md"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={PiLinkBreakDuotone}
-                    iconVariant="soft"
                     title={t('get-user-subscription-links.feature.connection-keys')}
                 />
             }

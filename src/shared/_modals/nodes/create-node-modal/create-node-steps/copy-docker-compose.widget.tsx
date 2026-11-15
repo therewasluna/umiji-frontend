@@ -1,4 +1,5 @@
 import { Button, CopyButton, Group, Skeleton } from '@mantine/core'
+import { generateNodeDockerCompose } from '@umiji/backend-contract'
 import { useTranslation } from 'react-i18next'
 import { PiCheck } from 'react-icons/pi'
 import { SiDocker } from 'react-icons/si'
@@ -17,28 +18,12 @@ export const CopyDockerComposeWidget = ({ port }: IProps) => {
         return <Skeleton height={40} />
     }
 
-    const generateDockerCompose = (port?: number) => {
-        return `services:
-  umiji-node:
-    container_name: umiji-node
-    hostname: umiji-node
-    image: ghcr.io/therewasluna/umiji-node:latest
-    network_mode: host
-    restart: always
-    cap_add:
-      - NET_ADMIN
-    ulimits:
-      nofile:
-        soft: 1048576
-        hard: 1048576
-    environment:
-      - NODE_PORT=${port ?? 2222}
-      - SECRET_KEY="${secretKey?.secretKey.trimEnd() ?? ''}"`
-    }
-
     return (
         <Group mt="lg">
-            <CopyButton timeout={2000} value={generateDockerCompose(port)}>
+            <CopyButton
+                timeout={2000}
+                value={generateNodeDockerCompose(port ?? 2222, secretKey.secretKey)}
+            >
                 {({ copied, copy }) => (
                     <Button
                         color={copied ? 'teal' : 'gray'}

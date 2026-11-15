@@ -1,38 +1,37 @@
 import { Badge, BadgeProps } from '@mantine/core'
 import { TUsersStatus, USERS_STATUS } from '@umiji/backend-contract'
-import { PiClockCountdown, PiClockUser, PiProhibit, PiPulse } from 'react-icons/pi'
+import { useTranslation } from 'react-i18next'
 
 interface IProps extends Omit<BadgeProps, 'children' | 'color'> {
     status: TUsersStatus
 }
 
+// Outlined: green while active, coral when limited, quiet when expired or disabled.
+const STATUS_COLORS: Record<TUsersStatus, BadgeProps['color']> = {
+    [USERS_STATUS.ACTIVE]: 'teal',
+    [USERS_STATUS.LIMITED]: 'orange',
+    [USERS_STATUS.EXPIRED]: 'gray',
+    [USERS_STATUS.DISABLED]: 'gray'
+}
+
 export function UserStatusBadge({ status, ...props }: IProps) {
-    let icon: React.ReactNode
-    let color: BadgeProps['color'] = 'gray'
-    switch (status) {
-        case USERS_STATUS.ACTIVE:
-            icon = <PiPulse size={18} />
-            color = 'teal'
-            break
-        case USERS_STATUS.DISABLED:
-            icon = <PiProhibit size={18} />
-            color = 'shaded-gray'
-            break
-        case USERS_STATUS.EXPIRED:
-            icon = <PiClockUser size={18} />
-            color = 'red'
-            break
-        case USERS_STATUS.LIMITED:
-            icon = <PiClockCountdown size={18} />
-            color = 'orange'
-            break
-        default:
-            break
+    const { t } = useTranslation()
+    const labels: Record<TUsersStatus, string> = {
+        [USERS_STATUS.ACTIVE]: t('users-metrics.active'),
+        [USERS_STATUS.LIMITED]: t('users-metrics.limited'),
+        [USERS_STATUS.EXPIRED]: t('users-metrics.expired'),
+        [USERS_STATUS.DISABLED]: t('users-metrics.disabled')
     }
 
     return (
-        <Badge color={color} leftSection={icon} size="lg" variant="soft" {...props}>
-            {status}
+        <Badge
+            color={STATUS_COLORS[status] ?? 'gray'}
+            size="lg"
+            tt="none"
+            variant="soft"
+            {...props}
+        >
+            {labels[status] ?? status}
         </Badge>
     )
 }

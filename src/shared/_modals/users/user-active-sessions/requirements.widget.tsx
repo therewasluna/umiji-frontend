@@ -16,7 +16,7 @@ export const RequirementsWidget = () => {
     return (
         <Stack gap="md">
             <Group gap="sm" wrap="nowrap">
-                <ThemeIcon color="teal" size="md" variant="soft">
+                <ThemeIcon color="gray" size="md" variant="soft">
                     <TbTag size={16} />
                 </ThemeIcon>
                 <Text c="dimmed" size="sm">
@@ -41,7 +41,7 @@ export const RequirementsWidget = () => {
                     </Text>
                 </Group>
                 <CodeHighlight
-                    background="rgba(22, 27, 35)"
+                    background="var(--mantine-color-dark-7)"
                     code={DOCKER_SNIPPET}
                     language="yaml"
                     radius="md"

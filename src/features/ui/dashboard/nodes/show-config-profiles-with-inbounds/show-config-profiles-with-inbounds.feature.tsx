@@ -48,7 +48,7 @@ export function ShowConfigProfilesWithInboundsFeature(props: IProps) {
                                 <ThemeIcon color="cyan" size="lg" variant="soft">
                                     <XrayLogo size={20} />
                                 </ThemeIcon>
-                                <Text ff="monospace" fw={600} size="sm" truncate>
+                                <Text fw={600} size="sm" truncate>
                                     {activeProfile.name}
                                 </Text>
                             </Group>

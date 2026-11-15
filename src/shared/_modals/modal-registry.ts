@@ -24,7 +24,6 @@ import {
     InternalSquadsInboundsDrawer,
     InternalSquadsUsageDrawer
 } from './internal-squads'
-import { NodeIntegrationEditorModal, NodeIntegrationsModal } from './node-integrations'
 import { NodePluginExecutorDrawer } from './node-plugins'
 import {
     CreateNodeModal,
@@ -38,16 +37,15 @@ import {
     NodeGeocheckModal,
     NodeSshTerminalWindow
 } from './nodes'
-import { PasskeysDrawer } from './umiji-settings'
 import { SharedListEditorModal, SharedListsModal } from './shared-lists'
 import { SnippetsModal } from './snippets'
+import { PasskeysDrawer } from './umiji-settings'
 import {
     Base64EditorModal,
     CreateModal,
     HelpDrawerShared,
     JsonEditorModal,
     EditTagsModalShared,
-    QuickLinksModalShared,
     RenameModalShared
 } from './universal'
 import {
@@ -75,7 +73,6 @@ export const MODAL_REGISTRY = {
     createModal: CreateModal,
     jsonEditorModal: JsonEditorModal,
     base64EditorModal: Base64EditorModal,
-    quickLinksModal: QuickLinksModalShared,
 
     users_viewUserModal: ViewUserModal,
     users_detailedUserInfoDrawer: DetailedUserInfoDrawer,
@@ -116,9 +113,6 @@ export const MODAL_REGISTRY = {
     configProfiles_configProfileInboundsDrawer: ConfigProfileInboundsDrawer,
 
     nodePlugins_nodePluginExecutorDrawer: NodePluginExecutorDrawer,
-
-    nodeIntegrations_nodeIntegrationsModal: NodeIntegrationsModal,
-    nodeIntegrations_nodeIntegrationEditorModal: NodeIntegrationEditorModal,
 
     infraBilling_viewInfraProviderModal: ViewInfraProviderModal,
     infraBilling_createInfraProviderModal: CreateInfraProviderModal,

@@ -22,11 +22,10 @@
     "response-rules": "Response Rules",
     "umiji-settings": "Umiji Settings",
     "node-plugins": "Plugins",
-    "quick-open": "Quick open",
+    "quick-open": "Quick Open",
     "tb-reports": "Torrent Blocker Reports",
     "sessions-explorer": "Sessions Explorer",
     "http-stats": "HTTP Stats",
-    "quick-launcher": "Launcher",
     "brokers": "Brokers"
   },
   "common": {
@@ -200,7 +199,8 @@
     "email": "Email",
     "vless-uuid": "Vless UUID",
     "trojan-password": "Trojan Password",
-    "hwid-device-limit": "HWID Device Limit"
+    "hwid-device-limit": "HWID Device Limit",
+    "ip-limit": "IP limit"
   },
   "header-action-buttons": {
     "feature": {
@@ -299,8 +299,14 @@
       "table-title": "Users"
     },
     "filter-by": "Filter by...",
-    "nice-try": "Nice try!",
-    "nothing-to-show": "Nothing to show..."
+    "nothing-to-show": "Nothing to show...",
+    "search": "Search username",
+    "filters": "Filters & sorting",
+    "sort-by": "Sort by",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "username-match": "Username match",
+    "details": "Details"
   },
   "view-user-modal": {
     "widget": {
@@ -444,6 +450,7 @@
   },
   "login-form": {
     "feature": {
+      "broker-sign-in": "Broker sign in",
       "sign-in": "Sign in",
       "your-password": "Your password"
     }
@@ -918,7 +925,14 @@
   },
   "device-tag-settings-card": {
     "device-and-tag-settings": "Device & tag settings",
-    "fallback-device-limit-in-use": "Fallback Device Limit in use"
+    "fallback-device-limit-in-use": "Fallback Device Limit in use",
+    "ip-limit": "Simultaneous IP limit",
+    "ip-limit-description": "How many IPs can use this user at the same time, across all nodes. Devices on one Wi‑Fi count once. This is a beta and doesn’t always work: it can let extra devices in, or refuse the user’s own.",
+    "ip-limit-placeholder": "Unlimited"
+  },
+  "ip-limit-beta": {
+    "beta": "Beta",
+    "read-the-risks": "Read the risks before turning it on."
   },
   "user-identity-creation-card": {
     "user-identity": "User identity",
@@ -1077,7 +1091,8 @@
   },
   "hwid-inspector-table": {
     "widget": {
-      "hwid-devices-list": "HWID devices list"
+      "hwid-devices-list": "HWID devices list",
+      "hwid-devices-list-description": "Every device registered to a subscription"
     },
     "filter-by": "Filter by..."
   },
@@ -1089,7 +1104,9 @@
       "platform-distribution": "Platform distribution",
       "app-distribution": "App distribution",
       "no-platform-data": "No platform data available",
-      "no-app-data": "No app data available"
+      "no-app-data": "No app data available",
+      "page-description": "Hardware IDs your users' apps report, by platform and user",
+      "platform-distribution-description": "Devices grouped by platform and app"
     },
     "unknown": "Unknown"
   },
@@ -1103,7 +1120,10 @@
     "widget": {
       "requests": "Requests",
       "hourly-request-statistics": "Hourly request statistics",
-      "no-hourly-data-available": "No hourly data available"
+      "no-hourly-data-available": "No hourly data available",
+      "app-distribution-description": "Which apps request subscriptions",
+      "hourly-description": "Requests per hour over the last 48 hours",
+      "table-description": "Each request with its app, IP and response"
     },
     "unknown": "Unknown"
   },
@@ -1243,10 +1263,20 @@
     "review-settings-carefully-line-2": "before applying changes"
   },
   "auth-settings": {
+    "configure": "Configure",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
     "header": {
       "title": "Authentication methods",
-      "description": "Manage your authentication methods."
+      "description": "Manage your authentication methods.",
+      "active-methods": "Active methods",
+      "active-count": "{{active}} of {{total}} active"
     },
+    "groups": {
+      "built-in": "Built-in",
+      "oauth2": "OAuth2 providers"
+    },
+    "unsaved-changes": "Unsaved changes",
     "error-modal": {
       "title": "Update failed",
       "description": "An error occurred while updating authentication settings. Please review the error details below and try again.",
@@ -1326,13 +1356,6 @@
       "example-mantine-colors": "Example with Mantine colors",
       "example-mixed": "Example with mixed colors",
       "color-format-note": "💡 Color applies only to the word immediately following the marker. Without markers, text will be white."
-    }
-  },
-  "experimental-settings-card": {
-    "widget": {
-      "experimental-features": "Experimental features",
-      "description": "Features that are still in development. They can change or disappear at any time.",
-      "legacy-layout-style": "Legacy layout style"
     }
   },
   "api-tokens-card": {
@@ -1462,6 +1485,16 @@
       "subpage-editor": "Subpage editor",
       "brand-appearance": "Brand appearance",
       "branding": "Branding",
+      "main-color": "Main color",
+      "main-color-description": "Your subscription page takes this color: buttons, highlights and the background tint.",
+      "color-rose": "Rose",
+      "color-ruby": "Ruby",
+      "color-emerald": "Emerald",
+      "color-teal": "Teal",
+      "color-sky": "Sky",
+      "color-sapphire": "Sapphire",
+      "color-plum": "Plum",
+      "color-orchid": "Orchid",
       "brand-title": "Brand title",
       "your-brand-name": "Your brand name",
       "support-url": "Support URL",
@@ -1475,7 +1508,8 @@
       "no-platforms-configured": "No platforms configured",
       "add-a-platform-to-get-started": "Add a platform to get started",
       "open-svg-library": "Open SVG library",
-      "installation-guides-design": "Installation guides design"
+      "installation-guides-design": "Installation guides design",
+      "ui-configuration-description": "Layout styles for the page's blocks"
     },
     "subpage-config-saved-line-1": "To apply the changes, please restart the Umiji Subscription-page Docker container.",
     "subpage-config-saved-line-2": "For example, you can use the following command in your terminal:"
@@ -1602,7 +1636,8 @@
       "show-connection-keys": "Show connection keys",
       "show-or-hide-raw-connection-keys": "Show or hide raw connection keys",
       "hide-get-link-button": "Hide \"Get Link\" button",
-      "hide-the-get-link-button-top-right-corner": "Hide the \"Get Link\" button from the top right corner"
+      "hide-the-get-link-button-top-right-corner": "Hide the \"Get Link\" button from the top right corner",
+      "description": "Page title, description and what the page shows"
     }
   },
   "import-config-sections": {
@@ -1648,6 +1683,23 @@
       "drop-this-connection-on-this-node": "Drop this connection on this node"
     }
   },
+  "telegram-proxy-card": {
+    "title": "Telegram proxy",
+    "secret": "Proxy secret",
+    "secret-description": "32 hex characters. Leave empty to get a generated one. Anyone who knows it can use this user's traffic, so don't pick something easy to guess.",
+    "generate": "Generate a random secret",
+    "ad-tag": "Sponsored channel tag",
+    "ad-tag-description": "The tag @MTProxybot gives you. This user then sees your channel in their chat list. Leave empty for no channel of your own.",
+    "after-create": "After you create the user, open them again for the link to share and the steps to add a sponsored channel.",
+    "no-address": "No address yet, because this inbound has no host. Ask the panel admin to add one.",
+    "proxy-link": "Link for this user",
+    "register-title": "Add a sponsored channel",
+    "step-open": "Open @MTProxybot and send /newproxy",
+    "step-address": "Send this address:",
+    "step-secret": "Send this secret:",
+    "step-tag": "Paste the tag it gives you into Sponsored channel tag above, then save.",
+    "step-channel": "In the bot, send /myproxies, pick this proxy and set your channel. It must be a public channel, and it can take up to an hour to show."
+  },
   "contact-information-card": {
     "contact-information": "Contact information",
     "telegram-id": "Telegram ID",
@@ -1667,7 +1719,7 @@
       "nothing-found": "Nothing found...",
       "select-plugin": "Select plugin",
       "proxy-url": "Proxy URL",
-      "proxy-url-description": "Optional. If provided, internal API connection from panel to node will be proxied through this proxy."
+      "proxy-url-description": "Optional. The panel reaches this node only through this proxy: socks5:// or http://. A proxy on the panel's own server can be given as 127.0.0.1; it must listen on 172.17.0.1 or 0.0.0.0 so the panel container can reach it."
     },
     "node-port": "Node Port",
     "secret-key-secret-key": "Secret Key (SECRET_KEY)",
@@ -1727,7 +1779,9 @@
       "distinct-users": "Distinct users",
       "last-24-hours": "Last 24 hours",
       "by-report-count": "By report count",
-      "top-users": "Top users"
+      "top-users": "Top users",
+      "all-reports": "All reports",
+      "all-reports-description": "Each blocked connection with its user, node and IP"
     }
   },
   "torrent-blocker-reports-table": {
@@ -1925,29 +1979,6 @@
       "linked": "Linked"
     }
   },
-  "node-integrations": {
-    "modal": {
-      "title": "Node integrations",
-      "delete-description": "The integration will be removed from all nodes and affected nodes will be restarted."
-    },
-    "editor": {
-      "description-placeholder": "What this integration does",
-      "config-must-be-an-object": "Config must be a JSON object"
-    },
-    "select": {
-      "label": "Integrations",
-      "placeholder": "Select integrations"
-    },
-    "node-integration-created-successfully": "Node integration created successfully",
-    "create-node-integration": "Create Node Integration",
-    "request-failed-with-unknown-error": "Request failed with unknown error.",
-    "node-integration-updated-successfully": "Node integration updated successfully",
-    "update-node-integration": "Update Node Integration",
-    "node-integration-deleted-successfully": "Node integration deleted successfully",
-    "delete-node-integration": "Delete Node Integration",
-    "get-node-integration": "Get Node Integration",
-    "get-node-integrations": "Get Node Integrations"
-  },
   "shared-lists": {
     "modal": {
       "subtitle": "Reusable IP and ASN lists referenced by plugins as ext:name",
@@ -2061,7 +2092,13 @@
     "snippet-edit": "Edit snippet",
     "connections-title": "Saved connections",
     "connections-empty": "No saved connections yet",
-    "connections-current": "Current"
+    "connections-current": "Current",
+    "keys": {
+      "left": "Left arrow",
+      "down": "Down arrow",
+      "up": "Up arrow",
+      "right": "Right arrow"
+    }
   },
   "brokers": {
     "broker": "Broker",
@@ -2137,7 +2174,7 @@
       "internal-squads-description": "Squads you can put your users in. Ask the panel owner to change this list.",
       "no-internal-squads": "The panel owner hasn't given you any internal squads yet.",
       "your-users": "Your users in this squad",
-      "subscription-settings": "Subscription settings",
+      "subscription-settings": "Subscription Settings",
       "subscription-settings-description": "How client apps show your subscription: settings, response headers and remarks for your users.",
       "no-external-squad": "Your subscription settings aren't set up. Ask the panel owner.",
       "no-subscription-page": "Your subscription page isn't set up, or it's shared with others. Ask the panel owner.",
@@ -2197,21 +2234,39 @@
     "get-broker-account": "Get Broker Account"
   },
   "broker-bot": {
-    "title": "Telegram bot",
+    "title": "Telegram Bot",
     "nav-settings": "Bot settings",
     "description": "Sell your plans through your own Telegram bot. Customers top up a wallet, then buy a plan in one tap.",
     "pending-receipts": "Pending receipts",
     "stats": {
       "title": "Bot stats",
-      "reset-note": "Counted since you last changed the bot token",
-      "users": "Total users",
-      "active-today": "Active today",
-      "new-today": "New today",
-      "active-7d": "Active (7 days)",
-      "wallet-credit": "Wallet credit",
-      "subs-sold": "Subscriptions sold",
-      "topups": "Top-ups total",
-      "pending": "Pending receipts"
+      "nav": "Stats",
+      "description": "Customers, sales, top-ups, free trials and referrals of your bot. Days are UTC.",
+      "reset-note": "Counted since you last changed the bot token. Receipts waiting are all of them.",
+      "customers": "Customers",
+      "money": "Sales & top-ups",
+      "new": "New customers",
+      "active": "Active",
+      "referred": "Invited",
+      "trials": "Free trials",
+      "sales": "Sales",
+      "topups": "Top-ups",
+      "rejected": "Rejected top-ups",
+      "rewards": "Referral rewards",
+      "plans-count_one": "{{count}} plan sold",
+      "plans-count_other": "{{count}} plans sold",
+      "approved-count_one": "{{count}} approved",
+      "approved-count_other": "{{count}} approved",
+      "buyers-count_one": "{{count}} buyer",
+      "buyers-count_other": "{{count}} buyers",
+      "last-30-days": "Last 30 days",
+      "sales-per-day": "Sales per day",
+      "customers-per-day": "New customers per day",
+      "all-time": "All time",
+      "wallet-credit": "Credit in wallets",
+      "pending": "Receipts waiting",
+      "top-plans": "Best-selling plans",
+      "no-sales": "No plans sold yet."
     },
     "connection": {
       "title": "Bot connection",
@@ -2224,10 +2279,7 @@
       "bot-token-keep": "Leave empty to keep the current token",
       "group-id": "Staff group chat ID",
       "group-id-hint": "Leave empty if you don't know it and use the Group ID Finder.",
-      "language": "Bot language",
-      "language-hint": "Language of the bot's messages to your customers and staff.",
-      "greeting": "Greeting message",
-      "greeting-hint": "Optional. Replaces the default welcome text on the start menu.",
+      "texts-link": "Languages and texts",
       "save": "Save & connect",
       "saved": "Bot settings saved",
       "disconnect": "Disconnect",
@@ -2235,9 +2287,11 @@
     },
     "finder": {
       "title": "Group ID Finder",
-      "help": "Add your connected bot to the staff group and send /find in it. The group shows up here; pick the right one.",
-      "connect-first": "Connect your bot first, then send /find in your group.",
-      "empty": "No groups found yet. Send /find in your group; it appears here within a few seconds.",
+      "help": "Pick the staff group without looking up its ID: the bot lists every group you send /find in.",
+      "empty-title": "No groups found yet",
+      "step-connect": "Connect your bot in Bot connection",
+      "step-add": "Add the bot to your staff group as an admin",
+      "step-find": "Send /find in the group, then refresh here",
       "refresh": "Refresh",
       "clear": "Clear list",
       "use": "Use this group",
@@ -2277,10 +2331,12 @@
       "title-placeholder": "10GB / 1 month",
       "field-category": "Category",
       "no-category": "No category",
-      "field-traffic": "Traffic (GB, 0 = unlimited)",
+      "field-traffic": "Traffic (GB)",
       "field-duration": "Duration (days)",
       "field-price": "Price (Toman)",
-      "field-squad": "Internal squad",
+      "field-squads": "Internal squads",
+      "field-squads-hint": "Each subscription sold from this plan gets every squad you tick.",
+      "squads-required": "Tick at least one squad.",
       "no-squads": "No internal squads are available to you yet. Ask the panel owner to allow one.",
       "inactive": "Paused",
       "pause": "Pause",
@@ -2290,7 +2346,13 @@
       "days_other": "{{count}} days",
       "squad-missing": "Squad no longer available",
       "delete-confirm": "Delete this plan? Customers won't see it anymore. Subscriptions already sold are not affected.",
-      "gb": "{{value}} GB"
+      "gb": "{{value}} GB",
+      "field-traffic-hint": "0 = unlimited",
+      "list": "Your plans",
+      "field-ip-limit": "Devices at once",
+      "field-ip-limit-hint": "How many IPs each buyer can connect from at the same time, across all nodes. Devices on one Wi‑Fi count once. Empty = unlimited. This is a beta and doesn’t always work.",
+      "devices_one": "{{count}} device",
+      "devices_other": "{{count}} devices"
     },
     "categories": {
       "title": "Plan categories",
@@ -2315,7 +2377,14 @@
       "asset": "Asset (e.g. USDT, TRX)",
       "address": "Wallet address",
       "add-wallet": "Add wallet",
-      "delete-confirm": "Remove {{value}}?"
+      "other": "Other methods",
+      "no-other": "No other methods yet. PayPal, Wise, IBAN, SBP, YooMoney and the like go here.",
+      "method": "Method (e.g. PayPal)",
+      "account": "Email, IBAN, phone or link",
+      "note": "Holder, bank or rate (optional)",
+      "add-other": "Add method",
+      "delete-confirm": "Remove {{value}}?",
+      "not-set-up": "Not set up"
     },
     "channels": {
       "title": "Mandatory channels",
@@ -2324,7 +2393,10 @@
       "ref": "Channel @username or ID",
       "label": "Button label",
       "link": "Join link (https://t.me/…)",
-      "add": "Add channel"
+      "add": "Add channel",
+      "ref-invalid": "Must be a @username or a -100… numeric ID",
+      "link-invalid": "Must be a https://t.me/… link",
+      "list": "Channels"
     },
     "orders": {
       "title": "Orders",
@@ -2335,6 +2407,11 @@
       "receipt-unavailable": "Couldn't load the receipt image.",
       "approve": "Approve",
       "reject": "Reject",
+      "recover-purchase": "Link subscription",
+      "recover-user-id": "Created user ID",
+      "recover-user-hint": "Enter the user ID created for this purchase. It must belong to this broker and match the customer's Telegram account.",
+      "refund-purchase": "Refund wallet",
+      "refund-purchase-confirm": "No matching subscription was found. Refund {{amount}} to this customer's wallet?",
       "approve-confirm": "Approve this top-up? {{amount}} goes to the customer's wallet and they're notified.",
       "reject-confirm": "Reject this top-up? The customer is notified and no balance is added.",
       "reject-reason": "Reason (optional)",
@@ -2345,13 +2422,15 @@
       "status-pending": "Pending",
       "status-approved": "Approved",
       "status-rejected": "Rejected",
-      "connect-first": "Connect your bot to review receipts."
+      "connect-first": "Connect your bot to review receipts.",
+      "trial": "Free trial",
+      "referral": "Referral reward"
     },
     "saved": "Saved",
     "connect-first": "Connect your bot first.",
     "broadcast-notice": "📣 Heads up: every now and then we may share a platform announcement or promotion with your bot’s subscribers. Nothing spammy, just the occasional update. Thanks for being part of the platform! 💜",
     "broadcast": {
-      "title": "Bot broadcast",
+      "title": "Bot Broadcast",
       "description": "Send a message to every customer of every broker’s bot.",
       "new": "New broadcast",
       "audience_one": "Goes to {{count}} customer of the connected broker bots.",
@@ -2381,7 +2460,575 @@
     "request-failed-with-unknown-error": "Request failed with unknown error.",
     "get-telegram-bot": "Get Telegram Bot",
     "get-telegram-orders": "Get Telegram Orders",
-    "get-broadcasts": "Get Broadcasts"
+    "get-broadcasts": "Get Broadcasts",
+    "field-required": "This field is required",
+    "field-invalid": "This value isn't valid",
+    "referral": {
+      "title": "Referral program",
+      "description": "Every customer gets a personal invite link under “🤝 Invite friends”. When a friend who first opened the bot through that link gets a top-up approved, the customer who invited them gets a share of it as wallet credit. Only the inviter is paid, never the person who invited them.",
+      "percent": "Reward (% of each approved top-up)",
+      "percent-hint": "0 turns the program off and hides the button. Wallet credit you add from this panel pays no reward.",
+      "save": "Save referrals"
+    },
+    "trial": {
+      "title": "Free trial",
+      "description": "A free test plan every Telegram account can claim once, under “🎁 Free trial”. Each trial is one of your users, so it counts toward your users limit and traffic quota.",
+      "offer": "Offer the free trial",
+      "field-duration": "Duration",
+      "duration-unit": "Duration unit",
+      "unit-days": "Days",
+      "unit-hours": "Hours",
+      "squads-hint": "Each free trial gets every squad you tick.",
+      "field-ip-limit-hint": "How many IPs each trial user can connect from at the same time, across all nodes. Devices on one Wi‑Fi count once. Empty = unlimited. This is a beta and doesn’t always work.",
+      "field-daily-limit": "Trials per day",
+      "field-daily-limit-hint": "The most free trials handed out in one day (UTC). Once they’re gone, customers are told to come back tomorrow. Empty = no cap.",
+      "delete-expired": "Delete expired trial users",
+      "delete-expired-hint": "A day after a trial expires, its user is deleted, so it stops counting toward your users limit. Turning this on also deletes trials that expired earlier, and trial users you extended by hand once they expire again.",
+      "claims_one": "Claimed {{count}} time since {{since}}",
+      "claims_other": "Claimed {{count}} times since {{since}}",
+      "reset": "Reset claims",
+      "reset-confirm": "Let every Telegram account claim the free trial again? Trials already handed out keep working.",
+      "save": "Save trial"
+    }
+  },
+  "broker-bot-texts": {
+    "title": "Texts & languages",
+    "nav": "Texts & languages",
+    "description": "Write what your bot says, in every language it speaks. Saved changes reach customers right away.",
+    "languages": {
+      "title": "Languages",
+      "description": "Customers switch between these with the 🌐 button in the menu. A new customer starts in their Telegram app's language when your bot speaks it, otherwise in the default. The staff group always gets the default.",
+      "default": "Default",
+      "make-default": "Make default",
+      "default-locked": "The default language stays on. Make another one the default first.",
+      "edited_one": "{{count}} edited",
+      "edited_other": "{{count}} edited",
+      "names": {
+        "en": "English",
+        "fa": "Persian",
+        "ar": "Arabic",
+        "ru": "Russian",
+        "tr": "Turkish",
+        "zh": "Chinese"
+      }
+    },
+    "groups": {
+      "menu": "Main menu",
+      "plans": "Plans & checkout",
+      "wallet": "Wallet & top-ups",
+      "subs": "Subscriptions",
+      "support": "Support",
+      "channels": "Required channels",
+      "words": "Units",
+      "staff": "Staff group",
+      "referral": "Invite friends",
+      "trial": "Free trial"
+    },
+    "kinds": {
+      "message": "Message",
+      "button": "Button",
+      "alert": "Pop-up",
+      "topic": "Topic name",
+      "word": "Word"
+    },
+    "keys": {
+      "greeting": {
+        "label": "Welcome message",
+        "hint": "Sent on /start, above the main menu."
+      },
+      "useMenu": {
+        "label": "Use the menu",
+        "hint": "The reply when a customer types instead of tapping a button."
+      },
+      "menuBuy": {
+        "label": "Buy button",
+        "hint": "Main menu. Opens the plans."
+      },
+      "menuSubs": {
+        "label": "Subscriptions button",
+        "hint": "Main menu. Lists the customer's subscriptions."
+      },
+      "menuWallet": {
+        "label": "Wallet button",
+        "hint": "Main menu. Opens the wallet."
+      },
+      "menuSupport": {
+        "label": "Support button",
+        "hint": "Main menu. Starts a chat with your staff."
+      },
+      "menuChannel": {
+        "label": "Channel button",
+        "hint": "Main menu. Opens your channel, once you've set its link."
+      },
+      "menuLanguage": {
+        "label": "Language button",
+        "hint": "Main menu, when the bot speaks more than one language."
+      },
+      "chooseLanguage": {
+        "label": "Pick a language",
+        "hint": "Above the list of languages."
+      },
+      "btnBack": {
+        "label": "Back button",
+        "hint": "On every screen that has a way back."
+      },
+      "chooseCategory": {
+        "label": "Pick a category",
+        "hint": "Above the plan categories, when you use them."
+      },
+      "catOther": {
+        "label": "Other category",
+        "hint": "The category button for plans without a category."
+      },
+      "choosePlan": {
+        "label": "Pick a plan",
+        "hint": "Above the list of plans."
+      },
+      "noPlans": {
+        "label": "No plans",
+        "hint": "When nothing is on sale."
+      },
+      "planButton": {
+        "label": "Plan button",
+        "hint": "One button per plan in the list."
+      },
+      "planReview": {
+        "label": "Plan details",
+        "hint": "After a plan is tapped, before paying."
+      },
+      "btnBuyWallet": {
+        "label": "Pay button",
+        "hint": "Pays for the plan from the wallet."
+      },
+      "insufficient": {
+        "label": "Not enough balance",
+        "hint": "When the wallet can't cover the plan."
+      },
+      "approved": {
+        "label": "Purchase done",
+        "hint": "After paying. The subscription is live."
+      },
+      "unavailable": {
+        "label": "Sales paused",
+        "hint": "When your account can't sell right now."
+      },
+      "walletScreen": {
+        "label": "Wallet",
+        "hint": "Shows the customer's balance."
+      },
+      "btnCharge": {
+        "label": "Top-up button",
+        "hint": "Starts a wallet top-up."
+      },
+      "chargePrompt": {
+        "label": "Ask for an amount",
+        "hint": "Asks how much to add to the wallet."
+      },
+      "invalidAmount": {
+        "label": "Wrong amount",
+        "hint": "When the typed amount isn't a number."
+      },
+      "topupNoMethods": {
+        "label": "No way to pay",
+        "hint": "When you have no card or wallet, or no staff group."
+      },
+      "tooManyPending": {
+        "label": "Too many receipts",
+        "hint": "When the customer already has receipts waiting."
+      },
+      "topupInstructions": {
+        "label": "Payment details",
+        "hint": "Where to send the money. Then the customer sends the receipt."
+      },
+      "topupSubmitted": {
+        "label": "Receipt received",
+        "hint": "After the customer sends a receipt."
+      },
+      "walletCharged": {
+        "label": "Wallet charged",
+        "hint": "When a top-up is approved."
+      },
+      "topupRejected": {
+        "label": "Top-up rejected",
+        "hint": "When a top-up is rejected without a reason."
+      },
+      "topupRejectedReason": {
+        "label": "Top-up rejected, with reason",
+        "hint": "When staff give a reason for rejecting."
+      },
+      "subsPick": {
+        "label": "Your subscriptions",
+        "hint": "Above the list of the customer's subscriptions."
+      },
+      "subsEmpty": {
+        "label": "No subscriptions",
+        "hint": "When the customer hasn't bought anything yet."
+      },
+      "subFallback": {
+        "label": "Unnamed subscription",
+        "hint": "The button for a subscription whose plan was deleted."
+      },
+      "subDetail": {
+        "label": "Subscription details",
+        "hint": "Usage, expiry and links of one subscription."
+      },
+      "subConfigs": {
+        "label": "Configs heading",
+        "hint": "Above the connection configs in the details."
+      },
+      "supportPrompt": {
+        "label": "Write to support",
+        "hint": "After the Support button is tapped."
+      },
+      "supportSent": {
+        "label": "Message delivered",
+        "hint": "After each message the customer sends to support."
+      },
+      "supportUnavailable": {
+        "label": "Support unavailable",
+        "hint": "When there's no staff group."
+      },
+      "supportReply": {
+        "label": "Staff reply",
+        "hint": "How a staff answer reaches the customer."
+      },
+      "joinRequired": {
+        "label": "Join first",
+        "hint": "When the customer hasn't joined your required channels."
+      },
+      "btnJoinChannel": {
+        "label": "Channel link button",
+        "hint": "One per required channel."
+      },
+      "btnJoined": {
+        "label": "Joined button",
+        "hint": "Checks the channels again."
+      },
+      "notJoinedYet": {
+        "label": "Not joined yet",
+        "hint": "Pop-up when some channels are still missing."
+      },
+      "currency": {
+        "label": "Currency",
+        "hint": "After every price, amount and balance."
+      },
+      "unlimited": {
+        "label": "Unlimited traffic",
+        "hint": "Instead of a traffic limit."
+      },
+      "days": {
+        "label": "Days",
+        "hint": "After a plan's duration."
+      },
+      "hours": {
+        "label": "Hours",
+        "hint": "After a trial’s duration, when it’s set in hours."
+      },
+      "reviewTopicName": {
+        "label": "Receipts topic name",
+        "hint": "Created when you set the staff group."
+      },
+      "reviewTopicIntro": {
+        "label": "Receipts topic header",
+        "hint": "Pinned at the top of the receipts topic."
+      },
+      "logsTopicName": {
+        "label": "Stats topic name",
+        "hint": "Created when you set the staff group. Existing topics take the new name on Save & connect and with each daily summary."
+      },
+      "logsTopicIntro": {
+        "label": "Stats topic header",
+        "hint": "Pinned at the top of the stats topic."
+      },
+      "topupReview": {
+        "label": "Receipt to review",
+        "hint": "Under each receipt in the receipts topic."
+      },
+      "btnApprove": {
+        "label": "Approve button",
+        "hint": "Under each receipt."
+      },
+      "btnReject": {
+        "label": "Reject button",
+        "hint": "Under each receipt."
+      },
+      "btnRejectNoReason": {
+        "label": "Reject without reason",
+        "hint": "After Reject is tapped."
+      },
+      "btnRejectWithReason": {
+        "label": "Reject with reason",
+        "hint": "After Reject is tapped."
+      },
+      "btnStaffBack": {
+        "label": "Back (staff)",
+        "hint": "Goes back to Approve and Reject."
+      },
+      "askRejectReason": {
+        "label": "Ask for a reason",
+        "hint": "After “Reject with reason” is tapped."
+      },
+      "approvedBy": {
+        "label": "Approved note",
+        "hint": "Added to the receipt once it's approved."
+      },
+      "rejectedBy": {
+        "label": "Rejected note",
+        "hint": "Added to the receipt once it's rejected."
+      },
+      "rejectedByReason": {
+        "label": "Rejected note, with reason",
+        "hint": "Added when it's rejected with a reason."
+      },
+      "alertApproved": {
+        "label": "Approved pop-up",
+        "hint": "After Approve is tapped."
+      },
+      "alertRejected": {
+        "label": "Rejected pop-up",
+        "hint": "After a rejection."
+      },
+      "alertSendReason": {
+        "label": "Send a reason pop-up",
+        "hint": "After “Reject with reason” is tapped."
+      },
+      "alertHandled": {
+        "label": "Already handled pop-up",
+        "hint": "When someone else already decided."
+      },
+      "alertNothing": {
+        "label": "Nothing to approve pop-up",
+        "hint": "When the receipt has no amount."
+      },
+      "alertAdminsOnly": {
+        "label": "Admins only pop-up",
+        "hint": "When a member who isn't an admin taps a staff button."
+      },
+      "alertInactive": {
+        "label": "Account inactive pop-up",
+        "hint": "When your account is disabled or expired."
+      },
+      "ticketTopicName": {
+        "label": "Ticket topic name",
+        "hint": "A topic per customer who writes to support."
+      },
+      "ticketIntro": {
+        "label": "New ticket",
+        "hint": "The first message in a ticket topic."
+      },
+      "ticketRelay": {
+        "label": "Customer message",
+        "hint": "How a customer's support message shows up for staff."
+      },
+      "groupCaptured": {
+        "label": "Group found",
+        "hint": "The reply to /find in a group."
+      },
+      "logTopup": {
+        "label": "Log: top-up approved",
+        "hint": "In the stats topic."
+      },
+      "logRejected": {
+        "label": "Log: rejected",
+        "hint": "In the stats topic."
+      },
+      "logRejectedReason": {
+        "label": "Log: rejected with reason",
+        "hint": "In the stats topic."
+      },
+      "logError": {
+        "label": "Log: error",
+        "hint": "In the stats topic, when something fails."
+      },
+      "logMembership": {
+        "label": "Log: channel check failed",
+        "hint": "In the stats topic, when the bot can’t see a required channel’s members."
+      },
+      "menuInvite": {
+        "label": "Invite button",
+        "hint": "Main menu, while referrals are on. Also the share button on the invite screen."
+      },
+      "inviteScreen": {
+        "label": "Invite screen",
+        "hint": "The customer’s invite link, their share and what it earned."
+      },
+      "referralReward": {
+        "label": "Reward message",
+        "hint": "To the inviter, when a friend’s top-up is approved."
+      },
+      "menuTrial": {
+        "label": "Free trial button",
+        "hint": "Main menu, while the trial is on. Also the trial’s name in My subscriptions."
+      },
+      "trialReview": {
+        "label": "Trial offer",
+        "hint": "After the trial button is tapped, before activating."
+      },
+      "btnTrialClaim": {
+        "label": "Activate button",
+        "hint": "On the trial offer."
+      },
+      "trialUsed": {
+        "label": "Trial already used",
+        "hint": "When this account claimed the trial since the last reset."
+      },
+      "trialSoldOut": {
+        "label": "Trials gone for today",
+        "hint": "When the day’s trial cap is reached."
+      },
+      "statsTitle": {
+        "label": "Stats heading",
+        "hint": "Top of the /stats reply."
+      },
+      "dailySummaryTitle": {
+        "label": "Daily summary heading",
+        "hint": "Posted to the stats topic every day after midnight UTC."
+      },
+      "statsToday": {
+        "label": "Today heading",
+        "hint": "Above today’s numbers in /stats."
+      },
+      "stats7d": {
+        "label": "7 days heading",
+        "hint": "Above the last 7 days in /stats."
+      },
+      "stats30d": {
+        "label": "30 days heading",
+        "hint": "Above the last 30 days in /stats."
+      },
+      "statsPeriod": {
+        "label": "Stats block",
+        "hint": "The numbers of one period, in /stats and the daily summary."
+      },
+      "statsTotals": {
+        "label": "All-time block",
+        "hint": "The totals at the end of /stats and the daily summary."
+      },
+      "logNewCustomer": {
+        "label": "Log: new customer",
+        "hint": "In the stats topic, when someone opens the bot for the first time."
+      },
+      "logNewReferral": {
+        "label": "Log: new invited customer",
+        "hint": "In the stats topic, when someone opens the bot for the first time through an invite link."
+      },
+      "logPurchase": {
+        "label": "Log: plan bought",
+        "hint": "In the stats topic, when a customer pays for a plan from their wallet."
+      },
+      "logTrial": {
+        "label": "Log: free trial claimed",
+        "hint": "In the stats topic, when a customer activates the free trial."
+      },
+      "logReward": {
+        "label": "Log: referral reward",
+        "hint": "In the stats topic, when an inviter gets their share of a friend’s top-up."
+      },
+      "logManualTopup": {
+        "label": "Log: credit from the panel",
+        "hint": "In the stats topic, when you add wallet credit on the Telegram Bot page."
+      }
+    },
+    "vars": {
+      "title": "The plan or channel name",
+      "traffic": "Traffic, like 50 GB or Unlimited",
+      "duration": "Duration, like 30 days",
+      "price": "Price with currency",
+      "balance": "Wallet balance with currency",
+      "link": "The subscription link",
+      "amount": "Amount with currency",
+      "destinations": "Your cards and crypto wallets",
+      "reason": "The reason staff wrote",
+      "number": "Its place in the list",
+      "name": "The name",
+      "used": "Traffic used",
+      "limit": "Traffic limit",
+      "expires": "Expiry date",
+      "configs": "Connection configs, with their heading",
+      "text": "The message itself",
+      "id": "Receipt or group number",
+      "customer": "Customer name",
+      "tgId": "Telegram ID",
+      "admin": "The staff member",
+      "error": "What went wrong",
+      "channel": "The channel",
+      "inviteLink": "The customer’s invite link",
+      "percent": "Your reward share, a number",
+      "invited": "Friends invited",
+      "earned": "Rewards earned, with currency",
+      "date": "The day summed up",
+      "period": "The period heading",
+      "newCustomers": "New customers",
+      "active": "Customers who used the bot",
+      "referrals": "New customers through invites",
+      "sales": "Plans sold",
+      "salesAmount": "Sales with currency",
+      "topups": "Top-ups approved",
+      "topupsAmount": "Top-ups with currency",
+      "rejected": "Top-ups rejected",
+      "trials": "Free trials claimed",
+      "rewards": "Referral rewards with currency",
+      "customers": "All customers",
+      "buyers": "Customers who bought",
+      "wallets": "Credit in wallets with currency",
+      "pending": "Receipts waiting",
+      "plan": "The plan name",
+      "referrer": "Who invited them",
+      "devices": "Devices at once, like 2 (or Unlimited)"
+    },
+    "errors": {
+      "empty": "Can't be empty. Reset it to use the default.",
+      "tooLong": "Too long. {{max}} characters at most.",
+      "unknownVar": "{{name}} isn't available in this text.",
+      "newline": "Must fit on one line.",
+      "badLink": "Links must start with https://, http:// or tg://.",
+      "badAttr": "<{{tag}}> doesn't take that attribute.",
+      "nested": "<{{tag}}> can't go inside that tag.",
+      "unclosed": "<{{tag}}> is never closed.",
+      "unexpectedClose": "</{{tag}}> doesn't close anything."
+    },
+    "format": {
+      "bold": "Bold (Ctrl+B)",
+      "italic": "Italic (Ctrl+I)",
+      "underline": "Underline (Ctrl+U)",
+      "strike": "Strikethrough",
+      "code": "Code, tap to copy",
+      "spoiler": "Spoiler",
+      "quote": "Quote",
+      "link": "Link",
+      "link-text": "link text"
+    },
+    "insert-variable": "Insert",
+    "edited": "Edited",
+    "using-default": "Default text",
+    "show-default": "Compare",
+    "hide-default": "Hide default",
+    "reset": "Reset",
+    "search": "Search names and words…",
+    "edited-only": "Edited only ({{count}})",
+    "nothing-found": "No text matches.",
+    "staff-note": "Staff texts are sent in the default language, {{lang}}. This version is used once it's the default.",
+    "preview": {
+      "title": "Preview",
+      "hint": "How it looks in Telegram. Sample values fill the variables.",
+      "staff-group": "Staff group",
+      "staff-only": "your staff",
+      "your-bot": "Your bot",
+      "bot": "bot",
+      "message": "Message"
+    },
+    "samples": {
+      "reason": "The amount doesn't match",
+      "customer-message": "Hi! My config stopped working today.",
+      "staff-reply": "Hi! Please update the app and import the link again."
+    },
+    "saved": "Texts saved. The bot uses them right away.",
+    "unsaved_one": "{{count}} unsaved change",
+    "unsaved_other": "{{count}} unsaved changes",
+    "fix-errors_one": "Fix {{count}} text to save",
+    "fix-errors_other": "Fix {{count}} texts to save",
+    "discard": "Discard",
+    "save": "Save"
   },
   "not-found": {
     "nothing-to-see-here": "Nothing to see here",
@@ -2988,12 +3635,6 @@
   "version-control": {
     "build-info": "Build Info"
   },
-  "quick-links": {
-    "modals": "Modals",
-    "routes": "Routes",
-    "external": "External",
-    "only-https-links-are-allowed": "Only https:// links are allowed."
-  },
   "tags.option": {
     "enter-tags-comma-space-semicolon": "Enter tags (comma, space, semicolon)"
   },
@@ -3379,9 +4020,6 @@
   "language-picker": {
     "english": "English"
   },
-  "bot-connection-card": {
-    "english": "English"
-  },
   "ssh-connection": {
     "connection-closed": "connection closed",
     "websocket-error": "WebSocket error",
@@ -3389,5 +4027,188 @@
     "panel-asked-for-an-unexpected-signature": "Panel asked for an unexpected signature",
     "killed-by": "killed by {{signal}}",
     "exit-code": "exit code {{code}}"
+  },
+  "hwid-inspector-leaderboard": {
+    "top-users": "Top users",
+    "top-users-description": "Users with the most devices"
+  },
+  "page-descriptions": {
+    "users": "Everyone with a subscription: status, traffic and expiry",
+    "home": "Traffic, users and how the panel is running",
+    "config-profiles": "Xray configurations your nodes run",
+    "external-squads": "Groups of users that share subscription settings and a page",
+    "internal-squads": "Groups of users and the inbounds they can use",
+    "hosts": "Addresses your users connect to, listed in their subscriptions",
+    "nodes": "Servers that run Xray for your users",
+    "nodes-metrics": "Live metrics reported by your nodes",
+    "node-plugins": "Add-ons that run on your nodes",
+    "response-rules": "Decide what each client gets when it requests a subscription",
+    "umiji-settings": "Sign-in methods, API tokens, branding and panel features",
+    "statistics": "Traffic per node over the selected period",
+    "subscription-settings": "How subscriptions behave for every user: options, remarks and headers",
+    "subscription-page": "Pages users see when they open their subscription link",
+    "subscription-page-broker": "What your users see when they open their subscription link",
+    "templates": "Base configs used to build subscriptions for this client type",
+    "sessions-explorer": "See which IPs each user is connected from right now",
+    "srh-inspector": "Every subscription request: which app asked and what it got",
+    "tb-reports": "Torrent traffic your nodes blocked, by user and node",
+    "infra-billing": "What your servers cost and when payments are due"
+  },
+  "page-titles": {
+    "subscription-settings": "Subscription Settings"
+  },
+  "config-visual-editor": {
+    "visual": "Visual",
+    "undo": "Undo",
+    "redo": "Redo",
+    "generate": "Generate",
+    "invalid-json": "Not valid JSON, the last valid value is kept.",
+    "add": "Add",
+    "key": "Key",
+    "value": "Value",
+    "remove": "Remove",
+    "move-up": "Move up",
+    "move-down": "Move down",
+    "duplicate": "Duplicate",
+    "managed-by-umiji": "managed by Umiji",
+    "insert-snippet": "Insert snippet",
+    "new-inbound": "New inbound",
+    "new-outbound": "New outbound",
+    "new-rule": "New rule",
+    "new-balancer": "New balancer",
+    "new-server": "New server",
+    "new-pool": "New pool",
+    "no-inbounds": "No inbounds yet. Add one to start accepting connections.",
+    "no-outbounds": "No outbounds yet. Most configs need at least DIRECT and BLOCK.",
+    "no-rules": "No rules. Everything goes to the first outbound.",
+    "no-balancers": "No balancers.",
+    "no-servers": "No DNS servers. Xray will use the system resolver.",
+    "no-pools": "No FakeDNS pools.",
+    "untagged": "(no tag)",
+    "match-all": "Matches everything",
+    "rules": "Rules",
+    "balancers": "Balancers",
+    "servers": "Servers",
+    "policy-note": "Umiji-node keeps only level 0 from this block and always sets the stats switches and the system policy itself, so only the timeouts and buffer size below take effect.",
+    "observatory": "Observatory",
+    "observatory-description": "Probes outbounds in the background so leastPing balancers can pick the fastest.",
+    "burst-observatory": "Burst observatory",
+    "burst-observatory-description": "Probes outbounds in bursts, used by leastLoad balancers.",
+    "managed-title": "Set by Umiji-node",
+    "managed-root-note": "These parts of the Xray config are written by Umiji-node on every start, so anything you put here for them is replaced.",
+    "choose-snippet": "Choose a snippet",
+    "snippet": "snippet",
+    "sections": "Config sections",
+    "section": {
+      "inbounds": "Inbounds",
+      "outbounds": "Outbounds",
+      "routing": "Routing",
+      "dns": "DNS",
+      "log": "Log",
+      "policy": "Policy",
+      "observatory": "Observatory",
+      "fakedns": "FakeDNS",
+      "geodata": "Geodata",
+      "advanced": "Advanced"
+    },
+    "section-description": {
+      "inbounds": "Ports the node listens on. Umiji adds your users to VLESS, Trojan, Shadowsocks, Hysteria and MTProto inbounds.",
+      "outbounds": "Where traffic leaves the node. The first one is the default.",
+      "routing": "Rules are checked top to bottom. The first match decides the outbound.",
+      "dns": "The built-in DNS used for routing and for the DNS outbound.",
+      "log": "What Xray writes to its logs.",
+      "policy": "Timeouts and buffers for connections.",
+      "observatory": "Health checks that feed the balancers.",
+      "fakedns": "Fake IP pools handed out for domains, for transparent proxying.",
+      "geodata": "Automatic updates for geoip and geosite files.",
+      "advanced": "Snippets, environment, version limits and any other top-level keys."
+    },
+    "choose-protocol": "Pick a protocol. You can change every field afterwards.",
+    "blurb-in": {
+      "vless": "Light and modern. Pair it with REALITY or XHTTP.",
+      "trojan": "Password-based, looks like HTTPS. Needs TLS.",
+      "shadowsocks": "Simple encrypted proxy. 2022 ciphers recommended.",
+      "hysteria": "QUIC-based and fast on lossy links. Needs TLS.",
+      "mtproto": "Telegram proxy that looks like a normal HTTPS site. Users add it right inside Telegram.",
+      "mixed": "SOCKS5 and HTTP proxy on one port.",
+      "http": "Plain HTTP proxy.",
+      "tunnel": "Forwards a port to a fixed destination.",
+      "wireguard": "WireGuard server for WireGuard clients.",
+      "tun": "Virtual network interface on the node."
+    },
+    "blurb-out": {
+      "freedom": "Straight to the internet. Usually tagged DIRECT.",
+      "blackhole": "Drops traffic. Usually tagged BLOCK.",
+      "dns": "Answers DNS queries with the built-in DNS.",
+      "vless": "Chain to another VLESS server.",
+      "trojan": "Chain to a Trojan server.",
+      "shadowsocks": "Chain to a Shadowsocks server.",
+      "vmess": "Chain to a VMess server.",
+      "hysteria": "Chain to a Hysteria 2 server.",
+      "wireguard": "Route through a WireGuard peer, like WARP.",
+      "socks": "Forward to a SOCKS5 proxy.",
+      "http": "Forward to an HTTP proxy.",
+      "loopback": "Send traffic back into routing through an inbound."
+    },
+    "tab": {
+      "general": "General",
+      "settings": "Settings",
+      "transport": "Transport",
+      "security": "Security",
+      "sockopt": "Socket",
+      "finalmask": "Finalmask",
+      "sniffing": "Sniffing"
+    },
+    "nothing-to-set": "This protocol has nothing to set here.",
+    "needs-attention": "Needs attention",
+    "broken-json": "The JSON has a syntax error",
+    "broken-json-description": "The visual editor needs valid JSON. Fix it in the JSON tab, then come back.",
+    "open-json": "Open JSON"
+  },
+  "node-install": {
+    "install-node": "Install node",
+    "mode-auto": "Automatic install",
+    "mode-manual": "Manual setup",
+    "auto-description": "Umiji logs in to the server over SSH, installs Docker and the node, and adds it to the panel for you.",
+    "server-ip": "Server IP",
+    "ssh-port": "SSH port",
+    "root-password": "Root password",
+    "password-note": "Used once to log in over SSH. It is never stored.",
+    "password-required": "Enter the server's root password",
+    "installing": "Installing node",
+    "installed": "Node installed",
+    "failed": "Installation failed",
+    "elapsed": "{{time}} elapsed",
+    "took": "Done in {{time}}",
+    "stopped": "Stopped after {{time}}",
+    "output": "Live output",
+    "waiting-output": "Waiting for output…",
+    "host-key": "Host key {{fingerprint}}",
+    "try-again": "Try again",
+    "edit-details": "Edit details",
+    "background-title": "Still installing",
+    "background-note": "The installation keeps running. The node shows up in the list when it's ready.",
+    "steps": {
+      "connect": "Connect over SSH",
+      "system": "Check the server",
+      "docker": "Set up Docker",
+      "compose": "Write docker-compose.yml",
+      "start": "Pull and start the node",
+      "handshake": "Panel handshake",
+      "register": "Add to the panel"
+    },
+    "errors": {
+      "CONNECT_FAILED": "Couldn't reach the server over SSH. Check the IP address and SSH port.",
+      "AUTH_FAILED": "The server rejected the root password.",
+      "NOT_ROOT": "This login isn't root. The installer needs the root account.",
+      "UNSUPPORTED_SYSTEM": "This server isn't supported. The node needs Linux on x86_64 or ARM64.",
+      "DOCKER_FAILED": "Docker couldn't be installed or started. The output below shows why.",
+      "CONTAINER_EXISTS": "This server already runs an umiji-node container. Remove it first, or use manual setup.",
+      "PORT_BUSY": "The node port is already in use on this server. Go back and pick another node port.",
+      "START_FAILED": "The node container couldn't start. The output below shows why.",
+      "HANDSHAKE_FAILED": "The node is running, but the panel can't reach it. Open the node port in the server's firewall.",
+      "REGISTER_FAILED": "The node is installed, but adding it to the panel failed.",
+      "INTERRUPTED": "The installation was interrupted."
+    }
   }
 }

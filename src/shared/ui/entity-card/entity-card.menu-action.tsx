@@ -19,8 +19,8 @@ export function EntityCardMenuAction({ children }: MenuActionProps) {
             onOpen={handlers.open}
             position="bottom-end"
             radius="md"
-            trigger="click-hover"
-            openDelay={150}
+            // Not click-hover: a hover menu stays open under a resting pointer, above the dialog its item opened.
+            trigger="click"
             withinPortal
         >
             <Menu.Target>

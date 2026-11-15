@@ -28,17 +28,6 @@
     }
 }
 
-@keyframes cardFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
 .section {
     --section-delay: 0ms;
     animation: sectionFadeIn 0.4s ease-out both;
@@ -75,17 +64,42 @@
     display: grid;
 }
 
-.card {
-    animation: cardFadeIn 0.25s ease-out both;
-    animation-delay: calc(var(--section-delay, 0ms) + var(--card-index, 0) * 100ms + 200ms);
-}
-
 @media (prefers-reduced-motion: reduce) {
     .section,
-    .title,
-    .card {
+    .title {
         animation: none;
         opacity: 1;
         transform: none;
     }
+}
+
+.panel {
+    background: var(--mantine-color-dark-7);
+}
+
+.big {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    font-variant-numeric: tabular-nums;
+}
+
+.row {
+    padding-block: 8px;
+    border-top: 1px solid var(--mantine-color-dark-6);
+}
+
+.traffic {
+    display: grid;
+    grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+    gap: var(--mantine-spacing-xl);
+    align-items: end;
+
+    @media (max-width: $mantine-breakpoint-md) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.chart {
+    min-width: 0;
 }

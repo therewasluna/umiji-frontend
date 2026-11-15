@@ -1,57 +1,23 @@
+/* Side nav drawer: flat dark-8, a hairline where it meets the page. */
 .sidebarWrapper {
-    z-index: 200;
-    margin-left: 0.75rem;
-    margin-bottom: 0.75rem;
-    margin-top: 0.75rem;
-    height: calc(
-        100dvh - 1.5rem - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)
-    );
+    border-inline-end: 1px solid rgba(255, 255, 255, 0.07);
+    background: var(--mantine-color-dark-8);
+}
 
-    background: linear-gradient(
-        135deg,
-        var(--mantine-color-dark-8) 0%,
-        var(--mantine-color-dark-7) 100%
-    );
-
-    box-shadow:
-        0 1px 1px hsl(0deg 0% 0% / 0.075),
-        0 2px 2px hsl(0deg 0% 0% / 0.075),
-        0 4px 4px hsl(0deg 0% 0% / 0.075),
-        0 8px 8px hsl(0deg 0% 0% / 0.075),
-        0 16px 16px hsl(0deg 0% 0% / 0.075);
-
-    border-radius: var(--mantine-radius-lg);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.sidebarBody {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: var(--mantine-spacing-md) var(--mantine-spacing-md) 0;
 
     @supports (padding: env(safe-area-inset-top)) {
-        top: env(safe-area-inset-top);
+        padding-top: max(var(--mantine-spacing-md), env(safe-area-inset-top, 0px));
     }
 }
 
-.sidebarWrapperClosedDesktop {
-    margin-left: 0;
-    box-shadow: none;
-}
-
-.sidebarWrapperClosedMobile {
-    margin-left: 0;
-    box-shadow: none;
-}
-
-.sidebarWrapper::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: var(--mantine-radius-lg);
-    background: light-dark(
-        radial-gradient(circle at 20% 20%, rgb(99, 102, 241, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 20% 20%, rgb(6, 182, 212, 0.1) 0%, transparent 50%)
-    );
-    pointer-events: none;
-    z-index: -1;
+/* Centred on the rows' icon column; the button is wider than the lines inside it. */
+.drawerBurger {
+    justify-self: center;
 }
 
 .header {
@@ -63,59 +29,27 @@
         z-index: 10;
 
         @media (max-width: 64rem) {
-            height: calc(64px + env(safe-area-inset-top, 0px));
+            height: calc(var(--app-shell-header-height) + env(safe-area-inset-top, 0px));
         }
     }
 }
 
-.brandRow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: nowrap;
-    height: 64px;
-    padding-inline: var(--mantine-spacing-lg);
-}
-
-.navRowDesktop {
-    display: flex;
-    align-items: stretch;
-    height: 52px;
-    padding-inline: var(--mantine-spacing-lg);
-    border-top: 1px solid light-dark(rgb(0, 0, 0, 0.06), rgb(255, 255, 255, 0.06));
-}
-
+/* Same two columns as a nav row: the close button over the icons, the brand over the labels. */
 .logoSection {
-    position: relative;
-    padding-bottom: var(--mantine-spacing-xs);
-    border-bottom: 1px solid light-dark(rgb(0, 0, 0, 0.06), rgb(255, 255, 255, 0.06));
-}
-
-.logoSection::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: var(--mantine-spacing-md);
-    right: var(--mantine-spacing-md);
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgb(6, 182, 212, 0.3) 50%, transparent 100%);
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    column-gap: 12px;
+    align-items: center;
+    padding-inline: 12px;
+    padding-bottom: var(--mantine-spacing-sm);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .footerSection {
     position: relative;
     padding-bottom: 0px;
     margin-bottom: var(--mantine-spacing-md);
-    border-top: 1px solid light-dark(rgb(0, 0, 0, 0.06), rgb(255, 255, 255, 0.06));
-}
-
-.footerSection::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: var(--mantine-spacing-md);
-    right: var(--mantine-spacing-md);
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgb(6, 182, 212, 0.3) 50%, transparent 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .scrollArea {

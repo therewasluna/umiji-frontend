@@ -118,8 +118,8 @@ export function BuildInfoModal({ umijiMetadata, isNewVersionAvailable }: BuildIn
                     <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
                         <Paper className={classes.buildTimeCard} p="sm" radius="md">
                             <Group gap="xs" mb={6}>
-                                <TbCalendar color="var(--mantine-color-indigo-5)" size={14} />
-                                <Text c="indigo.5" fw={600} size="xs" tt="uppercase">
+                                <TbCalendar color="var(--mantine-color-dark-2)" size={14} />
+                                <Text c="dimmed" fw={600} size="xs">
                                     {t('build-info-modal.build-time')}
                                 </Text>
                             </Group>
@@ -133,8 +133,8 @@ export function BuildInfoModal({ umijiMetadata, isNewVersionAvailable }: BuildIn
 
                         <Paper className={classes.buildNumberCard} p="sm" radius="md">
                             <Group gap="xs" mb={6}>
-                                <TbHash color="var(--mantine-color-violet-5)" size={14} />
-                                <Text c="violet.5" fw={600} size="xs" tt="uppercase">
+                                <TbHash color="var(--mantine-color-dark-2)" size={14} />
+                                <Text c="dimmed" fw={600} size="xs">
                                     {t('build-info-modal.build')}
                                 </Text>
                             </Group>
@@ -151,14 +151,14 @@ export function BuildInfoModal({ umijiMetadata, isNewVersionAvailable }: BuildIn
                     <Stack gap="sm">
                         <Group gap="xs" justify="space-between">
                             <Group gap="xs">
-                                <TbServer color="var(--mantine-color-teal-5)" size={16} />
-                                <Text c="teal.5" fw={600} size="sm">
+                                <TbServer color="var(--mantine-color-dark-2)" size={16} />
+                                <Text c="gray.1" fw={600} size="sm">
                                     {t('build-info-modal.backend')}
                                 </Text>
                             </Group>
                             <Tooltip label={t('build-info-modal.view-on-github')}>
                                 <ActionIcon
-                                    color="teal"
+                                    color="gray"
                                     component="a"
                                     href={umijiMetadata.git.backend.commitUrl}
                                     size="sm"
@@ -177,18 +177,18 @@ export function BuildInfoModal({ umijiMetadata, isNewVersionAvailable }: BuildIn
                     </Stack>
                 </Paper>
 
-                <Paper className={classes.frontendCard} p="md" radius="md">
+                <Paper className={classes.backendCard} p="md" radius="md">
                     <Stack gap="sm">
                         <Group gap="xs" justify="space-between">
                             <Group gap="xs">
-                                <TbWorld color="var(--mantine-color-cyan-5)" size={16} />
-                                <Text c="cyan.5" fw={600} size="sm">
+                                <TbWorld color="var(--mantine-color-dark-2)" size={16} />
+                                <Text c="gray.1" fw={600} size="sm">
                                     {t('build-info-modal.frontend')}
                                 </Text>
                             </Group>
                             <Tooltip label={t('build-info-modal.view-on-github')}>
                                 <ActionIcon
-                                    color="cyan"
+                                    color="gray"
                                     component="a"
                                     href={umijiMetadata.git.frontend.commitUrl}
                                     size="sm"

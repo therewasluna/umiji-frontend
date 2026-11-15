@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router'
 import { HelpActionIconShared } from '@shared/_modals/universal'
 import { ROUTES } from '@shared/constants'
 import { Page, PageHeaderShared } from '@shared/ui'
-import { getCoreLogoFromType } from '@shared/ui/get-core-logo-from-type'
 
 interface Props {
     editorType: 'json' | 'yaml'
@@ -53,7 +52,6 @@ export const TemplateEditorPageComponent = (props: Props) => {
                         </ActionIcon>
                     </Group>
                 }
-                icon={getCoreLogoFromType({ type: template.templateType })}
                 title={template.name}
             />
             <SubscriptionTemplateEditorWidget

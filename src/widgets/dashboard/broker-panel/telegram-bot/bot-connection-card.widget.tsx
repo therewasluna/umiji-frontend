@@ -1,22 +1,14 @@
-import {
-    Badge,
-    Button,
-    Group,
-    PasswordInput,
-    Select,
-    Stack,
-    Text,
-    Textarea,
-    TextInput
-} from '@mantine/core'
+import { Badge, Button, Group, PasswordInput, Stack, Text, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { modals } from '@mantine/modals'
 import { notifications } from '@mantine/notifications'
 import { GetBrokerBotCommand } from '@umiji/backend-contract'
 import { useTranslation } from 'react-i18next'
-import { TbBrandTelegram, TbHash, TbKey, TbLanguage, TbPlugConnectedX } from 'react-icons/tb'
+import { TbChevronRight, TbHash, TbKey, TbLanguage, TbPlugConnectedX } from 'react-icons/tb'
+import { useNavigate } from 'react-router'
 
 import { useConnectBrokerBot, useDisconnectBrokerBot } from '@shared/api/hooks'
+import { ROUTES } from '@shared/constants'
 import { SettingsCardShared } from '@shared/ui/settings-card'
 
 interface IProps {
@@ -25,21 +17,18 @@ interface IProps {
 
 interface IFormValues {
     botToken: string
-    greeting: string
     groupId: string
-    lang: 'en' | 'fa'
 }
 
 export function BotConnectionCardWidget({ bot }: IProps) {
     const { t } = useTranslation()
+    const navigate = useNavigate()
 
     const form = useForm<IFormValues>({
         mode: 'uncontrolled',
         initialValues: {
             botToken: '',
-            groupId: bot.groupId ?? '',
-            lang: bot.lang,
-            greeting: bot.greeting ?? ''
+            groupId: bot.groupId ?? ''
         },
         validate: {
             groupId: (value) =>
@@ -63,9 +52,7 @@ export function BotConnectionCardWidget({ bot }: IProps) {
         connect({
             variables: {
                 botToken: values.botToken.trim() || undefined,
-                groupId: values.groupId.trim() || null,
-                lang: values.lang,
-                greeting: values.greeting.trim() || null
+                groupId: values.groupId.trim() || null
             }
         })
     )
@@ -111,9 +98,6 @@ export function BotConnectionCardWidget({ bot }: IProps) {
                             t('broker-bot.connection.not-connected')
                         )
                     }
-                    icon={<TbBrandTelegram size={24} />}
-                    iconColor="blue"
-                    iconVariant="soft"
                     title={t('broker-bot.connection.title')}
                 />
 
@@ -149,28 +133,17 @@ export function BotConnectionCardWidget({ bot }: IProps) {
                             {...form.getInputProps('groupId')}
                         />
 
-                        <Select
-                            allowDeselect={false}
-                            data={[
-                                { value: 'en', label: t('bot-connection-card.english') },
-                                { value: 'fa', label: 'فارسی' }
-                            ]}
-                            description={t('broker-bot.connection.language-hint')}
-                            key={form.key('lang')}
-                            label={t('broker-bot.connection.language')}
-                            leftSection={<TbLanguage size={16} />}
-                            {...form.getInputProps('lang')}
-                        />
-
-                        <Textarea
-                            autosize
-                            description={t('broker-bot.connection.greeting-hint')}
-                            key={form.key('greeting')}
-                            label={t('broker-bot.connection.greeting')}
-                            maxLength={3000}
-                            minRows={2}
-                            {...form.getInputProps('greeting')}
-                        />
+                        <Button
+                            fullWidth
+                            justify="space-between"
+                            leftSection={<TbLanguage size={18} />}
+                            onClick={() => navigate(ROUTES.DASHBOARD.BROKER.TELEGRAM_TEXTS)}
+                            rightSection={<TbChevronRight size={16} />}
+                            size="md"
+                            variant="default"
+                        >
+                            {t('broker-bot.connection.texts-link')}
+                        </Button>
                     </Stack>
                 </SettingsCardShared.Content>
 

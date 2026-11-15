@@ -59,7 +59,7 @@ export function VirtualizedRecordsList(props: IProps) {
     const scrollRef = useRef<HTMLDivElement>(null)
     const [fade, setFade] = useState({ bottom: false, top: false })
 
-    // eslint-disable-next-line react-hooks/incompatible-library
+    // oxlint-disable-next-line react/incompatible-library, react-hooks-js/incompatible-library -- TanStack Virtual returns imperative methods by design.
     const virtualizer = useVirtualizer({
         count: rows.length,
         getScrollElement: () => scrollRef.current,

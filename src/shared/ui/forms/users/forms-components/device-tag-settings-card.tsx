@@ -3,9 +3,10 @@ import { UseFormReturnType } from '@mantine/form'
 import { CreateUserCommand, GetUsersTagsCommand, UpdateUserCommand } from '@umiji/backend-contract'
 import { ForwardRefComponent, HTMLMotionProps, Variants } from 'motion/react'
 import { Trans, useTranslation } from 'react-i18next'
-import { TbDevices2, TbSettings } from 'react-icons/tb'
+import { TbDevices2, TbNetwork, TbSettings } from 'react-icons/tb'
 
 import { CreateableTagInputShared } from '@shared/ui/createable-tag-input/createable-tag-input'
+import { IpLimitBetaDescription, IpLimitBetaLabel } from '@shared/ui/ip-limit-beta/ip-limit-beta'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { SectionCard } from '@shared/ui/section-card'
 
@@ -30,10 +31,8 @@ export function DeviceTagSettingsCard<
             <SectionCard.Root>
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="orange"
                         IconComponent={TbSettings}
                         iconSize={20}
-                        iconVariant="soft"
                         title={t('device-tag-settings-card.device-and-tag-settings')}
                         titleOrder={5}
                     />
@@ -92,6 +91,32 @@ export function DeviceTagSettingsCard<
                                 {...form.getInputProps('hwidDeviceLimit')}
                             />
                         </Stack>
+
+                        <NumberInput
+                            allowDecimal={false}
+                            allowNegative={false}
+                            clampBehavior="strict"
+                            description={
+                                <IpLimitBetaDescription>
+                                    {t('device-tag-settings-card.ip-limit-description')}
+                                </IpLimitBetaDescription>
+                            }
+                            hideControls
+                            key={form.key('ipLimit')}
+                            label={
+                                <IpLimitBetaLabel>
+                                    {t('device-tag-settings-card.ip-limit')}
+                                </IpLimitBetaLabel>
+                            }
+                            leftSection={<TbNetwork size="16px" />}
+                            max={100}
+                            min={1}
+                            placeholder={t('device-tag-settings-card.ip-limit-placeholder')}
+                            {...form.getInputProps('ipLimit')}
+                            styles={{
+                                label: { fontWeight: 500 }
+                            }}
+                        />
 
                         <CreateableTagInputShared
                             key={form.key('tag')}

@@ -8,8 +8,8 @@ import {
     DragStartEvent
 } from '@dnd-kit/react'
 import { Box, Container, Stack } from '@mantine/core'
-import { GetHostsCommand } from '@umiji/backend-contract'
 import { useWindowVirtualizer } from '@tanstack/react-virtual'
+import { GetHostsCommand } from '@umiji/backend-contract'
 import { HostCardWidget } from '@widgets/dashboard/hosts/host-card'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { TbListCheck } from 'react-icons/tb'
@@ -164,8 +164,6 @@ export const HostsTableWidget = memo((props: IProps) => {
                                                 key={item.uuid}
                                                 style={{
                                                     position: 'absolute',
-                                                    marginLeft: isMobile ? '0px' : '16px',
-                                                    marginRight: isMobile ? '0px' : '16px',
                                                     top: 0,
                                                     left: 0,
                                                     right: 0,

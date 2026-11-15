@@ -6,8 +6,9 @@ type SettingsCardContainerProps = CardProps
 
 export function SettingsCardContainer({ children, ...props }: SettingsCardContainerProps) {
     return (
-        <Card className={classes.container} padding="md" shadow="xl" withBorder {...props}>
-            <Flex direction="column" gap="xs">
+        <Card className={classes.container} padding="lg" withBorder {...props}>
+            {/* flex=1 lets a card stretched by a grid row grow, so Bottom can sit at the foot. */}
+            <Flex direction="column" flex={1} gap="xs">
                 {children}
             </Flex>
         </Card>

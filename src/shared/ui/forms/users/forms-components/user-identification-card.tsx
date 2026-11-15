@@ -13,10 +13,10 @@ import {
     Tooltip
 } from '@mantine/core'
 import { modals } from '@mantine/modals'
-import { GetUserByIdCommand, USERS_STATUS } from '@umiji/backend-contract'
+import { GetUserByIdCommand } from '@umiji/backend-contract'
 import { UserStatusBadge } from '@widgets/dashboard/users/user-status-badge'
 import dayjs from 'dayjs'
-import { githubDarkTheme, JsonEditor } from 'json-edit-react'
+import { JsonEditor } from 'json-edit-react'
 import { ForwardRefComponent, HTMLMotionProps, Variants } from 'motion/react'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -38,6 +38,7 @@ import {
 
 import { showModal } from '@shared/_modals/show-modal'
 import { useGetUserMetadata } from '@shared/api/hooks'
+import { JSON_VIEWER_THEME } from '@shared/constants/theme/json-viewer-theme'
 import { CopyableCodeBlock } from '@shared/ui/copyable-code-block'
 import { CopyableFieldShared } from '@shared/ui/copyable-field/copyable-field'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
@@ -54,13 +55,6 @@ interface IProps {
     motionWrapper: ForwardRefComponent<HTMLDivElement, HTMLMotionProps<'div'>>
     user: GetUserByIdCommand.Response['response']
 }
-
-const statusIconColorMap = {
-    [USERS_STATUS.ACTIVE]: 'teal',
-    [USERS_STATUS.DISABLED]: 'gray',
-    [USERS_STATUS.EXPIRED]: 'red',
-    [USERS_STATUS.LIMITED]: 'yellow'
-} as const
 
 const getLastSeenIndicatorColor = (lastSeen: Date | string) => {
     const diffMs = Date.now() - new Date(lastSeen).getTime()
@@ -84,8 +78,6 @@ export const UserIdentificationCard = memo((props: IProps) => {
         rQueryParams: { enabled: !isBroker }
     })
 
-    const statusIconColor = statusIconColorMap[user.status] ?? 'gray'
-
     const usedBytes = user.userTraffic.usedTrafficBytes
     const limitBytes = user.trafficLimitBytes
     const lifetimeBytes = user.userTraffic.lifetimeUsedTrafficBytes
@@ -97,10 +89,10 @@ export const UserIdentificationCard = memo((props: IProps) => {
     const maxData = isUnlimited ? '∞' : prettifyBytesUtil(limitBytes) || '∞'
 
     const getProgressColor = () => {
-        if (isUnlimited) return 'teal'
+        if (isUnlimited) return 'rose'
         if (percentage > 95) return 'red'
         if (percentage > 80) return 'yellow.4'
-        return 'teal'
+        return 'rose'
     }
 
     const expireDate = dayjs(user.expireAt)
@@ -119,17 +111,17 @@ export const UserIdentificationCard = memo((props: IProps) => {
         }
         if (daysLeft !== null && daysLeft <= 7) {
             return {
-                bg: 'rgba(251, 191, 36, 0.10)',
-                border: 'rgba(251, 191, 36, 0.2)',
+                bg: 'transparent',
+                border: 'color-mix(in srgb, var(--mantine-color-yellow-4) 45%, transparent)',
                 color: 'yellow.4',
                 iconColor: 'var(--mantine-color-yellow-4)'
             }
         }
         return {
-            bg: 'rgba(45, 212, 191, 0.08)',
-            border: 'rgba(45, 212, 191, 0.2)',
-            color: 'teal.5',
-            iconColor: 'var(--mantine-color-teal-5)'
+            bg: 'rgba(255, 255, 255, 0.03)',
+            border: 'rgba(255, 255, 255, 0.07)',
+            color: 'dark.0',
+            iconColor: 'var(--mantine-color-dark-2)'
         }
     }
 
@@ -139,10 +131,8 @@ export const UserIdentificationCard = memo((props: IProps) => {
                 <SectionCard.Section>
                     <Group align="flex-center" justify="space-between">
                         <BaseOverlayHeader
-                            iconColor={statusIconColor}
                             IconComponent={TbUser}
                             iconSize={20}
-                            iconVariant="soft"
                             title={user.id.toString()}
                             subtitle={user.username}
                             titleOrder={5}
@@ -213,9 +203,7 @@ export const UserIdentificationCard = memo((props: IProps) => {
                                                     size: 'auto',
                                                     title: (
                                                         <BaseOverlayHeader
-                                                            iconColor="teal"
                                                             IconComponent={TbJson}
-                                                            iconVariant="soft"
                                                             title={t(
                                                                 'user-identification-card.metadata'
                                                             )}
@@ -229,7 +217,7 @@ export const UserIdentificationCard = memo((props: IProps) => {
                                                                 indent={4}
                                                                 maxWidth="100%"
                                                                 rootName=""
-                                                                theme={githubDarkTheme}
+                                                                theme={JSON_VIEWER_THEME}
                                                                 viewOnly
                                                             />
                                                         </Box>
@@ -378,7 +366,7 @@ export const UserIdentificationCard = memo((props: IProps) => {
                 <SectionCard.Section>
                     <Group gap="xs" justify="space-between" mb={6}>
                         <Group gap={6}>
-                            <Text c="gray.3" ff="monospace" fw={600} size="sm">
+                            <Text fw={600} size="sm">
                                 {prettyUsedData}
                             </Text>
                         </Group>
@@ -420,8 +408,8 @@ export const UserIdentificationCard = memo((props: IProps) => {
                         </Paper>
 
                         <Paper
-                            bd="1px solid rgba(99, 102, 241, 0.2)"
-                            bg="rgba(99, 102, 241, 0.08)"
+                            bd="1px solid rgba(255, 255, 255, 0.07)"
+                            bg="rgba(255, 255, 255, 0.03)"
                             p="xs"
                             radius="md"
                         >
@@ -429,8 +417,8 @@ export const UserIdentificationCard = memo((props: IProps) => {
                                 label={t('detailed-user-info-drawer.widget.lifetime-used-traffic')}
                             >
                                 <Group gap="xs" justify="center">
-                                    <TbChartArcs color="var(--mantine-color-indigo-5)" size={18} />
-                                    <Text c="indigo.5" fw={600} size="sm">
+                                    <TbChartArcs color="var(--mantine-color-dark-2)" size={18} />
+                                    <Text c="dark.0" fw={600} size="sm">
                                         {prettyLifetimeData}
                                     </Text>
                                 </Group>
@@ -439,8 +427,8 @@ export const UserIdentificationCard = memo((props: IProps) => {
 
                         {user.userTraffic.onlineAt && (
                             <Paper
-                                bd="1px solid rgba(139, 92, 246, 0.2)"
-                                bg="rgba(139, 92, 246, 0.08)"
+                                bd="1px solid rgba(255, 255, 255, 0.07)"
+                                bg="rgba(255, 255, 255, 0.03)"
                                 p="xs"
                                 radius="md"
                             >
@@ -474,7 +462,7 @@ export const UserIdentificationCard = memo((props: IProps) => {
                                             )}
                                             size={18}
                                         />
-                                        <Text c="violet.4" fw={600} size="xs" truncate>
+                                        <Text c="dark.0" fw={600} size="xs" truncate>
                                             {getTimeAgoUtil(
                                                 user.userTraffic.onlineAt,
                                                 t,
@@ -488,8 +476,8 @@ export const UserIdentificationCard = memo((props: IProps) => {
 
                         {lastConnectedNode && (
                             <Paper
-                                bd="1px solid rgba(6, 182, 212, 0.2)"
-                                bg="rgba(6, 182, 212, 0.08)"
+                                bd="1px solid rgba(255, 255, 255, 0.07)"
+                                bg="rgba(255, 255, 255, 0.03)"
                                 p="xs"
                                 radius="md"
                                 onClick={() => {
@@ -507,7 +495,7 @@ export const UserIdentificationCard = memo((props: IProps) => {
                                     <Group align="center" gap="xs" justify="center" wrap="nowrap">
                                         {resolveCountryCode(lastConnectedNode.countryCode, 20)}
 
-                                        <Text c="cyan.5" fw={600} size="sm" truncate>
+                                        <Text c="dark.0" fw={600} size="sm" truncate>
                                             {lastConnectedNode.name}
                                         </Text>
                                     </Group>

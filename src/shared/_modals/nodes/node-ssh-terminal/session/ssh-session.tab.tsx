@@ -20,6 +20,8 @@ import type { INodeKeyInfo } from '@entities/ssh-vault'
 import { useSshVaultActions, useSshVaultStatus } from '@entities/ssh-vault'
 
 import classes from '../NodeSshTerminal.module.css'
+import { useSshTabsActions } from '../tabs/ssh-tabs.store'
+import { keySequence, withCtrl } from '../window/terminal-keys.bar'
 import { ConnectionLogScreen } from './connection-log.screen'
 import { ConnectionSetupScreen } from './connection-setup.screen'
 import { HostKeyOverlay } from './host-key.overlay'
@@ -40,6 +42,7 @@ export const SshSessionTab = (props: IProps) => {
 
     const vaultStatus = useSshVaultStatus()
     const vaultActions = useSshVaultActions()
+    const { consumeCtrl } = useSshTabsActions()
 
     const { mutateAsync: createTicket } = useCreateSshTicket()
 
@@ -238,6 +241,10 @@ export const SshSessionTab = (props: IProps) => {
 
     useEffect(() => {
         emitRegister({
+            sendKey: (key) =>
+                connectionRef.current?.write(
+                    keySequence(key, terminalRef.current?.modes.applicationCursorKeysMode ?? false)
+                ),
             showSettings,
             write: (data) => connectionRef.current?.write(data)
         })
@@ -307,7 +314,9 @@ export const SshSessionTab = (props: IProps) => {
         return (
             <TerminalView
                 isPaused={isHidden}
-                onInput={(data) => connectionRef.current?.write(data)}
+                onInput={(data) =>
+                    connectionRef.current?.write(consumeCtrl() ? withCtrl(data) : data)
+                }
                 onResize={(cols, rows) => {
                     setSize(`${cols}×${rows}`)
                     connectionRef.current?.resize(cols, rows)

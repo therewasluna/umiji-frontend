@@ -1,19 +1,18 @@
-import { Badge, Button, Card, Group } from '@mantine/core'
+import { Button, Progress } from '@mantine/core'
 import { UseFormReturnType } from '@mantine/form'
 import { useDisclosure } from '@mantine/hooks'
+import { IconLanguage } from '@tabler/icons-react'
 import {
     BASE_TRANSLATION_LABELS,
     TSubscriptionPageBaseTranslationKeys,
     TSubscriptionPageLanguageCode,
     TSubscriptionPageRawConfig
 } from '@umiji/subscription-page-types'
-import { IconLanguage } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 
-import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
+import { SettingsCardShared } from '@shared/ui/settings-card'
 
 import { BaseTranslationsDrawer } from '../editor-components/base-translations-drawer.component'
-import styles from '../subpage-config-visual-editor.module.css'
 
 const TRANSLATION_KEYS = Object.keys(
     BASE_TRANSLATION_LABELS
@@ -47,35 +46,33 @@ export function BaseTranslationsBlockComponent({ form }: IProps) {
 
     return (
         <>
-            <Card className={styles.sectionCard} p="md" radius="lg">
-                <Group justify="space-between">
-                    <Group gap="sm" wrap="nowrap">
-                        <BaseOverlayHeader
-                            iconColor="violet"
-                            IconComponent={IconLanguage}
-                            iconSize={20}
-                            iconVariant="soft"
-                            title={t('base-translations-block.base-translations')}
-                            titleOrder={5}
-                        />
-                        <Badge
-                            color={filledCount === totalKeys ? 'green' : 'yellow'}
-                            size="sm"
-                            variant="light"
+            <SettingsCardShared.Container>
+                <SettingsCardShared.Header
+                    actions={
+                        <Button
+                            leftSection={<IconLanguage size={16} />}
+                            onClick={openDrawer}
+                            variant="default"
                         >
-                            {filledCount}/{totalKeys}
-                        </Badge>
-                    </Group>
+                            {t('base-translations-block.configure')}
+                        </Button>
+                    }
+                    description={t('base-translations-drawer.component.completed', {
+                        count: filledCount,
+                        total: totalKeys
+                    })}
+                    title={t('base-translations-block.base-translations')}
+                />
 
-                    <Button
-                        className={styles.saveButton}
-                        leftSection={<IconLanguage size={16} />}
-                        onClick={openDrawer}
-                    >
-                        {t('base-translations-block.configure')}
-                    </Button>
-                </Group>
-            </Card>
+                {/* Yellow only while some key is missing a language. */}
+                <Progress
+                    color={filledCount === totalKeys ? undefined : 'yellow'}
+                    mt="md"
+                    radius="xl"
+                    size="sm"
+                    value={(filledCount / totalKeys) * 100}
+                />
+            </SettingsCardShared.Container>
 
             <BaseTranslationsDrawer
                 baseTranslations={values.baseTranslations}

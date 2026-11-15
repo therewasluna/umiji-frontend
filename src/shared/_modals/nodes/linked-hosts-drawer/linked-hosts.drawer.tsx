@@ -89,9 +89,7 @@ export const LinkedHostsDrawer = NiceModal.create((props: IProps) => {
             size="800px"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={PiListChecks}
-                    iconVariant="soft"
                     title={t('linked-hosts-drawer.widget.assigned-hosts')}
                 />
             }

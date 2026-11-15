@@ -40,16 +40,14 @@ export const NodeActiveSessionsDrawer = NiceModal.create((props: IProps) => {
             size="500px"
             styles={{
                 body: {
-                    height: 'calc(100% - 60px)',
+                    height: 'calc(100% - 64px)',
                     display: 'flex',
                     flexDirection: 'column'
                 }
             }}
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbRadar}
-                    iconVariant="soft"
                     title={t('common.field.active-sessions')}
                 />
             }

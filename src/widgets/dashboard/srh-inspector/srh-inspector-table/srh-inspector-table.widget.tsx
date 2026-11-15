@@ -10,19 +10,13 @@ import {
 import { ActionIcon, ActionIconGroup, Tooltip } from '@mantine/core'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-    TbExternalLink,
-    TbFilterOff,
-    TbRefresh,
-    TbReportAnalytics,
-    TbRestore
-} from 'react-icons/tb'
+import { TbExternalLink, TbFilterOff, TbRefresh, TbRestore } from 'react-icons/tb'
 
 import { useGetSubscriptionRequestHistory } from '@shared/api/hooks'
 import { usePreventTableBackScroll } from '@shared/hooks'
 import { DEFAULT_PAGINATION_STATE, useMrtTableBinding } from '@shared/lib/mrt-table-store'
 import { ResolveUserActionShared } from '@shared/ui/resolve-user-action-icon'
-import { DataTableShared } from '@shared/ui/table'
+import { DataTableShared, MRT_ROWS_CLASS } from '@shared/ui/table'
 import { sToMs } from '@shared/utils/time-utils'
 
 import {
@@ -113,23 +107,21 @@ export function SrhInspectorTableWidget() {
         }),
         mantineTopToolbarProps: {
             style: {
-                '--mrt-base-background-color': '#1b2027'
+                '--mrt-base-background-color': 'transparent'
             }
         },
         mantineTableHeadProps: {
             style: {
-                '--mrt-base-background-color': '#1b2027'
+                '--mrt-base-background-color': 'transparent'
             }
         },
         mantineBottomToolbarProps: {
             style: {
-                '--mrt-base-background-color': '#1b2027'
+                '--mrt-base-background-color': 'transparent'
             }
         },
         mantinePaperProps: {
-            style: {
-                '--paper-radius': 'var(--mantine-radius-xs)'
-            },
+            className: MRT_ROWS_CLASS,
             withBorder: false
         },
         renderRowActions: ({ row }) => (
@@ -219,7 +211,7 @@ export function SrhInspectorTableWidget() {
                         </Tooltip>
                     </ActionIconGroup>
                 }
-                icon={<TbReportAnalytics size={24} />}
+                description={t('srh-inspector-metrics.widget.table-description')}
                 title={t('common.field.subscription-request-history')}
             />
 

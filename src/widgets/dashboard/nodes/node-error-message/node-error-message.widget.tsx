@@ -20,9 +20,7 @@ export const NodeErrorMessageWidget = (props: IProps) => {
         <SectionCard.Root>
             <SectionCard.Section>
                 <BaseOverlayHeader
-                    iconColor="red"
                     IconComponent={TbAlertTriangle}
-                    iconVariant="soft"
                     title={t('common.message.last-error-message')}
                     titleOrder={5}
                 />

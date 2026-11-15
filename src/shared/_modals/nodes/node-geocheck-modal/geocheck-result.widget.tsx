@@ -13,7 +13,7 @@ import {
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import clsx from 'clsx'
-import { githubDarkTheme, JsonEditor } from 'json-edit-react'
+import { JsonEditor } from 'json-edit-react'
 import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -28,6 +28,7 @@ import {
     TbRoute
 } from 'react-icons/tb'
 
+import { JSON_VIEWER_THEME } from '@shared/constants/theme/json-viewer-theme'
 import { usePseudoFullscreen } from '@shared/hooks'
 import { fullscreenClasses } from '@shared/ui/fullscreen-toggle-button'
 import { ZoomableImage } from '@shared/ui/zoomable-image'
@@ -222,7 +223,7 @@ export const GeocheckResultWidget = (props: IProps) => {
                         indent={4}
                         maxWidth="100%"
                         rootName=""
-                        theme={githubDarkTheme}
+                        theme={JSON_VIEWER_THEME}
                         viewOnly
                     />
                 </Box>

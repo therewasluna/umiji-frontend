@@ -18,8 +18,10 @@ import { PiPlus, PiTrash } from 'react-icons/pi'
 
 import { TemplateInfoPopoverShared } from '@shared/ui/popovers/template-info-popover/template-info-popover.shared'
 
+const EMPTY_REMARKS = ['']
+
 export const RemarksManager = ({
-    initialRemarks = [''],
+    initialRemarks = EMPTY_REMARKS,
     title,
     onChange,
     icon,
@@ -32,6 +34,7 @@ export const RemarksManager = ({
     title: string
 }) => {
     const [localRemarks, setLocalRemarks] = useState<string[]>(initialRemarks)
+    const [previousRemarks, setPreviousRemarks] = useState(initialRemarks)
     const [debouncedRemarks] = useDebouncedValue(localRemarks, 300)
     const { t } = useTranslation()
 
@@ -59,9 +62,10 @@ export const RemarksManager = ({
         })
     })
 
-    useEffect(() => {
+    if (initialRemarks !== previousRemarks) {
+        setPreviousRemarks(initialRemarks)
         setLocalRemarks(initialRemarks)
-    }, [initialRemarks])
+    }
 
     useEffect(() => {
         onChange(debouncedRemarks)

@@ -1,33 +1,59 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react'
 import { Group, Modal, Progress, Stack, Transition } from '@mantine/core'
 import { useForm, schemaResolver } from '@mantine/form'
+import { notifications } from '@mantine/notifications'
 import { CreateNodeCommand } from '@umiji/backend-contract'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbCpu } from 'react-icons/tb'
 
+import { showModal } from '@shared/_modals/show-modal'
 import { useNiceMantineModal } from '@shared/_modals/use-nice-modal'
 import { queryClient } from '@shared/api'
 import {
     configProfilesQueryKeys,
     QueryKeys,
     useCreateNode,
-    useGetNodeSecretKey
+    useGetNodeSecretKey,
+    useStartNodeInstall
 } from '@shared/api/hooks'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 
-import { CreateNodeStep1Connection } from './create-node-steps/create-node-step-1-connection'
+import {
+    CreateNodeStep1Connection,
+    ISshLogin,
+    TCreateNodeMode
+} from './create-node-steps/create-node-step-1-connection'
 import { CreateNodeStep2ConfigProfiles } from './create-node-steps/create-node-step-2-config-profiles'
+import { CreateNodeStep3Install } from './create-node-steps/create-node-step-3-install'
 import { CreateNodeStep3Status } from './create-node-steps/create-node-step-3-status'
 
 export const CreateNodeModal = NiceModal.create(() => {
     const { t } = useTranslation()
+
+    const [mode, setMode] = useState<TCreateNodeMode>('auto')
+    const [ssh, setSsh] = useState<ISshLogin>({ password: '', port: 22 })
+    const [installId, setInstallId] = useState<string>()
 
     const modal = useModal()
     const { modalProps, hide } = useNiceMantineModal({
         modal,
         onClose: () => {
             queryClient.refetchQueries({ queryKey: QueryKeys.nodes.getAllNodes.queryKey })
+
+            const install = installId
+                ? queryClient.getQueryData<{ status: string }>(
+                      QueryKeys.nodeInstall.getNodeInstall({ id: installId }).queryKey
+                  )
+                : undefined
+
+            if (installId && (!install || install.status === 'running')) {
+                notifications.show({
+                    title: t('node-install.background-title'),
+                    message: t('node-install.background-note'),
+                    color: 'gray'
+                })
+            }
         }
     })
 
@@ -56,15 +82,39 @@ export const CreateNodeModal = NiceModal.create(() => {
         }
     })
 
+    const { mutate: startInstall, isPending: isStartInstallPending } = useStartNodeInstall({
+        mutationFns: {
+            onSuccess: (data) => {
+                setInstallId(data.id)
+                setActiveStep(2)
+            }
+        }
+    })
+
     const handleCreateNode = () => {
         const values = form.getValues()
-        createNode({
+        const node = {
+            ...values,
+            name: values.name.trim(),
+            address: values.address.trim()
+        }
+
+        if (mode === 'manual') {
+            createNode({ variables: node })
+            return
+        }
+
+        startInstall({
             variables: {
-                ...values,
-                name: values.name.trim(),
-                address: values.address.trim()
+                node: { ...node, port: values.port ?? 2222 },
+                ssh: { password: ssh.password, port: Number(ssh.port) }
             }
         })
+    }
+
+    const openNode = (nodeUuid: string) => {
+        hide()
+        setTimeout(() => showModal('nodes_editNodeModal', { nodeUuid }), 300)
     }
 
     const nextStep = () => setActiveStep((current) => (current < 2 ? current + 1 : current))
@@ -92,9 +142,7 @@ export const CreateNodeModal = NiceModal.create(() => {
             size="md"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbCpu}
-                    iconVariant="soft"
                     title={t('create-node-modal.widget.create-node')}
                 />
             }
@@ -103,7 +151,7 @@ export const CreateNodeModal = NiceModal.create(() => {
                 <Group gap="xs" grow>
                     <Progress
                         animated
-                        color="teal"
+                        color="rose"
                         radius="sm"
                         size="md"
                         striped
@@ -112,7 +160,7 @@ export const CreateNodeModal = NiceModal.create(() => {
                     />
                     <Progress
                         animated
-                        color="teal"
+                        color="rose"
                         radius="sm"
                         size="md"
                         striped
@@ -121,7 +169,7 @@ export const CreateNodeModal = NiceModal.create(() => {
                     />
                     <Progress
                         animated
-                        color="teal"
+                        color="rose"
                         radius="sm"
                         size="md"
                         striped
@@ -141,9 +189,13 @@ export const CreateNodeModal = NiceModal.create(() => {
                         <div style={styles}>
                             <CreateNodeStep1Connection
                                 form={form}
+                                mode={mode}
+                                onModeChange={setMode}
                                 onNext={nextStep}
+                                onSshChange={setSsh}
                                 port={selectedPort}
                                 secretKey={secretKey?.secretKey}
+                                ssh={ssh}
                             />
                         </div>
                     )}
@@ -160,7 +212,8 @@ export const CreateNodeModal = NiceModal.create(() => {
                         <div style={styles}>
                             <CreateNodeStep2ConfigProfiles
                                 form={form}
-                                isCreating={isCreateNodePending}
+                                isCreating={isCreateNodePending || isStartInstallPending}
+                                mode={mode}
                                 onCreateNode={handleCreateNode}
                                 onPrev={prevStep}
                                 port={selectedPort}
@@ -178,7 +231,22 @@ export const CreateNodeModal = NiceModal.create(() => {
                 >
                     {(styles) => (
                         <div style={styles}>
-                            <CreateNodeStep3Status nodeUuid={createdNodeUuid} onClose={hide} />
+                            {installId ? (
+                                <CreateNodeStep3Install
+                                    installId={installId}
+                                    isRetrying={isStartInstallPending}
+                                    key={installId}
+                                    onBack={() => {
+                                        setInstallId(undefined)
+                                        setActiveStep(0)
+                                    }}
+                                    onClose={hide}
+                                    onOpenNode={openNode}
+                                    onRetry={handleCreateNode}
+                                />
+                            ) : (
+                                <CreateNodeStep3Status nodeUuid={createdNodeUuid} onClose={hide} />
+                            )}
                         </div>
                     )}
                 </Transition>

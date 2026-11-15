@@ -1,9 +1,9 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
+import { keepPreviousData } from '@tanstack/react-query'
 import {
     GetSubscriptionRequestHistoryCommand,
     GetSubscriptionRequestHistoryStatsCommand
 } from '@umiji/backend-contract'
-import { keepPreviousData } from '@tanstack/react-query'
 import { t } from 'i18next'
 
 import { sToMs } from '@shared/utils/time-utils'

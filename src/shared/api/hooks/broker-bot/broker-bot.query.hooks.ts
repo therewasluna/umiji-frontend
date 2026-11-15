@@ -1,11 +1,13 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
+import { keepPreviousData } from '@tanstack/react-query'
 import {
     GetBrokerBotBroadcastsCommand,
     GetBrokerBotCommand,
     GetBrokerBotOrdersCommand,
-    GetBrokerBotReceiptCommand
+    GetBrokerBotReceiptCommand,
+    GetBrokerBotStatsCommand,
+    GetBrokerBotTextsCommand
 } from '@umiji/backend-contract'
-import { keepPreviousData } from '@tanstack/react-query'
 import { t } from 'i18next'
 
 import { sToMs } from '@shared/utils/time-utils'
@@ -17,6 +19,12 @@ export const brokerBotQueryKeys = createQueryKeys('brokerBot', {
         queryKey: null
     },
     getBrokerBotBroadcasts: {
+        queryKey: null
+    },
+    getBrokerBotTexts: {
+        queryKey: null
+    },
+    getBrokerBotStats: {
         queryKey: null
     },
     getBrokerBotOrders: (query: GetBrokerBotOrdersCommand.RequestQuery) => ({
@@ -37,6 +45,18 @@ export const useGetBrokerBot = createGetQueryHook({
         staleTime: sToMs(5)
     },
     errorHandler: (error) => errorHandler(error, t('broker-bot.get-telegram-bot'))
+})
+
+export const useGetBrokerBotStats = createGetQueryHook({
+    endpoint: GetBrokerBotStatsCommand.TSQ_url,
+    responseSchema: GetBrokerBotStatsCommand.ResponseSchema,
+    getQueryKey: () => brokerBotQueryKeys.getBrokerBotStats.queryKey,
+    rQueryParams: {
+        refetchOnMount: true,
+        refetchInterval: sToMs(60),
+        staleTime: sToMs(15)
+    },
+    errorHandler: (error) => errorHandler(error, t('broker-bot.stats.title'))
 })
 
 export const useGetBrokerBotOrders = createGetQueryHook({
@@ -77,4 +97,17 @@ export const useGetBrokerBotBroadcasts = createGetQueryHook({
         staleTime: sToMs(2)
     },
     errorHandler: (error) => errorHandler(error, t('broker-bot.get-broadcasts'))
+})
+
+export const useGetBrokerBotTexts = createGetQueryHook({
+    endpoint: GetBrokerBotTextsCommand.TSQ_url,
+    responseSchema: GetBrokerBotTextsCommand.ResponseSchema,
+    getQueryKey: () => brokerBotQueryKeys.getBrokerBotTexts.queryKey,
+    // The page holds a draft; a background refetch must not look like someone else's save.
+    rQueryParams: {
+        refetchOnMount: true,
+        refetchOnWindowFocus: false,
+        staleTime: Infinity
+    },
+    errorHandler: (error) => errorHandler(error, t('broker-bot-texts.title'))
 })

@@ -1,0 +1,97 @@
+/* Data tables as a list of rounded rows on the page ground, not a ruled spreadsheet grid.
+   Column menus, resize handles and sort arrows stay out of sight until the header is hovered. */
+.rows {
+    --mrt-base-background-color: transparent;
+    --mrt-pinned-column-background-color: var(--mantine-color-dark-7);
+    --table-border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+
+    :global(.mantine-Table-thead) :global(.mantine-Table-th) {
+        border: 0;
+        background: transparent;
+        color: var(--mantine-color-dark-2);
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    :global(.mantine-Table-tbody) {
+        padding-top: 10px;
+    }
+
+    :global(.mantine-Table-tbody) > :global(.mantine-Table-tr) {
+        margin-bottom: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 12px;
+        background: var(--mantine-color-dark-7);
+        transition:
+            background-color 150ms ease,
+            border-color 150ms ease;
+
+        &:hover {
+            border-color: var(--mantine-color-dark-5);
+            background: var(--mantine-color-dark-6);
+        }
+
+        /* Selected rows lift neutrally; the checkbox alone carries the rose. */
+        &[data-selected='true'] {
+            border-color: rgba(255, 255, 255, 0.12);
+            background: var(--mantine-color-dark-6);
+        }
+    }
+
+    :global(.mantine-Table-tbody) :global(.mantine-Table-td) {
+        border: 0;
+        padding-block: 10px;
+    }
+
+    /* Keep the first and last cells (the row checkbox, the last value) off the row's rounded edge. */
+    :global(.mantine-Table-tr) > :global(.mantine-Table-th):first-child,
+    :global(.mantine-Table-tr) > :global(.mantine-Table-td):first-child {
+        padding-inline-start: var(--mantine-spacing-md);
+    }
+
+    :global(.mantine-Table-tr) > :global(.mantine-Table-th):last-child,
+    :global(.mantine-Table-tr) > :global(.mantine-Table-td):last-child {
+        padding-inline-end: var(--mantine-spacing-md);
+    }
+
+    :global(.mrt-table-head-cell-content-actions),
+    :global(.mrt-table-head-cell-resize-handle) {
+        opacity: 0;
+        transition: opacity 150ms ease;
+    }
+
+    :global(.mrt-table-head-sort-button) {
+        opacity: 0.45;
+    }
+
+    /* Toolbar: the actions wrap under the title on a phone instead of running off the screen.
+       MRT's actions row has no stable class, hence the attribute match. */
+    [class*='MRT_TopToolbar-module_actions-container'] {
+        flex-wrap: wrap;
+        align-items: center;
+        row-gap: var(--mantine-spacing-sm);
+        padding-inline: 0;
+
+        > :last-child {
+            margin-inline-start: auto;
+        }
+    }
+
+    :global(.mrt-toolbar-internal-buttons) {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: var(--mantine-spacing-xs);
+        margin: 0;
+    }
+
+    :global(.mantine-Table-th):hover,
+    :global(.mantine-Table-th):focus-within {
+        :global(.mrt-table-head-cell-content-actions),
+        :global(.mrt-table-head-cell-resize-handle),
+        :global(.mrt-table-head-sort-button) {
+            opacity: 1;
+        }
+    }
+}

@@ -12,7 +12,7 @@ import {
 import { BrokerQuickOpenWidget } from '@widgets/dashboard/broker-panel/quick-open'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbArrowRight, TbLink } from 'react-icons/tb'
+import { TbArrowRight } from 'react-icons/tb'
 import { useNavigate } from 'react-router'
 
 import { OPEN_ENTITY_TARGETS } from '@shared/_modals/open-entity-targets'
@@ -44,7 +44,6 @@ export function QuickOpenPage() {
                         ? t('brokers.panel.quick.page-description')
                         : t('quick-open.page.description')
                 }
-                icon={<TbLink size={20} />}
                 title={t('constants.quick-open')}
             />
 

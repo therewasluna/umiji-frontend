@@ -1,9 +1,9 @@
 import {
     Button,
+    Checkbox,
     Group,
     Modal,
     NumberInput,
-    Radio,
     Select,
     SimpleGrid,
     Stack,
@@ -16,6 +16,9 @@ import { useTranslation } from 'react-i18next'
 import { TbPackage } from 'react-icons/tb'
 
 import { useCreateBrokerBotPlan, useUpdateBrokerBotPlan } from '@shared/api/hooks'
+import { useIsMobile } from '@shared/hooks/use-is-mobile'
+import { IpLimitBetaDescription, IpLimitBetaLabel } from '@shared/ui/ip-limit-beta/ip-limit-beta'
+import { ModalFooter } from '@shared/ui/modal-footer'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 
 type TBot = GetBrokerBotCommand.Response['response']
@@ -31,14 +34,16 @@ interface IProps {
 interface IFormValues {
     categoryId: null | string
     durationDays: number | string
+    ipLimit: number | string
     price: number | string
-    squadUuid: string
+    squadUuids: string[]
     title: string
     trafficGb: number | string
 }
 
 export function BotPlanModal({ bot, onClose, opened, plan, squads }: IProps) {
     const { t } = useTranslation()
+    const isMobile = useIsMobile()
 
     const form = useForm<IFormValues>({
         mode: 'uncontrolled',
@@ -48,12 +53,16 @@ export function BotPlanModal({ bot, onClose, opened, plan, squads }: IProps) {
             trafficGb: plan?.trafficGb ?? 10,
             durationDays: plan?.durationDays ?? 30,
             price: plan?.price ?? 0,
-            squadUuid: plan?.squadUuid ?? squads[0]?.uuid ?? ''
+            ipLimit: plan?.ipLimit ?? '',
+            // Drop squads the broker lost, so saving clears them instead of failing.
+            squadUuids: plan
+                ? plan.squadUuids.filter((uuid) => squads.some((s) => s.uuid === uuid))
+                : squads.slice(0, 1).map((s) => s.uuid)
         },
         validate: {
             title: (v) => (v.trim() ? null : t('broker-bot.plans.field-title')),
             durationDays: (v) => (Number(v) >= 1 ? null : t('broker-bot.plans.field-duration')),
-            squadUuid: (v) => (v ? null : t('broker-bot.plans.no-squads'))
+            squadUuids: (v) => (v.length ? null : t('broker-bot.plans.squads-required'))
         }
     })
 
@@ -71,7 +80,8 @@ export function BotPlanModal({ bot, onClose, opened, plan, squads }: IProps) {
             trafficGb: Number(values.trafficGb) || 0,
             durationDays: Number(values.durationDays),
             price: Number(values.price) || 0,
-            squadUuid: values.squadUuid
+            ipLimit: Number(values.ipLimit) || null,
+            squadUuids: values.squadUuids
         }
         if (plan) updatePlan({ variables: { id: plan.id, ...body } })
         else createPlan({ variables: body })
@@ -80,13 +90,13 @@ export function BotPlanModal({ bot, onClose, opened, plan, squads }: IProps) {
     return (
         <Modal
             centered
+            fullScreen={isMobile}
             onClose={onClose}
             opened={opened}
             size="lg"
             title={
                 <BaseOverlayHeader
                     IconComponent={TbPackage}
-                    iconVariant="soft"
                     title={plan ? t('broker-bot.plans.edit') : t('broker-bot.plans.add')}
                 />
             }
@@ -120,6 +130,9 @@ export function BotPlanModal({ bot, onClose, opened, plan, squads }: IProps) {
                         <NumberInput
                             allowNegative={false}
                             decimalScale={1}
+                            // The hint goes under the input, so all three inputs share a top edge.
+                            description={t('broker-bot.plans.field-traffic-hint')}
+                            inputWrapperOrder={['label', 'input', 'description']}
                             key={form.key('trafficGb')}
                             label={t('broker-bot.plans.field-traffic')}
                             min={0}
@@ -145,48 +158,74 @@ export function BotPlanModal({ bot, onClose, opened, plan, squads }: IProps) {
                         />
                     </SimpleGrid>
 
+                    <NumberInput
+                        allowDecimal={false}
+                        allowNegative={false}
+                        clampBehavior="strict"
+                        description={
+                            <IpLimitBetaDescription>
+                                {t('broker-bot.plans.field-ip-limit-hint')}
+                            </IpLimitBetaDescription>
+                        }
+                        hideControls
+                        key={form.key('ipLimit')}
+                        label={
+                            <IpLimitBetaLabel>
+                                {t('broker-bot.plans.field-ip-limit')}
+                            </IpLimitBetaLabel>
+                        }
+                        max={100}
+                        min={1}
+                        placeholder={t('broker-bot.plans.unlimited')}
+                        {...form.getInputProps('ipLimit')}
+                    />
+
                     {squads.length === 0 ? (
                         <Text c="dimmed" size="sm">
                             {t('broker-bot.plans.no-squads')}
                         </Text>
                     ) : (
-                        <Radio.Group
-                            key={form.key('squadUuid')}
-                            label={t('broker-bot.plans.field-squad')}
-                            {...form.getInputProps('squadUuid')}
+                        <Checkbox.Group
+                            description={t('broker-bot.plans.field-squads-hint')}
+                            key={form.key('squadUuids')}
+                            label={t('broker-bot.plans.field-squads')}
+                            {...form.getInputProps('squadUuids')}
                         >
-                            <SimpleGrid cols={{ base: 1, xs: 2 }} mt="xs" spacing="xs">
+                            <SimpleGrid cols={{ base: 1, xs: 2 }} spacing="xs">
                                 {squads.map((squad) => (
-                                    <Radio.Card
+                                    <Checkbox.Card
                                         key={squad.uuid}
                                         p="sm"
                                         radius="md"
                                         value={squad.uuid}
                                     >
                                         <Group gap="sm" wrap="nowrap">
-                                            <Radio.Indicator />
+                                            <Checkbox.Indicator />
                                             <Text fw={500} size="sm" truncate="end">
                                                 {squad.name}
                                             </Text>
                                         </Group>
-                                    </Radio.Card>
+                                    </Checkbox.Card>
                                 ))}
                             </SimpleGrid>
-                        </Radio.Group>
+                        </Checkbox.Group>
                     )}
-
-                    <Group justify="flex-end">
-                        <Button
-                            color="teal"
-                            disabled={squads.length === 0}
-                            loading={isCreating || isUpdating}
-                            type="submit"
-                            variant="soft"
-                        >
-                            {t('common.action.save')}
-                        </Button>
-                    </Group>
                 </Stack>
+
+                <ModalFooter>
+                    <Button color="gray" onClick={onClose} variant="soft">
+                        {t('common.action.cancel')}
+                    </Button>
+                    <Button
+                        color="teal"
+                        disabled={squads.length === 0}
+                        loading={isCreating || isUpdating}
+                        type="submit"
+                        variant="soft"
+                    >
+                        {t('common.action.save')}
+                    </Button>
+                </ModalFooter>
             </form>
         </Modal>
     )

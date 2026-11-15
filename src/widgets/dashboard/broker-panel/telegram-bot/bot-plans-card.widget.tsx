@@ -1,22 +1,17 @@
 import {
     ActionIcon,
     Badge,
-    Box,
     Button,
-    Divider,
     Group,
     List,
     Modal,
-    Paper,
-    SimpleGrid,
-    Stack,
+    Pill,
     Text,
     TextInput,
-    ThemeIcon,
-    Title,
     Tooltip
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
+import { useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
 import { GetBrokerBotCommand } from '@umiji/backend-contract'
 import { useState } from 'react'
@@ -27,7 +22,6 @@ import {
     TbPencil,
     TbPlayerPause,
     TbPlayerPlay,
-    TbPlus,
     TbTag,
     TbTrash
 } from 'react-icons/tb'
@@ -38,14 +32,30 @@ import {
     useDeleteBrokerBotPlan,
     useUpdateBrokerBotPlan
 } from '@shared/api/hooks'
+import { ModalFooter } from '@shared/ui/modal-footer'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { SettingsCardShared } from '@shared/ui/settings-card'
+import {
+    SettingsSection,
+    SettingsSectionAddButton,
+    SettingsSectionPanel,
+    SettingsSectionToggle
+} from '@shared/ui/settings-section'
 import { formatTomanUtil } from '@shared/utils/brokers'
 
+import classes from './bot-list-editor.module.css'
 import { BotPlanModal } from './bot-plan-modal'
 
 type TBot = GetBrokerBotCommand.Response['response']
 type TPlan = TBot['plans'][number]
+
+const HELP_KEYS = [
+    'broker-bot.plans.help-1',
+    'broker-bot.plans.help-2',
+    'broker-bot.plans.help-3',
+    'broker-bot.plans.help-4',
+    'broker-bot.plans.help-5'
+] as const
 
 interface IProps {
     bot: TBot
@@ -58,6 +68,8 @@ export function BotPlansCardWidget({ bot, squads }: IProps) {
     // undefined = closed, null = new plan
     const [editing, setEditing] = useState<null | TPlan | undefined>(undefined)
     const [isCategoryOpen, setCategoryOpen] = useState(false)
+    // Open while it's needed: a broker with no plans yet sees how they work.
+    const [isHelpOpen, { toggle: toggleHelp }] = useDisclosure(bot.plans.length === 0)
 
     const {
         mutate: updatePlan,
@@ -69,6 +81,7 @@ export function BotPlansCardWidget({ bot, squads }: IProps) {
 
     const categoryTitle = new Map(bot.categories.map((c) => [c.id, c.title]))
     const squadName = new Map(squads.map((s) => [s.uuid, s.name]))
+    const activePlans = bot.plans.filter((plan) => plan.isActive).length
 
     const confirm = (children: string, onConfirm: () => void) =>
         modals.openConfirmModal({
@@ -83,196 +96,129 @@ export function BotPlansCardWidget({ bot, squads }: IProps) {
 
     return (
         <SettingsCardShared.Container>
-            <Box>
-                <Group align="flex-start" justify="space-between">
-                    <Group align="flex-start" gap="md" wrap="nowrap">
-                        <ThemeIcon color="cyan" size="xl" variant="soft">
-                            <TbPackage size={24} />
-                        </ThemeIcon>
-                        <Stack gap={0}>
-                            <Title order={4}>{t('broker-bot.plans.title')}</Title>
-                            <Text c="dimmed" size="sm">
-                                {t('broker-bot.plans.description')}
-                            </Text>
-                        </Stack>
-                    </Group>
-                    <Button
-                        leftSection={<TbPlus size={18} />}
-                        onClick={() => setEditing(null)}
-                        variant="soft"
-                    >
-                        {t('broker-bot.plans.add')}
-                    </Button>
-                </Group>
-                <Divider my="md" style={{ opacity: 0.3 }} />
-            </Box>
+            <SettingsCardShared.Header
+                actions={
+                    // With nothing active the bot has nothing to sell, so this is real state.
+                    activePlans > 0 ? (
+                        <Badge color="teal" variant="soft">
+                            {t('localization-block.active', { count: activePlans })}
+                        </Badge>
+                    ) : (
+                        <Badge color="yellow" variant="soft">
+                            {bot.plans.length > 0
+                                ? t('broker-bot.plans.inactive')
+                                : t('broker-bot.payments.not-set-up')}
+                        </Badge>
+                    )
+                }
+                description={t('broker-bot.plans.description')}
+                title={t('broker-bot.plans.title')}
+            />
 
             <SettingsCardShared.Content>
-                <Stack gap="md">
-                    <Paper bg="dark.6" p="md" radius="md">
-                        <Group gap="xs" mb="xs">
-                            <ThemeIcon color="yellow" radius="xl" size="sm" variant="soft">
-                                <TbBulb size={14} />
-                            </ThemeIcon>
-                            <Text fw={600} size="sm">
-                                {t('broker-bot.plans.help-title')}
-                            </Text>
-                        </Group>
-                        <List c="dimmed" size="sm" spacing={6}>
-                            {(
-                                [
-                                    'broker-bot.plans.help-1',
-                                    'broker-bot.plans.help-2',
-                                    'broker-bot.plans.help-3',
-                                    'broker-bot.plans.help-4',
-                                    'broker-bot.plans.help-5'
-                                ] as const
-                            ).map((key) => (
-                                <List.Item key={key}>{t(key)}</List.Item>
-                            ))}
-                        </List>
-                    </Paper>
+                <div>
+                    <SettingsSection
+                        action={
+                            <SettingsSectionAddButton
+                                label={t('broker-bot.plans.add')}
+                                onClick={() => setEditing(null)}
+                            />
+                        }
+                        count={bot.plans.length > 0 ? String(bot.plans.length) : undefined}
+                        hint={bot.plans.length === 0 ? t('broker-bot.plans.empty') : undefined}
+                        Icon={TbPackage}
+                        isLit={bot.plans.length > 0}
+                        title={t('broker-bot.plans.list')}
+                    >
+                        {bot.plans.length > 0 && (
+                            <ul className={classes.items}>
+                                {bot.plans.map((plan) => {
+                                    const squadNames = plan.squadUuids.map((uuid) =>
+                                        squadName.get(uuid)
+                                    )
+                                    // The bot won't sell a plan with any squad missing.
+                                    const squad =
+                                        squadNames.length > 0 && squadNames.every(Boolean)
+                                            ? squadNames.join(', ')
+                                            : null
+                                    const category =
+                                        plan.categoryId != null
+                                            ? categoryTitle.get(plan.categoryId)
+                                            : null
+                                    // Price first: it's what a seller scans the list for.
+                                    const details = [
+                                        {
+                                            className: classes.price,
+                                            text: formatTomanUtil(plan.price, t)
+                                        },
+                                        {
+                                            text:
+                                                plan.trafficGb > 0
+                                                    ? t('broker-bot.plans.gb', {
+                                                          value: plan.trafficGb
+                                                      })
+                                                    : t('broker-bot.plans.unlimited')
+                                        },
+                                        {
+                                            text: t('broker-bot.plans.days', {
+                                                count: plan.durationDays
+                                            })
+                                        },
+                                        ...(plan.ipLimit
+                                            ? [
+                                                  {
+                                                      text: t('broker-bot.plans.devices', {
+                                                          count: plan.ipLimit
+                                                      })
+                                                  }
+                                              ]
+                                            : []),
+                                        squad
+                                            ? { text: squad }
+                                            : {
+                                                  className: classes.danger,
+                                                  text: t('broker-bot.plans.squad-missing')
+                                              },
+                                        ...(category ? [{ text: category }] : [])
+                                    ]
 
-                    <Paper p="md" radius="md" withBorder>
-                        <Group align="flex-start" justify="space-between">
-                            <Stack gap={2}>
-                                <Group gap="xs">
-                                    <TbTag size={16} />
-                                    <Title order={6}>{t('broker-bot.categories.title')}</Title>
-                                    {bot.categories.length > 0 && (
-                                        <Badge color="gray" size="sm" variant="soft">
-                                            {bot.categories.length}
-                                        </Badge>
-                                    )}
-                                </Group>
-                                <Text c="dimmed" size="xs">
-                                    {t('broker-bot.categories.hint')}
-                                </Text>
-                            </Stack>
-                            <Button
-                                leftSection={<TbPlus size={16} />}
-                                onClick={() => setCategoryOpen(true)}
-                                size="xs"
-                                variant="default"
-                            >
-                                {t('broker-bot.categories.add')}
-                            </Button>
-                        </Group>
-
-                        {bot.categories.length === 0 ? (
-                            <Text c="dimmed" mt="sm" size="xs">
-                                {t('broker-bot.categories.empty')}
-                            </Text>
-                        ) : (
-                            <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} mt="sm" spacing="xs">
-                                {bot.categories.map((category) => (
-                                    <Paper key={category.id} px="sm" py="xs" radius="md" withBorder>
-                                        <Group gap="sm" wrap="nowrap">
-                                            <ThemeIcon color="cyan" radius="md" variant="soft">
-                                                <TbTag size={16} />
-                                            </ThemeIcon>
-                                            <Text
-                                                fw={500}
-                                                size="sm"
-                                                style={{ flex: 1 }}
-                                                truncate="end"
-                                            >
-                                                {category.title}
-                                            </Text>
-                                            <Tooltip label={t('broker-bot.categories.delete')}>
-                                                <ActionIcon
-                                                    color="gray"
-                                                    onClick={() =>
-                                                        confirm(
-                                                            t(
-                                                                'broker-bot.categories.delete-confirm'
-                                                            ),
-                                                            () =>
-                                                                deleteCategory({
-                                                                    route: { id: category.id }
-                                                                })
-                                                        )
-                                                    }
-                                                    variant="subtle"
+                                    return (
+                                        <li className={classes.plan} key={plan.id}>
+                                            <Group className={classes.planTitle} gap="xs">
+                                                <Text
+                                                    c={plan.isActive ? undefined : 'dimmed'}
+                                                    fw={600}
+                                                    size="sm"
                                                 >
-                                                    <TbTrash size={16} />
-                                                </ActionIcon>
-                                            </Tooltip>
-                                        </Group>
-                                    </Paper>
-                                ))}
-                            </SimpleGrid>
-                        )}
-                    </Paper>
+                                                    {plan.title}
+                                                </Text>
+                                                {!plan.isActive && (
+                                                    <Badge color="yellow" size="sm" variant="soft">
+                                                        {t('broker-bot.plans.inactive')}
+                                                    </Badge>
+                                                )}
+                                            </Group>
 
-                    {bot.plans.length === 0 ? (
-                        <Text c="dimmed" py="md" size="sm" ta="center">
-                            {t('broker-bot.plans.empty')}
-                        </Text>
-                    ) : (
-                        <Stack gap="xs">
-                            {bot.plans.map((plan) => {
-                                const squad = plan.squadUuid ? squadName.get(plan.squadUuid) : null
-                                const category =
-                                    plan.categoryId != null
-                                        ? categoryTitle.get(plan.categoryId)
-                                        : null
-                                return (
-                                    <Paper key={plan.id} p="sm" radius="md" withBorder>
-                                        <Group justify="space-between" wrap="nowrap">
-                                            <Stack gap={4} miw={0}>
-                                                <Group gap="xs" wrap="nowrap">
-                                                    <Text fw={600} size="sm" truncate="end">
-                                                        {plan.title}
-                                                    </Text>
-                                                    {!plan.isActive && (
-                                                        <Badge
-                                                            color="gray"
-                                                            size="sm"
-                                                            variant="soft"
-                                                        >
-                                                            {t('broker-bot.plans.inactive')}
-                                                        </Badge>
-                                                    )}
-                                                </Group>
-                                                <Group gap={6}>
-                                                    <Badge color="blue" variant="soft">
-                                                        {plan.trafficGb > 0
-                                                            ? t('broker-bot.plans.gb', {
-                                                                  value: plan.trafficGb
-                                                              })
-                                                            : t('broker-bot.plans.unlimited')}
-                                                    </Badge>
-                                                    <Badge color="grape" variant="soft">
-                                                        {t('broker-bot.plans.days', {
-                                                            count: plan.durationDays
-                                                        })}
-                                                    </Badge>
-                                                    <Badge color="teal" variant="soft">
-                                                        {formatTomanUtil(plan.price, t)}
-                                                    </Badge>
-                                                    <Badge
-                                                        color={squad ? 'gray' : 'red'}
-                                                        variant="soft"
-                                                    >
-                                                        {squad ??
-                                                            t('broker-bot.plans.squad-missing')}
-                                                    </Badge>
-                                                    {category && (
-                                                        <Badge
-                                                            color="cyan"
-                                                            leftSection={<TbTag size={12} />}
-                                                            variant="soft"
-                                                        >
-                                                            {category}
-                                                        </Badge>
-                                                    )}
-                                                </Group>
-                                            </Stack>
+                                            <Text
+                                                c="dimmed"
+                                                className={classes.meta}
+                                                component="div"
+                                                size="xs"
+                                            >
+                                                <div className={classes.metaRow}>
+                                                    {details.map(({ className, text }, index) => (
+                                                        <span className={className} key={index}>
+                                                            <bdi>{text}</bdi>
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </Text>
 
-                                            <Group gap={4} wrap="nowrap">
+                                            <div className={classes.actions}>
                                                 <Tooltip label={t('common.action.edit')}>
                                                     <ActionIcon
+                                                        aria-label={t('common.action.edit')}
+                                                        color="gray"
                                                         onClick={() => setEditing(plan)}
                                                         size="lg"
                                                         variant="subtle"
@@ -288,7 +234,12 @@ export function BotPlansCardWidget({ bot, squads }: IProps) {
                                                     }
                                                 >
                                                     <ActionIcon
-                                                        color={plan.isActive ? 'orange' : 'teal'}
+                                                        aria-label={
+                                                            plan.isActive
+                                                                ? t('broker-bot.plans.pause')
+                                                                : t('broker-bot.plans.activate')
+                                                        }
+                                                        color="gray"
                                                         loading={
                                                             isToggling &&
                                                             toggled?.variables?.id === plan.id
@@ -313,7 +264,9 @@ export function BotPlansCardWidget({ bot, squads }: IProps) {
                                                 </Tooltip>
                                                 <Tooltip label={t('common.action.delete')}>
                                                     <ActionIcon
-                                                        color="red"
+                                                        aria-label={t('common.action.delete')}
+                                                        className={classes.remove}
+                                                        color="gray"
                                                         onClick={() =>
                                                             confirm(
                                                                 t(
@@ -331,14 +284,87 @@ export function BotPlansCardWidget({ bot, squads }: IProps) {
                                                         <TbTrash size={18} />
                                                     </ActionIcon>
                                                 </Tooltip>
-                                            </Group>
-                                        </Group>
-                                    </Paper>
-                                )
-                            })}
-                        </Stack>
-                    )}
-                </Stack>
+                                            </div>
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+                        )}
+                    </SettingsSection>
+
+                    <SettingsSection
+                        action={
+                            <SettingsSectionAddButton
+                                label={t('broker-bot.categories.add')}
+                                onClick={() => setCategoryOpen(true)}
+                            />
+                        }
+                        count={
+                            bot.categories.length > 0 ? String(bot.categories.length) : undefined
+                        }
+                        hint={
+                            <>
+                                {t('broker-bot.categories.hint')}
+                                {bot.categories.length === 0 && (
+                                    <>
+                                        <br />
+                                        {t('broker-bot.categories.empty')}
+                                    </>
+                                )}
+                            </>
+                        }
+                        Icon={TbTag}
+                        isLit={bot.categories.length > 0}
+                        title={t('broker-bot.categories.title')}
+                    >
+                        {bot.categories.length > 0 && (
+                            <div className={classes.chips}>
+                                {bot.categories.map((category) => (
+                                    <Pill
+                                        className={classes.chip}
+                                        key={category.id}
+                                        onRemove={() =>
+                                            confirm(t('broker-bot.categories.delete-confirm'), () =>
+                                                deleteCategory({ route: { id: category.id } })
+                                            )
+                                        }
+                                        // Mantine hides this button from keyboards and screen readers by default.
+                                        removeButtonProps={{
+                                            'aria-hidden': false,
+                                            'aria-label': t('broker-bot.categories.delete'),
+                                            tabIndex: 0
+                                        }}
+                                        size="md"
+                                        withRemoveButton
+                                    >
+                                        {category.title}
+                                    </Pill>
+                                ))}
+                            </div>
+                        )}
+                    </SettingsSection>
+
+                    <SettingsSection
+                        action={
+                            <SettingsSectionToggle
+                                label={t('broker-bot.plans.help-title')}
+                                onClick={toggleHelp}
+                                opened={isHelpOpen}
+                            />
+                        }
+                        Icon={TbBulb}
+                        onHeadClick={toggleHelp}
+                        title={t('broker-bot.plans.help-title')}
+                    >
+                        <SettingsSectionPanel opened={isHelpOpen}>
+                            <List c="dimmed" size="sm" spacing={6}>
+                                {HELP_KEYS.map((key) => (
+                                    <List.Item key={key}>{t(key)}</List.Item>
+                                ))}
+                            </List>
+                        </SettingsSectionPanel>
+                    </SettingsSection>
+                </div>
             </SettingsCardShared.Content>
 
             {editing !== undefined && (
@@ -367,26 +393,22 @@ function CategoryModal({ onClose, opened }: { onClose: () => void; opened: boole
         }
     })
 
+    const handleClose = () => {
+        form.reset()
+        onClose()
+    }
+
     const { mutate: createCategory, isPending } = useCreateBrokerBotCategory({
-        mutationFns: {
-            onSuccess: () => {
-                form.reset()
-                onClose()
-            }
-        }
+        mutationFns: { onSuccess: handleClose }
     })
 
     return (
         <Modal
             centered
-            onClose={onClose}
+            onClose={handleClose}
             opened={opened}
             title={
-                <BaseOverlayHeader
-                    IconComponent={TbTag}
-                    iconVariant="soft"
-                    title={t('broker-bot.categories.new')}
-                />
+                <BaseOverlayHeader IconComponent={TbTag} title={t('broker-bot.categories.new')} />
             }
         >
             <form
@@ -394,18 +416,22 @@ function CategoryModal({ onClose, opened }: { onClose: () => void; opened: boole
                     createCategory({ variables: { title: values.title.trim() } })
                 )}
             >
-                <Stack gap="md">
-                    <TextInput
-                        data-autofocus
-                        key={form.key('title')}
-                        maxLength={40}
-                        placeholder={t('broker-bot.categories.placeholder')}
-                        {...form.getInputProps('title')}
-                    />
-                    <Button color="teal" fullWidth loading={isPending} type="submit" variant="soft">
-                        {t('broker-bot.categories.add')}
+                <TextInput
+                    data-autofocus
+                    key={form.key('title')}
+                    maxLength={40}
+                    placeholder={t('broker-bot.categories.placeholder')}
+                    {...form.getInputProps('title')}
+                />
+
+                <ModalFooter>
+                    <Button color="gray" onClick={handleClose} variant="soft">
+                        {t('common.action.cancel')}
                     </Button>
-                </Stack>
+                    <Button color="teal" loading={isPending} type="submit" variant="soft">
+                        {t('common.action.save')}
+                    </Button>
+                </ModalFooter>
             </form>
         </Modal>
     )

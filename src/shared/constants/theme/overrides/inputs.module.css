@@ -1,0 +1,16 @@
+/* Mantine leaves no space between a label and the input under it, so the two almost touch.
+   Every field gets 8px under whatever sits directly above its input. */
+.label {
+    margin-bottom: 8px;
+
+    /* A description belongs with its label; the space goes under the description instead. */
+    &:has(+ .description) {
+        margin-bottom: 2px;
+    }
+}
+
+/* Collapses with the 5px Mantine puts above an input, and also spaces custom controls that don't get it.
+   :not(:last-child) leaves descriptions placed under the input alone. */
+.description:not(:last-child) {
+    margin-bottom: 8px;
+}

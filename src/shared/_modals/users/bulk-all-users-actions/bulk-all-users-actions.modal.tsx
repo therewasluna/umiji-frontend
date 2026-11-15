@@ -42,9 +42,7 @@ export const BulkAllUsersActionsModal = NiceModal.create(() => {
         modals.open({
             title: (
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbCalendarUp}
-                    iconVariant="soft"
                     title={t('bulk-user-actions.actions.tab.feature.extend-expiration-date')}
                     titleOrder={5}
                 />
@@ -95,9 +93,7 @@ export const BulkAllUsersActionsModal = NiceModal.create(() => {
             size="lg"
             title={
                 <BaseOverlayHeader
-                    iconColor="cyan"
                     IconComponent={TbBolt}
-                    iconVariant="soft"
                     subtitle={t('bulk-all-users-actions.modal.perform-actions-on-all-users')}
                     title={t('common.action.bulk-actions')}
                     titleOrder={5}
@@ -138,9 +134,7 @@ export const BulkAllUsersActionsModal = NiceModal.create(() => {
                         modals.open({
                             title: (
                                 <BaseOverlayHeader
-                                    iconColor="red"
                                     IconComponent={TbTrash}
-                                    iconVariant="soft"
                                     title={t(
                                         'bulk-all-user-actions-tabs.danger.tab.feature.delete-users-by-status'
                                     )}

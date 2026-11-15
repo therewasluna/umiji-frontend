@@ -8,6 +8,7 @@ import { TbRefresh } from 'react-icons/tb'
 
 import { showModal } from '@shared/_modals/show-modal'
 import { useGetTopUsersByHwidDevices } from '@shared/api/hooks'
+import { DataTableShared } from '@shared/ui/table'
 import { sToMs } from '@shared/utils/time-utils'
 
 import { getHwidInspectorLeaderboardColumns } from './get-hwid-inspector-leaderboard-columns'
@@ -43,61 +44,67 @@ export function HwidInspectorLeaderboardWidget() {
     }
 
     return (
-        <DataTable
-            borderRadius="sm"
-            columns={getHwidInspectorLeaderboardColumns(t, async (userId) => {
-                showModal('users_viewUserModal', { userId })
-            })}
-            defaultColumnProps={{
-                noWrap: true,
-                textAlign: 'left',
-                ellipsis: true,
-                draggable: false
-            }}
-            fetching={isLoading}
-            height={350}
-            idAccessor="id"
-            onCellClick={({ record, column }) => {
-                if (column.accessor === 'actions') {
-                    return
-                }
-                copy(record[column.accessor as keyof typeof record])
-                notifications.show({
-                    title: t('common.message.copied'),
-                    message: record[column.accessor as keyof typeof record],
-                    color: 'teal'
-                })
-            }}
-            onPageChange={setPage}
-            onRecordsPerPageChange={handleChangePageSize}
-            page={page}
-            pinFirstColumn
-            records={usersResponse?.users ?? []}
-            recordsPerPage={pageSize}
-            recordsPerPageLabel=""
-            recordsPerPageOptions={PAGE_SIZE_OPTIONS}
-            renderPagination={({ Controls }) => (
-                <>
-                    <Controls.Text />
-                    <Tooltip label={t('common.action.update')} withArrow>
-                        <ActionIcon
-                            loading={isFetching}
-                            onClick={() => refetch()}
-                            size="md"
-                            variant="light"
-                        >
-                            <TbRefresh size="20px" />
-                        </ActionIcon>
-                    </Tooltip>
-                    <Controls.PageSizeSelector />
-                    <Controls.Pagination />
-                </>
-            )}
-            totalRecords={usersResponse?.total ?? 0}
-            striped
-            withColumnBorders
-            withRowBorders
-            withTableBorder
-        />
+        <DataTableShared.Container>
+            <DataTableShared.Title
+                description={t('hwid-inspector-leaderboard.top-users-description')}
+                title={t('hwid-inspector-leaderboard.top-users')}
+            />
+
+            <DataTable
+                borderRadius="sm"
+                columns={getHwidInspectorLeaderboardColumns(t, async (userId) => {
+                    showModal('users_viewUserModal', { userId })
+                })}
+                defaultColumnProps={{
+                    noWrap: true,
+                    textAlign: 'left',
+                    ellipsis: true,
+                    draggable: false
+                }}
+                fetching={isLoading}
+                maxHeight={420}
+                idAccessor="id"
+                onCellClick={({ record, column }) => {
+                    if (column.accessor === 'actions') {
+                        return
+                    }
+                    copy(record[column.accessor as keyof typeof record])
+                    notifications.show({
+                        title: t('common.message.copied'),
+                        message: record[column.accessor as keyof typeof record],
+                        color: 'teal'
+                    })
+                }}
+                onPageChange={setPage}
+                onRecordsPerPageChange={handleChangePageSize}
+                page={page}
+                records={usersResponse?.users ?? []}
+                recordsPerPage={pageSize}
+                recordsPerPageLabel=""
+                recordsPerPageOptions={PAGE_SIZE_OPTIONS}
+                renderPagination={({ Controls }) => (
+                    <>
+                        <Controls.Text />
+                        <Tooltip label={t('common.action.update')} withArrow>
+                            <ActionIcon
+                                color="gray"
+                                loading={isFetching}
+                                onClick={() => refetch()}
+                                size="md"
+                                variant="subtle"
+                            >
+                                <TbRefresh size="20px" />
+                            </ActionIcon>
+                        </Tooltip>
+                        <Controls.PageSizeSelector />
+                        <Controls.Pagination />
+                    </>
+                )}
+                totalRecords={usersResponse?.total ?? 0}
+                striped
+                withRowBorders
+                withTableBorder
+            />
+        </DataTableShared.Container>
     )
 }

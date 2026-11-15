@@ -1,7 +1,4 @@
-import {
-    UMIJI_CLIENT_TYPE_BROWSER,
-    UMIJI_CLIENT_TYPE_HEADER
-} from '@umiji/backend-contract'
+import { UMIJI_CLIENT_TYPE_BROWSER, UMIJI_CLIENT_TYPE_HEADER } from '@umiji/backend-contract'
 import axios from 'axios'
 import consola from 'consola/browser'
 

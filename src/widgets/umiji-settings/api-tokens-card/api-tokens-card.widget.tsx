@@ -1,8 +1,8 @@
 import {
     ActionIcon,
     Box,
+    Button,
     Center,
-    Group,
     ScrollArea,
     Stack,
     Text,
@@ -35,21 +35,57 @@ export const ApiTokensCardWidget = (props: IProps) => {
 
     const { isRefetching, refetch } = useGetApiTokens()
 
+    const openCreateModal = () =>
+        modals.open({
+            title: (
+                <BaseOverlayHeader
+                    IconComponent={TbCookie}
+                    title={t('api-tokens-card.widget.create-api-token')}
+                />
+            ),
+            fullScreen: isMobile,
+            centered: true,
+            size: 'min(800px, 90vw)',
+            children: <CreateApiTokenContentWidget isMobile={isMobile} />
+        })
+
     return (
         <SettingsCardShared.Container>
             <SettingsCardShared.Header
+                actions={
+                    <>
+                        <Tooltip label={t('common.action.refresh')}>
+                            <ActionIcon
+                                aria-label={t('common.action.refresh')}
+                                color="gray"
+                                loading={isRefetching}
+                                onClick={() => refetch()}
+                                size="input-sm"
+                                variant="soft"
+                            >
+                                <TbRefresh size={20} />
+                            </ActionIcon>
+                        </Tooltip>
+
+                        <Button
+                            leftSection={<TbPlus size={16} />}
+                            onClick={openCreateModal}
+                            size="sm"
+                            variant="filled"
+                        >
+                            {t('common.action.create')}
+                        </Button>
+                    </>
+                }
                 description={t('api-tokens-card.widget.api-tokens-description')}
-                icon={<TbCookie size={24} />}
-                iconColor="cyan"
-                iconVariant="soft"
                 title={t('api-tokens-card.widget.api-tokens')}
             />
 
             <SettingsCardShared.Content>
                 {apiTokensData.tokens.length === 0 && (
-                    <Center h="300px">
+                    <Center py="xl">
                         <Stack align="center" gap="xs">
-                            <PiEmpty size={48} />
+                            <PiEmpty color="var(--mantine-color-dark-3)" size={32} />
                             <Text c="dimmed" size="sm" ta="center">
                                 {t('api-tokens-card.widget.no-api-tokens-found')}
                             </Text>
@@ -74,7 +110,7 @@ export const ApiTokensCardWidget = (props: IProps) => {
                                         </Text>
                                         <span />
                                     </Box>
-                                    <ScrollArea.Autosize mah={300} mih={300}>
+                                    <ScrollArea.Autosize mah={300}>
                                         <Stack gap={0}>
                                             {apiTokensData.tokens.map((apiToken) => (
                                                 <ApiTokenItem
@@ -90,49 +126,6 @@ export const ApiTokensCardWidget = (props: IProps) => {
                     )}
                 </Transition>
             </SettingsCardShared.Content>
-
-            <SettingsCardShared.Bottom>
-                <Group justify="space-between">
-                    <ActionIcon.Group>
-                        <Tooltip label={t('common.action.refresh')}>
-                            <ActionIcon
-                                loading={isRefetching}
-                                onClick={() => refetch()}
-                                size="input-md"
-                                variant="soft"
-                            >
-                                <TbRefresh size={24} />
-                            </ActionIcon>
-                        </Tooltip>
-                    </ActionIcon.Group>
-
-                    <Tooltip label={t('common.action.create')}>
-                        <ActionIcon
-                            onClick={() => {
-                                modals.open({
-                                    title: (
-                                        <BaseOverlayHeader
-                                            iconColor="teal"
-                                            IconComponent={TbCookie}
-                                            iconVariant="soft"
-                                            title={t('api-tokens-card.widget.create-api-token')}
-                                        />
-                                    ),
-                                    fullScreen: isMobile,
-                                    centered: true,
-                                    size: 'min(800px, 90vw)',
-                                    children: <CreateApiTokenContentWidget isMobile={isMobile} />
-                                })
-                            }}
-                            size="input-md"
-                            color="teal"
-                            variant="soft"
-                        >
-                            <TbPlus size={24} />
-                        </ActionIcon>
-                    </Tooltip>
-                </Group>
-            </SettingsCardShared.Bottom>
         </SettingsCardShared.Container>
     )
 }

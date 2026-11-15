@@ -2,7 +2,7 @@ import { ActionIcon, ActionIconGroup, Group, Tooltip } from '@mantine/core'
 import { GetConfigProfileByUuidCommand, GetSnippetsCommand } from '@umiji/backend-contract'
 import { ConfigEditorWidget } from '@widgets/dashboard/config-profiles/config-editor/config-editor.widget'
 import { useTranslation } from 'react-i18next'
-import { TbArrowBackUp, TbCode, TbFile } from 'react-icons/tb'
+import { TbArrowBackUp, TbCode } from 'react-icons/tb'
 import { useNavigate } from 'react-router'
 
 import { showModal } from '@shared/_modals/show-modal'
@@ -68,7 +68,6 @@ export const ConfigProfileByUuidPageComponent = (props: Props) => {
                         </Group>
                     }
                     description={configProfile.uuid}
-                    icon={<TbFile size={24} />}
                     title={configProfile.name}
                 />
 

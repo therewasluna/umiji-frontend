@@ -38,7 +38,7 @@ export const HostsSpotlightWidget = (props: IProps) => {
         }
         if (!isDisabled && !isHidden) {
             return (
-                <ThemeIcon color="teal" size="lg" style={{ flexShrink: 0 }} variant="soft">
+                <ThemeIcon color="gray" size="lg" style={{ flexShrink: 0 }} variant="soft">
                     <PiPulse size={20} />
                 </ThemeIcon>
             )
@@ -84,7 +84,7 @@ export const HostsSpotlightWidget = (props: IProps) => {
                     </Group>
 
                     {host.xrayJsonTemplateUuid && (
-                        <ThemeIcon color="teal" size="lg" style={{ flexShrink: 0 }} variant="soft">
+                        <ThemeIcon color="gray" size="lg" style={{ flexShrink: 0 }} variant="soft">
                             <XrayLogo size={20} />
                         </ThemeIcon>
                     )}

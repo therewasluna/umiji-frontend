@@ -3,10 +3,11 @@ import type { IProps } from './interfaces/props.interface'
 import { ActionIcon, Badge, Checkbox, Group, Stack, Text } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { GetConfigProfilesCommand } from '@umiji/backend-contract'
-import { githubDarkTheme, JsonEditor } from 'json-edit-react'
+import { JsonEditor } from 'json-edit-react'
 import { useTranslation } from 'react-i18next'
 import { TbCode } from 'react-icons/tb'
 
+import { JSON_VIEWER_THEME } from '@shared/constants/theme/json-viewer-theme'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 
 import classes from './FlatInboundCheckboxCard.module.css'
@@ -27,15 +28,13 @@ export const FlatInboundCheckboxCardShared = (props: IProps) => {
                     indent={4}
                     maxWidth="100%"
                     rootName=""
-                    theme={githubDarkTheme}
+                    theme={JSON_VIEWER_THEME}
                     viewOnly
                 />
             ),
             title: (
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbCode}
-                    iconVariant="soft"
                     title={t('flat-inbound-checkbox-card.shared.inbound-config-inbound-tag', {
                         inboundTag: inbound.tag
                     })}
@@ -71,9 +70,9 @@ export const FlatInboundCheckboxCardShared = (props: IProps) => {
                         {inbound.type}
                     </Badge>
                     {inbound.port && (
-                        <Badge color="teal" size="xs" variant="soft">
+                        <Text c="dimmed" ff="monospace" size="xs">
                             {inbound.port}
-                        </Badge>
+                        </Text>
                     )}
 
                     <ActionIcon
@@ -83,7 +82,8 @@ export const FlatInboundCheckboxCardShared = (props: IProps) => {
                             handleShowInboundJson(inbound)
                         }}
                         size="md"
-                        variant="soft"
+                        color="gray"
+                        variant="subtle"
                     >
                         <TbCode size={16} />
                     </ActionIcon>

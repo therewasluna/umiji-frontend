@@ -36,7 +36,6 @@ import {
 } from './ssh-crypto'
 import { parseSshPrivateKey, toOpenSshPublicKey } from './ssh-private-key'
 import {
-    clearVault,
     destroyVault,
     deleteSnippet,
     getAllKnownHosts,
@@ -50,14 +49,11 @@ import {
     getOrCreateDeviceKey,
     getVaultMeta,
     putConnectionProfile,
-    putConnectionProfiles,
     putKnownHost,
-    putKnownHosts,
     putNodeKey,
-    putNodeKeys,
     putSnippet,
-    putSnippets,
-    putVaultMeta
+    putVaultMeta,
+    replaceVault
 } from './ssh-vault.db'
 import {
     decodeVaultFile,
@@ -449,17 +445,23 @@ export const useSshVaultStore = create<IActions & IState>()(
 
                     if (!isRestorablePayload(records)) return false
 
-                    await clearVault()
-
-                    await putVaultMeta({
-                        createdAt: backup.createdAt,
-                        version: 1,
-                        wrappedDataKey: backup.wrappedDataKey
-                    })
-                    await putNodeKeys(records.keys)
-                    await putKnownHosts(records.hosts)
-                    await putSnippets(records.snippets ?? [])
-                    await putConnectionProfiles(records.profiles ?? [])
+                    try {
+                        await replaceVault(
+                            {
+                                createdAt: backup.createdAt,
+                                version: 1,
+                                wrappedDataKey: backup.wrappedDataKey
+                            },
+                            {
+                                keys: records.keys,
+                                hosts: records.hosts,
+                                profiles: records.profiles ?? [],
+                                snippets: records.snippets ?? []
+                            }
+                        )
+                    } catch {
+                        return false
+                    }
 
                     rawDataKeyCache = rawDataKey
 

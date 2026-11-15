@@ -1,7 +1,6 @@
 import { Container } from '@mantine/core'
 import { SubscriptionSettingsTabsWidget } from '@widgets/dashboard/subscription-settings/settings/subscription-tabs.widget'
 import { useTranslation } from 'react-i18next'
-import { TbHexagon } from 'react-icons/tb'
 
 import { LoadingScreen, Page, PageHeaderShared } from '@shared/ui'
 
@@ -19,8 +18,8 @@ export const SubscriptionSettingsPageComponent = (props: IProps) => {
     return (
         <Page title={t('constants.subscription-settings')}>
             <PageHeaderShared
-                icon={<TbHexagon size={24} />}
-                title={t('constants.subscription-settings')}
+                description={t('page-descriptions.subscription-settings')}
+                title={t('page-titles.subscription-settings')}
             />
 
             <Container fluid p={0} size="xl">

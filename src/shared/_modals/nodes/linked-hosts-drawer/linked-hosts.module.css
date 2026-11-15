@@ -6,11 +6,7 @@
     padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
     margin-bottom: var(--mantine-spacing-xs);
 
-    background: linear-gradient(
-        135deg,
-        var(--mantine-color-dark-6) 0%,
-        var(--mantine-color-dark-7) 100%
-    );
+    background: var(--mantine-color-dark-7);
     box-shadow: var(--mantine-shadow-sm);
     cursor: pointer !important;
 
@@ -18,12 +14,11 @@
 }
 
 .item:hover {
-    border-color: var(--mantine-color-cyan-filled);
+    border-color: var(--mantine-color-dark-5);
 }
 
 .label {
-    font-family: var(--mantine-font-family-monospace);
-    font-weight: bold;
+    font-weight: 600;
     font-size: var(--mantine-font-size-sm);
     line-height: 1.3;
     color: var(--mantine-color-bright);

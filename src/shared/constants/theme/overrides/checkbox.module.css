@@ -1,0 +1,68 @@
+/* Every checkbox and radio: a clear outline at rest, solid rose only when chosen.
+   The class repeats to outrank Mantine's own variant rules whatever order the sheets load in. */
+
+.input.input,
+.indicator.indicator,
+.radio.radio,
+.radioIndicator.radioIndicator {
+    border: 1.5px solid var(--mantine-color-dark-3);
+    border-radius: 6px;
+    background-color: transparent;
+    cursor: pointer;
+    transition:
+        background-color 120ms ease,
+        border-color 120ms ease;
+}
+
+.input.input:hover,
+.radio.radio:hover,
+:global(.mantine-CheckboxCard-card):hover .indicator.indicator,
+:global(.mantine-RadioCard-card):hover .radioIndicator.radioIndicator {
+    border-color: var(--mantine-color-dark-1);
+}
+
+.input.input:checked,
+.input.input[data-indeterminate],
+.indicator.indicator[data-checked],
+.indicator.indicator[data-indeterminate],
+.radio.radio:checked,
+.radioIndicator.radioIndicator[data-checked] {
+    border-color: var(--mantine-color-rose-8);
+    background-color: var(--mantine-color-rose-8);
+}
+
+.input.input:focus-visible,
+.radio.radio:focus-visible {
+    outline: 2px solid var(--mantine-color-rose-4);
+    outline-offset: 2px;
+}
+
+.input.input:disabled,
+.indicator.indicator[data-disabled],
+.radio.radio:disabled,
+.radioIndicator.radioIndicator[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.radio.radio,
+.radioIndicator.radioIndicator {
+    border-radius: 50%;
+}
+
+/* A chosen radio card lifts neutrally, like selected rows elsewhere. */
+.radioCard {
+    border-color: rgba(255, 255, 255, 0.07);
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease;
+
+    @mixin hover {
+        background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    &[data-checked] {
+        border-color: rgba(255, 255, 255, 0.12);
+        background-color: var(--mantine-color-dark-6);
+    }
+}

@@ -12,10 +12,8 @@ export const showValidationErrorsModal = (
     modals.open({
         title: (
             <BaseOverlayHeader
-                iconColor="red"
                 IconComponent={TbAlertTriangle}
                 iconSize={20}
-                iconVariant="soft"
                 title={t('validation-error.validation-error')}
                 titleOrder={5}
             />

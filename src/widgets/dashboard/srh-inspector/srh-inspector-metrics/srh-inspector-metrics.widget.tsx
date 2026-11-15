@@ -1,21 +1,20 @@
 import { Chart } from '@highcharts/react'
-import { Box, Card, Center, Group, Loader, SimpleGrid, Stack, Text, ThemeIcon } from '@mantine/core'
-import ColorHash from 'color-hash'
+import { Box, Center, Loader, SimpleGrid, Stack, Text } from '@mantine/core'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { PiAppWindowDuotone, PiChartBar } from 'react-icons/pi'
+import { PiChartBar } from 'react-icons/pi'
 
 import { useGetSubscriptionRequestHistoryStats } from '@shared/api/hooks'
 import { TopLeaderboardCardShared } from '@shared/ui/leaderboard-item-card'
+import { SettingsCardShared } from '@shared/ui/settings-card'
+import { DataTableShared } from '@shared/ui/table'
 import { formatInt } from '@shared/utils/misc'
 
 export function SrhInspectorMetrics() {
     const { t } = useTranslation()
 
     const { data: stats, isLoading } = useGetSubscriptionRequestHistoryStats()
-
-    const ch = new ColorHash({ lightness: [0.65, 0.65, 0.65] })
 
     const getBarChartConfig = () => {
         return {
@@ -85,10 +84,10 @@ export function SrhInspectorMetrics() {
                     borderRadius: 4,
                     pointPadding: 0.1,
                     groupPadding: 0.1,
-                    color: 'var(--mantine-color-indigo-6)',
+                    color: 'var(--mantine-color-rose-6)',
                     states: {
                         hover: {
-                            color: 'var(--mantine-color-indigo-3)'
+                            color: 'var(--mantine-color-rose-4)'
                         }
                     },
                     dataLabels: {
@@ -134,85 +133,51 @@ export function SrhInspectorMetrics() {
     return (
         <Stack gap="xl">
             <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
-                <Card
-                    p="lg"
-                    style={{
-                        background:
-                            'linear-gradient(135deg, var(--mantine-color-dark-6) 0%, var(--mantine-color-dark-7) 100%)'
-                    }}
-                >
-                    <Group align="center" gap="sm" mb="lg" wrap="nowrap">
-                        <ThemeIcon color="teal" size="lg" variant="outline">
-                            <PiAppWindowDuotone size="20px" />
-                        </ThemeIcon>
-
-                        <Text
-                            fw={600}
-                            size="lg"
-                            style={{
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden'
-                            }}
-                        >
-                            {t('hwid-inspector-metrics.widget.app-distribution')}
-                        </Text>
-                    </Group>
-                    <TopLeaderboardCardShared
-                        emptyText={t('hwid-inspector-metrics.widget.no-app-data')}
-                        formatValue={(value) => formatInt(value, { thousandSeparator: ' ' })}
-                        isLoading={isLoading}
-                        items={stats?.byParsedApp?.map((item) => ({
-                            color: ch.hex(item.app || t('srh-inspector-metrics.unknown')),
-                            name: item.app || t('srh-inspector-metrics.unknown'),
-                            total: item.count
-                        }))}
-                        maxHeight={300}
-                        wrapper={(children) => children}
+                <DataTableShared.Container>
+                    <DataTableShared.Title
+                        description={t('srh-inspector-metrics.widget.app-distribution-description')}
+                        title={t('hwid-inspector-metrics.widget.app-distribution')}
                     />
-                </Card>
+                    <SettingsCardShared.Container h="100%">
+                        <TopLeaderboardCardShared
+                            emptyText={t('hwid-inspector-metrics.widget.no-app-data')}
+                            formatValue={(value) => formatInt(value, { thousandSeparator: ' ' })}
+                            isLoading={isLoading}
+                            items={stats?.byParsedApp?.map((item) => ({
+                                color: 'var(--mantine-color-rose-6)',
+                                name: item.app || t('srh-inspector-metrics.unknown'),
+                                total: item.count
+                            }))}
+                            maxHeight={300}
+                            wrapper={(children) => children}
+                        />
+                    </SettingsCardShared.Container>
+                </DataTableShared.Container>
 
-                <Card
-                    p="lg"
-                    style={{
-                        background:
-                            'linear-gradient(135deg, var(--mantine-color-dark-6) 0%, var(--mantine-color-dark-7) 100%)'
-                    }}
-                >
-                    <Group align="center" gap="sm" mb="lg" wrap="nowrap">
-                        <ThemeIcon color="blue" size="lg" variant="outline">
-                            <PiChartBar size="20px" />
-                        </ThemeIcon>
-
-                        <Text
-                            fw={600}
-                            size="lg"
-                            style={{
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden'
-                            }}
-                        >
-                            {t('srh-inspector-metrics.widget.hourly-request-statistics')}
-                        </Text>
-                    </Group>
-                    {isLoading ? (
-                        loaderCard
-                    ) : stats?.hourlyRequestStats && stats.hourlyRequestStats.length > 0 ? (
-                        <Box h={300}>
-                            <Chart options={hourlyChartOptions} />
-                        </Box>
-                    ) : (
-                        <Center h={300}>
-                            <Stack align="center" gap="sm">
-                                <PiChartBar color="var(--mantine-color-gray-4)" size="48px" />
-                                <Text c="dimmed" size="sm">
-                                    {t('srh-inspector-metrics.widget.no-hourly-data-available')}
-                                </Text>
-                            </Stack>
-                        </Center>
-                    )}
-                </Card>
+                <DataTableShared.Container>
+                    <DataTableShared.Title
+                        description={t('srh-inspector-metrics.widget.hourly-description')}
+                        title={t('srh-inspector-metrics.widget.hourly-request-statistics')}
+                    />
+                    <SettingsCardShared.Container h="100%">
+                        {isLoading ? (
+                            loaderCard
+                        ) : stats?.hourlyRequestStats && stats.hourlyRequestStats.length > 0 ? (
+                            <Box h={300}>
+                                <Chart options={hourlyChartOptions} />
+                            </Box>
+                        ) : (
+                            <Center h={300}>
+                                <Stack align="center" gap="sm">
+                                    <PiChartBar color="var(--mantine-color-gray-4)" size="48px" />
+                                    <Text c="dimmed" size="sm">
+                                        {t('srh-inspector-metrics.widget.no-hourly-data-available')}
+                                    </Text>
+                                </Stack>
+                            </Center>
+                        )}
+                    </SettingsCardShared.Container>
+                </DataTableShared.Container>
             </SimpleGrid>
         </Stack>
     )

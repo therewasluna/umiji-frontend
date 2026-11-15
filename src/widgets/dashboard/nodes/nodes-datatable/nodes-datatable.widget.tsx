@@ -7,12 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { PiEmpty } from 'react-icons/pi'
 
 import { showModal } from '@shared/_modals/show-modal'
-import {
-    useGetConfigProfiles,
-    useGetNodeIntegrations,
-    useGetNodePlugins,
-    useGetNodes
-} from '@shared/api/hooks'
+import { useGetConfigProfiles, useGetNodePlugins, useGetNodes } from '@shared/api/hooks'
 import { usePreventTableBackScroll } from '@shared/hooks'
 import { DataTableControls, LoadingScreen, sortRecords } from '@shared/ui'
 import { sToMs } from '@shared/utils/time-utils'
@@ -49,13 +44,11 @@ export const NodesDataTableWidget = memo((props: IProps) => {
     const [selectedProviders, setSelectedProviders] = useState<string[]>([])
     const [selectedConfigProfiles, setSelectedConfigProfiles] = useState<string[]>([])
     const [selectedPlugins, setSelectedPlugins] = useState<string[]>([])
-    const [selectedIntegrations, setSelectedIntegrations] = useState<string[]>([])
     const [selectedInbounds, setSelectedInbounds] = useState<string[]>([])
     const [selectedStatuses, setSelectedStatuses] = useState<NodeStatusFilter[]>([])
 
     const { data: configProfiles } = useGetConfigProfiles({})
     const { data: nodePlugins } = useGetNodePlugins()
-    const { data: nodeIntegrations } = useGetNodeIntegrations()
 
     useGetNodes({
         rQueryParams: {
@@ -105,26 +98,15 @@ export const NodesDataTableWidget = memo((props: IProps) => {
         [nodePlugins]
     )
 
-    const availableIntegrations = useMemo(
-        () =>
-            (nodeIntegrations?.nodeIntegrations ?? []).map((integration) => ({
-                label: integration.name,
-                value: integration.uuid
-            })),
-        [nodeIntegrations]
-    )
-
     const filters: NodesTableFilters = {
         availableConfigProfiles,
         availableInbounds,
-        availableIntegrations,
         availablePlugins,
         availableProviders,
         availableTags,
         nameQuery,
         selectedConfigProfiles,
         selectedInbounds,
-        selectedIntegrations,
         selectedPlugins,
         selectedProviders,
         selectedStatuses,
@@ -132,7 +114,6 @@ export const NodesDataTableWidget = memo((props: IProps) => {
         setNameQuery,
         setSelectedConfigProfiles,
         setSelectedInbounds,
-        setSelectedIntegrations,
         setSelectedPlugins,
         setSelectedProviders,
         setSelectedStatuses,
@@ -143,7 +124,6 @@ export const NodesDataTableWidget = memo((props: IProps) => {
         t,
         configProfiles?.configProfiles ?? [],
         nodePlugins?.nodePlugins ?? [],
-        nodeIntegrations?.nodeIntegrations ?? [],
         handleViewNode,
         filters
     ).map((column) => ({ draggable: true, resizable: true, toggleable: true, ...column }))
@@ -201,13 +181,6 @@ export const NodesDataTableWidget = memo((props: IProps) => {
             }
 
             if (
-                selectedIntegrations.length > 0 &&
-                !selectedIntegrations.some((uuid) => node.integrationUuids?.includes(uuid))
-            ) {
-                return false
-            }
-
-            if (
                 selectedInbounds.length > 0 &&
                 !selectedInbounds.some((tag) =>
                     node.configProfile?.activeInbounds?.some((inbound) => inbound.tag === tag)
@@ -237,7 +210,6 @@ export const NodesDataTableWidget = memo((props: IProps) => {
         selectedProviders,
         selectedConfigProfiles,
         selectedPlugins,
-        selectedIntegrations,
         selectedInbounds,
         selectedStatuses,
         sortStatus
@@ -284,7 +256,6 @@ export const NodesDataTableWidget = memo((props: IProps) => {
                 sortStatus={sortStatus}
                 storeColumnsKey={NODES_CACHE_KEY}
                 striped
-                withColumnBorders
                 withRowBorders
                 withTableBorder
                 columnResizeMode="expand"

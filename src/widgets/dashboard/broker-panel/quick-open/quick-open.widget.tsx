@@ -105,7 +105,6 @@ const UserRow = ({ onOpen, user }: { onOpen: (user: TUser) => void; user: TUser 
 }
 
 const Shortcut = (props: {
-    color: string
     description: string
     Icon: ComponentType<{ size: number }>
     onClick: () => void
@@ -113,7 +112,7 @@ const Shortcut = (props: {
 }) => (
     <UnstyledButton className={classes.tile} onClick={props.onClick}>
         <Group gap="sm" wrap="nowrap">
-            <ThemeIcon color={props.color} radius="md" size="lg" variant="soft">
+            <ThemeIcon color="gray" radius="md" size="lg" variant="soft">
                 <props.Icon size={20} />
             </ThemeIcon>
             <Stack gap={0} miw={0}>
@@ -137,16 +136,13 @@ const Section = ({
     subtitle: string
     title: string
 }) => (
-    <SectionCard.Root gap="sm" h="100%">
+    <SectionCard.Root gap="sm" h="100%" p="lg">
         <SectionCard.Section>
-            <BaseOverlayHeader
-                iconColor="cyan"
-                IconComponent={header.Icon}
-                iconVariant="soft"
-                subtitle={header.subtitle}
-                title={header.title}
-                titleOrder={5}
-            />
+            <BaseOverlayHeader IconComponent={header.Icon} title={header.title} titleOrder={5} />
+            {/* Under the row, not beside the icon: the icon centres on the title alone. */}
+            <Text c="dimmed" mt="xs" size="xs">
+                {header.subtitle}
+            </Text>
         </SectionCard.Section>
         <SectionCard.Section>{children}</SectionCard.Section>
     </SectionCard.Root>
@@ -204,42 +200,36 @@ export function BrokerQuickOpenWidget() {
 
     const shortcuts = [
         {
-            color: 'teal',
             description: t('brokers.panel.quick.create-user-description'),
             Icon: TbUserPlus,
             onClick: () => showModal('users_createUserModal'),
             title: t('brokers.panel.create-user')
         },
         {
-            color: 'cyan',
             description: t('brokers.panel.quick.status-description'),
             Icon: TbGauge,
             onClick: () => navigate(ROUTES.DASHBOARD.BROKER.OVERVIEW),
             title: t('brokers.panel.status')
         },
         {
-            color: 'blue',
             description: t('brokers.panel.quick.users-description'),
             Icon: PiUsers,
             onClick: () => navigate(ROUTES.DASHBOARD.MANAGEMENT.USERS),
             title: t('constants.users')
         },
         {
-            color: 'indigo',
             description: t('brokers.panel.quick.squads-description'),
             Icon: TbCirclesRelation,
             onClick: () => navigate(ROUTES.DASHBOARD.BROKER.INTERNAL_SQUADS),
             title: t('constants.internal-squads')
         },
         {
-            color: 'violet',
             description: t('brokers.panel.quick.subpage-description'),
             Icon: PiArrowsInCardinalFill,
             onClick: () => navigate(ROUTES.DASHBOARD.BROKER.SUBSCRIPTION_PAGE),
             title: t('constants.subscription-page')
         },
         {
-            color: 'grape',
             description: t('brokers.panel.quick.settings-description'),
             Icon: TbWebhook,
             onClick: () => navigate(ROUTES.DASHBOARD.BROKER.SUBSCRIPTION_SETTINGS),
@@ -377,8 +367,8 @@ export function BrokerQuickOpenWidget() {
                 </Section>
             </SimpleGrid>
 
-            <Card className={classes.shortcuts} p="md" radius="md">
-                <Text c="dimmed" fw={700} mb="sm" size="xs" tt="uppercase">
+            <Card className={classes.shortcuts} p="lg" radius="md">
+                <Text c="dimmed" fw={700} mb="sm" size="xs">
                     {t('brokers.panel.quick.shortcuts')}
                 </Text>
                 <SimpleGrid cols={{ base: 1, xs: 2, md: 3, '2xl': 6 }} spacing="xs">

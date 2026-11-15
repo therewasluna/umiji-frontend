@@ -183,9 +183,7 @@ export function MobileNodesListWidget(props: IProps) {
                                                     <BaseOverlayHeader
                                                         countryCode={node.node.countryCode}
                                                         hideIcon={true}
-                                                        iconColor="blue"
                                                         IconComponent={TbServer}
-                                                        iconVariant="soft"
                                                         subtitle={node.provider.name}
                                                         title={node.node.name}
                                                     />
@@ -193,9 +191,7 @@ export function MobileNodesListWidget(props: IProps) {
 
                                                 {!node.node && (
                                                     <BaseOverlayHeader
-                                                        iconColor="blue"
                                                         IconComponent={TbServer}
-                                                        iconVariant="soft"
                                                         subtitle={node.provider.name}
                                                         title={node.name!}
                                                     />

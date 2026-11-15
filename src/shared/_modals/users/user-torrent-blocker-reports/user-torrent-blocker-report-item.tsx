@@ -1,10 +1,11 @@
 import { ActionIcon, Box, Divider, Group, Stack } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { GetTorrentBlockerReportsCommand } from '@umiji/backend-contract'
-import { githubDarkTheme, JsonEditor } from 'json-edit-react'
+import { JsonEditor } from 'json-edit-react'
 import { useTranslation } from 'react-i18next'
 import { TbExternalLink, TbFlame, TbJson } from 'react-icons/tb'
 
+import { JSON_VIEWER_THEME } from '@shared/constants/theme/json-viewer-theme'
 import { CopyableFieldShared } from '@shared/ui/copyable-field/copyable-field'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { SettingsCardShared } from '@shared/ui/settings-card'
@@ -24,9 +25,7 @@ export const UserTorrentBlockerReportItem = (props: IProps) => {
             <Group align="center" gap="xs" justify="space-between" wrap="nowrap">
                 <BaseOverlayHeader
                     countryCode={report.node.countryCode}
-                    iconColor="red"
                     IconComponent={TbFlame}
-                    iconVariant="soft"
                     title={report.node.name}
                 />
 
@@ -42,16 +41,14 @@ export const UserTorrentBlockerReportItem = (props: IProps) => {
                                         indent={2}
                                         maxWidth="100%"
                                         rootName=""
-                                        theme={githubDarkTheme}
+                                        theme={JSON_VIEWER_THEME}
                                         viewOnly
                                     />
                                 </Box>
                             ),
                             title: (
                                 <BaseOverlayHeader
-                                    iconColor="shaded-gray"
                                     IconComponent={TbJson}
-                                    iconVariant="soft"
                                     title={t('user-torrent-blocker-report-item.raw-report')}
                                 />
                             ),

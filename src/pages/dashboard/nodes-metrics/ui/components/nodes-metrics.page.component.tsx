@@ -1,6 +1,5 @@
 import { NodeMetricsWidget } from '@widgets/dashboard/nodes/nodes-metrics'
 import { useTranslation } from 'react-i18next'
-import { PiSpeedometer } from 'react-icons/pi'
 
 import { LoadingScreen, Page, PageHeaderShared } from '@shared/ui'
 
@@ -13,7 +12,7 @@ export default function NodesMetricsPageComponent(props: IProps) {
     return (
         <Page title={t('constants.nodes-metrics')}>
             <PageHeaderShared
-                icon={<PiSpeedometer size={24} />}
+                description={t('page-descriptions.nodes-metrics')}
                 title={t('nodes-metrics.metrics-overview')}
             />
 

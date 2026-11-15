@@ -1,11 +1,11 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
+import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query'
 import {
     GetInfraBillingRecordsCommand,
     GetInfraBillingNodesCommand,
     GetInfraProviderCommand,
     GetInfraProvidersCommand
 } from '@umiji/backend-contract'
-import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query'
 import { t } from 'i18next'
 
 import { sToMs } from '@shared/utils/time-utils'

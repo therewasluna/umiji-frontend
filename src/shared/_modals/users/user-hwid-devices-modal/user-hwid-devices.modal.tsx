@@ -29,16 +29,14 @@ export const UserHwidDevicesModal = NiceModal.create((props: IProps) => {
             size="min(1500px, 90vw)"
             styles={{
                 body: {
-                    height: 'calc(100% - 60px)',
+                    height: 'calc(100% - 64px)',
                     display: 'flex',
                     flexDirection: 'column'
                 }
             }}
             title={
                 <BaseOverlayHeader
-                    iconColor="violet"
                     IconComponent={TbDevices}
-                    iconVariant="soft"
                     title={t('get-hwid-user-devices.feature.hwid-devices')}
                 />
             }

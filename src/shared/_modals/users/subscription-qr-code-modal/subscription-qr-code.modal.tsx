@@ -27,9 +27,7 @@ export const SubscriptionQrCodeModal = NiceModal.create((props: IProps) => {
             size="auto"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbQrcode}
-                    iconVariant="soft"
                     title={t('view-user-modal.widget.subscription-qr-code')}
                 />
             }

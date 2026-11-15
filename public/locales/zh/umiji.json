@@ -25,8 +25,7 @@
     "quick-open": "快捷方式",
     "tb-reports": "Torrent 屏蔽报告",
     "sessions-explorer": "会话管理器",
-    "http-stats": "HTTP 状态",
-    "quick-launcher": "开始菜单"
+    "http-stats": "HTTP 状态"
   },
   "common": {
     "action": {
@@ -192,7 +191,8 @@
     "sub-link-revoked-at": "订阅链接撤销于",
     "created-at": "创建于",
     "internal-squads": "内部分组",
-    "used-traffic": "已使用的流量(%)"
+    "used-traffic": "已使用的流量(%)",
+    "ip-limit": "IP 限制"
   },
   "header-buttons": {
     "feature": {}
@@ -288,7 +288,14 @@
     "widget": {
       "error-loading-data": "数据加载错误",
       "table-title": "用户"
-    }
+    },
+    "search": "搜索用户名",
+    "filters": "筛选和排序",
+    "sort-by": "排序方式",
+    "ascending": "升序",
+    "descending": "降序",
+    "username-match": "用户名匹配",
+    "details": "详情"
   },
   "view-user-modal": {
     "widget": {
@@ -430,6 +437,7 @@
   },
   "login-form": {
     "feature": {
+      "broker-sign-in": "经纪人登录",
       "sign-in": "登录",
       "your-password": "您的密码"
     }
@@ -874,7 +882,14 @@
     "select-an-external-squad": "选择一个外部分组..."
   },
   "device-tag-settings-card": {
-    "device-and-tag-settings": "设备与标签设置"
+    "device-and-tag-settings": "设备与标签设置",
+    "ip-limit": "同时在线 IP 限制",
+    "ip-limit-description": "所有节点上可同时使用此用户的 IP 数量。连接同一 Wi‑Fi 的设备算作一个 IP。这是测试版功能，并不总是有效：可能放行多余的设备，也可能拒绝用户自己的设备。",
+    "ip-limit-placeholder": "不限"
+  },
+  "ip-limit-beta": {
+    "beta": "测试版",
+    "read-the-risks": "开启前请先了解风险。"
   },
   "user-identity-creation-card": {
     "user-identity": "用户身份",
@@ -1011,7 +1026,8 @@
   },
   "hwid-inspector-table": {
     "widget": {
-      "hwid-devices-list": "HWID 设备列表"
+      "hwid-devices-list": "HWID 设备列表",
+      "hwid-devices-list-description": "所有已绑定订阅的设备"
     }
   },
   "hwid-inspector-metrics": {
@@ -1022,7 +1038,9 @@
       "platform-distribution": "平台分布",
       "app-distribution": "应用分布",
       "no-platform-data": "无平台数据",
-      "no-app-data": "无可用数据"
+      "no-app-data": "无可用数据",
+      "page-description": "用户应用上报的硬件 ID，按平台和用户统计",
+      "platform-distribution-description": "按平台和应用分组的设备"
     }
   },
   "use-srh-inspector-table-columns": {
@@ -1034,7 +1052,10 @@
     "widget": {
       "requests": "请求数",
       "hourly-request-statistics": "每小时请求统计",
-      "no-hourly-data-available": "没有可用的小时数据"
+      "no-hourly-data-available": "没有可用的小时数据",
+      "app-distribution-description": "哪些应用在请求订阅",
+      "hourly-description": "过去 48 小时每小时的请求数",
+      "table-description": "每个请求及其应用、IP 和响应"
     }
   },
   "linked-hosts-drawer": {
@@ -1144,10 +1165,20 @@
     "review-settings-carefully-line-2": "应用更改前"
   },
   "auth-settings": {
+    "configure": "配置",
+    "enabled": "已启用",
+    "disabled": "已禁用",
     "header": {
       "title": "认证方式",
-      "description": "管理您的认证方式。"
+      "description": "管理您的认证方式。",
+      "active-methods": "已启用的方式",
+      "active-count": "{{active}}/{{total}} 已启用"
     },
+    "groups": {
+      "built-in": "内置",
+      "oauth2": "OAuth2 提供商"
+    },
+    "unsaved-changes": "未保存的更改",
     "error-modal": {
       "title": "更新失败",
       "description": "更新身份验证设置时发生错误。请检查下面的错误详情，然后重试。",
@@ -1227,13 +1258,6 @@
       "example-mantine-colors": "MantineUI颜色示例",
       "example-mixed": "混合颜色示例",
       "color-format-note": "💡 颜色仅适用于标记后面的单词。没有标记，文本将为白色。"
-    }
-  },
-  "experimental-settings-card": {
-    "widget": {
-      "experimental-features": "实验性功能",
-      "description": "仍在开发中的功能。它们可以随时改变或消失。",
-      "legacy-layout-style": "传统布局样式"
     }
   },
   "api-tokens-card": {
@@ -1347,6 +1371,16 @@
       "subpage-editor": "订阅页面编辑器",
       "brand-appearance": "商标外观",
       "branding": "商标",
+      "main-color": "主色",
+      "main-color-description": "订阅页面将使用此颜色:按钮、高亮和背景色调。",
+      "color-rose": "玫瑰",
+      "color-ruby": "宝石红",
+      "color-emerald": "翠绿",
+      "color-teal": "青绿",
+      "color-sky": "天蓝",
+      "color-sapphire": "宝蓝",
+      "color-plum": "梅紫",
+      "color-orchid": "兰紫",
       "brand-title": "商标标题",
       "your-brand-name": "您的商标名称",
       "support-url": "支持 URL",
@@ -1360,7 +1394,8 @@
       "no-platforms-configured": "未配置平台",
       "add-a-platform-to-get-started": "添加一个平台以开始",
       "open-svg-library": "打开 SVG 库",
-      "installation-guides-design": "安装指南标题"
+      "installation-guides-design": "安装指南标题",
+      "ui-configuration-description": "页面区块的布局样式"
     },
     "subpage-config-saved-line-1": "若要应用更改，请重启Umiji 订阅页面容器。",
     "subpage-config-saved-line-2": "例如，您可以在终端中使用以下命令："
@@ -1471,7 +1506,8 @@
       "show-connection-keys": "显示连接密钥",
       "show-or-hide-raw-connection-keys": "是否显示原始连接密钥",
       "hide-get-link-button": "隐藏“获取链接”按钮",
-      "hide-the-get-link-button-top-right-corner": "从右上角隐藏“获取链接”按钮"
+      "hide-the-get-link-button-top-right-corner": "从右上角隐藏“获取链接”按钮",
+      "description": "页面标题、描述及显示内容"
     }
   },
   "import-config-sections": {
@@ -1532,7 +1568,7 @@
       "nothing-found": "未找到任何信息…",
       "select-plugin": "选择插件",
       "proxy-url": "代理 URL",
-      "proxy-url-description": "可选。如果填写此项，面板与节点之间的内部 API 连接将通过该代理转发。"
+      "proxy-url-description": "可选。面板只通过此代理连接该节点：socks5:// 或 http://。面板所在服务器上的代理可填写 127.0.0.1；该代理需监听 172.17.0.1 或 0.0.0.0，面板容器才能访问。"
     }
   },
   "node-plugin-card": {
@@ -1581,7 +1617,9 @@
       "distinct-users": "不同的用户",
       "last-24-hours": "最近24小时",
       "by-report-count": "根据报表计数",
-      "top-users": "用户排行"
+      "top-users": "用户排行",
+      "all-reports": "全部报告",
+      "all-reports-description": "每个被拦截的连接及其用户、节点和 IP"
     }
   },
   "torrent-blocker-reports-table": {
@@ -1761,20 +1799,6 @@
       "linked": "已关联"
     }
   },
-  "node-integrations": {
-    "modal": {
-      "title": "节点集合",
-      "delete-description": "集合将从所有节点中移除，受影响的节点将重新启动。"
-    },
-    "editor": {
-      "description-placeholder": "这个集合做了什么",
-      "config-must-be-an-object": "配置必须是JSON对象"
-    },
-    "select": {
-      "label": "集合",
-      "placeholder": "选择集合"
-    }
-  },
   "shared-lists": {
     "modal": {
       "subtitle": "可重用的 IP 和 ASN 列表，插件引用为 ext:name",
@@ -1888,6 +1912,87 @@
     "snippet-edit": "编辑片段",
     "connections-title": "已保存的连接",
     "connections-empty": "尚无保存的连接",
-    "connections-current": "当前设置"
+    "connections-current": "当前设置",
+    "keys": {
+      "left": "左箭头",
+      "down": "下箭头",
+      "up": "上箭头",
+      "right": "右箭头"
+    }
+  },
+  "hwid-inspector-leaderboard": {
+    "top-users": "用户排行",
+    "top-users-description": "拥有设备最多的用户"
+  },
+  "page-descriptions": {
+    "users": "所有订阅用户：状态、流量和到期时间",
+    "home": "流量、用户和面板运行状态",
+    "config-profiles": "节点运行的 Xray 配置",
+    "external-squads": "共享订阅设置和订阅页面的用户组",
+    "internal-squads": "用户组及其可用的入站",
+    "hosts": "用户连接的地址，会列在订阅中",
+    "nodes": "为用户运行 Xray 的服务器",
+    "nodes-metrics": "节点上报的实时指标",
+    "node-plugins": "在节点上运行的插件",
+    "response-rules": "决定每个客户端请求订阅时得到的内容",
+    "umiji-settings": "登录方式、API 令牌、品牌和面板功能",
+    "statistics": "所选时间段内各节点的流量",
+    "subscription-settings": "所有用户的订阅行为：选项、备注和响应头",
+    "subscription-page": "用户打开订阅链接时看到的页面",
+    "subscription-page-broker": "你的用户打开订阅链接时看到的内容",
+    "templates": "为此类客户端生成订阅的基础配置",
+    "sessions-explorer": "查看每个用户当前从哪些 IP 连接",
+    "srh-inspector": "所有订阅请求：哪个应用请求、得到了什么",
+    "tb-reports": "节点拦截的种子流量，按用户和节点统计",
+    "infra-billing": "服务器费用和付款到期时间"
+  },
+  "page-titles": {
+    "subscription-settings": "订阅设置"
+  },
+  "node-install": {
+    "install-node": "安装节点",
+    "mode-auto": "自动安装",
+    "mode-manual": "手动设置",
+    "auto-description": "Umiji 会通过 SSH 登录服务器，安装 Docker 和节点，并自动把它添加到面板。",
+    "server-ip": "服务器 IP",
+    "ssh-port": "SSH 端口",
+    "root-password": "root 密码",
+    "password-note": "仅用于一次 SSH 登录，不会被保存。",
+    "password-required": "请输入服务器的 root 密码",
+    "installing": "正在安装节点",
+    "installed": "节点已安装",
+    "failed": "安装失败",
+    "elapsed": "已用时 {{time}}",
+    "took": "用时 {{time}}",
+    "stopped": "{{time}} 后停止",
+    "output": "实时输出",
+    "waiting-output": "等待输出…",
+    "host-key": "主机密钥 {{fingerprint}}",
+    "try-again": "重试",
+    "edit-details": "修改信息",
+    "background-title": "仍在安装",
+    "background-note": "安装会在后台继续，节点准备好后会出现在列表中。",
+    "steps": {
+      "connect": "通过 SSH 连接",
+      "system": "检查服务器",
+      "docker": "配置 Docker",
+      "compose": "写入 docker-compose.yml",
+      "start": "拉取并启动节点",
+      "handshake": "面板握手",
+      "register": "添加到面板"
+    },
+    "errors": {
+      "CONNECT_FAILED": "无法通过 SSH 连接服务器。请检查 IP 地址和 SSH 端口。",
+      "AUTH_FAILED": "服务器拒绝了 root 密码。",
+      "NOT_ROOT": "当前登录不是 root。安装程序需要 root 账户。",
+      "UNSUPPORTED_SYSTEM": "不支持此服务器。节点需要 x86_64 或 ARM64 架构的 Linux。",
+      "DOCKER_FAILED": "Docker 安装或启动失败，原因见下方输出。",
+      "CONTAINER_EXISTS": "此服务器上已有 umiji-node 容器。请先删除它，或改用手动设置。",
+      "PORT_BUSY": "此服务器上的节点端口已被占用。请返回并选择其他端口。",
+      "START_FAILED": "节点容器无法启动，原因见下方输出。",
+      "HANDSHAKE_FAILED": "节点已运行，但面板无法访问它。请在服务器防火墙中开放节点端口。",
+      "REGISTER_FAILED": "节点已安装，但添加到面板失败。",
+      "INTERRUPTED": "安装已中断。"
+    }
   }
 }

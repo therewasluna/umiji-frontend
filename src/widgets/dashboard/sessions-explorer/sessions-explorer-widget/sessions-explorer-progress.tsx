@@ -61,7 +61,7 @@ export function SessionsExplorerProgress({ progress }: IProps) {
                     <Box px="xl" w="100%">
                         <Progress
                             animated
-                            color="teal"
+                            color="rose"
                             radius="xl"
                             size="lg"
                             striped

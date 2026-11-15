@@ -38,9 +38,7 @@ export const NodeConsumptionCard = (props: IProps) => {
             <SectionCard.Root>
                 <SectionCard.Section>
                     <BaseOverlayHeader
-                        iconColor="indigo"
                         IconComponent={TbChartLine}
-                        iconVariant="soft"
                         title={t('base-node-form.consumption')}
                         titleOrder={5}
                     />

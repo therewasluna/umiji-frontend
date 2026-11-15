@@ -4,7 +4,6 @@ import { SubpageConfigsGridWidget } from '@widgets/dashboard/subpage-configs/sub
 import { SubpageConfigsSpotlightWidget } from '@widgets/dashboard/subpage-configs/subpage-configs-spotlight'
 import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
-import { TbFile } from 'react-icons/tb'
 
 import { Page, PageHeaderShared } from '@shared/ui'
 
@@ -20,7 +19,7 @@ export const SubpageConfigBasePageComponent = (props: Props) => {
         <Page title={t('constants.subscription-page')}>
             <PageHeaderShared
                 actions={<SubpageConfigsHeaderActionButtonsFeature />}
-                icon={<TbFile size={24} />}
+                description={t('page-descriptions.subscription-page')}
                 title={t('constants.subscription-page')}
             />
 

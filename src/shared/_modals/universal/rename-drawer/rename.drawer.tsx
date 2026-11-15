@@ -1,5 +1,5 @@
 import NiceModal, { useModal } from '@ebay/nice-modal-react'
-import { ActionIcon, ModalProps, TextInput } from '@mantine/core'
+import { Button, ModalProps, TextInput } from '@mantine/core'
 import { useField } from '@mantine/form'
 import {
     UpdateConfigProfileCommand,
@@ -27,6 +27,7 @@ import {
 } from '@shared/api/hooks'
 import { queryClient } from '@shared/api/query-client'
 import { CompoundModalShared } from '@shared/ui/compound-modal/compound-modal.shared'
+import { ModalFooter } from '@shared/ui/modal-footer'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 
 type RenameType =
@@ -81,7 +82,7 @@ function makeBody<V>(options: {
 
         const nameField = useField<string>({
             mode: 'controlled',
-            initialValue: '',
+            initialValue: name,
             validate
         })
 
@@ -102,27 +103,9 @@ function makeBody<V>(options: {
 
         return (
             <CompoundModalShared
-                buttons={
-                    <ActionIcon
-                        color="teal"
-                        disabled={!!nameField.error || !nameField.getValue()}
-                        form={formId}
-                        loading={isPending}
-                        type="submit"
-                        size="lg"
-                        variant="soft"
-                    >
-                        <TbDeviceFloppy size="20px" />
-                    </ActionIcon>
-                }
                 modalProps={modalProps}
                 title={
-                    <BaseOverlayHeader
-                        iconColor="teal"
-                        IconComponent={TbPencil}
-                        iconVariant="soft"
-                        title={t('common.action.rename')}
-                    />
+                    <BaseOverlayHeader IconComponent={TbPencil} title={t('common.action.rename')} />
                 }
             >
                 <form
@@ -135,10 +118,29 @@ function makeBody<V>(options: {
                     <TextInput
                         data-autofocus
                         key={nameField.key}
-                        placeholder={name}
+                        label={t('common.field.name')}
                         {...nameField.getInputProps()}
                         required
                     />
+                    <ModalFooter>
+                        <Button color="gray" onClick={modalProps.onClose} variant="soft">
+                            {t('common.action.cancel')}
+                        </Button>
+                        <Button
+                            color="teal"
+                            disabled={
+                                !!nameField.error ||
+                                !nameField.getValue() ||
+                                nameField.getValue() === name
+                            }
+                            leftSection={<TbDeviceFloppy size={16} />}
+                            loading={isPending}
+                            type="submit"
+                            variant="default"
+                        >
+                            {t('common.action.save')}
+                        </Button>
+                    </ModalFooter>
                 </form>
             </CompoundModalShared>
         )

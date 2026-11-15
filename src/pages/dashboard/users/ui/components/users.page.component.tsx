@@ -1,5 +1,4 @@
 import { Stack } from '@mantine/core'
-import { useMediaQuery } from '@mantine/hooks'
 import { BrokerAccountAlertsWidget } from '@widgets/dashboard/broker-panel/account-alerts'
 import { UsersMetrics } from '@widgets/dashboard/users/users-metrics'
 import { UserTableWidget } from '@widgets/dashboard/users/users-table'
@@ -7,8 +6,7 @@ import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { LoadingScreen } from '@shared/ui'
-import { MobileWarningOverlay } from '@shared/ui/mobile-warning-overlay/mobile-warning-overlay'
+import { LoadingScreen, PageHeaderShared } from '@shared/ui'
 import { Page } from '@shared/ui/page'
 
 import { useIsBroker } from '@entities/auth/session-store'
@@ -38,13 +36,16 @@ const DeferredUserTableWidget = () => {
 
 export default function UsersPageComponent() {
     const { t } = useTranslation()
-    const isMobile = useMediaQuery('(max-width: 500px)')
     const isBroker = useIsBroker()
 
     return (
         <Page title={t('constants.users')}>
+            <PageHeaderShared
+                description={t('page-descriptions.users')}
+                title={t('constants.users')}
+            />
+
             <Stack>
-                {isMobile && <MobileWarningOverlay />}
                 {isBroker && <BrokerAccountAlertsWidget blockingOnly />}
                 <UsersMetrics />
 

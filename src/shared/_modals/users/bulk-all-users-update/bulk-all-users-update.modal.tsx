@@ -118,9 +118,7 @@ export const BulkAllUsersUpdateModal = NiceModal.create(() => {
             size="1000px"
             title={
                 <BaseOverlayHeader
-                    iconColor="cyan"
                     IconComponent={TbUsers}
-                    iconVariant="soft"
                     title={t('bulk-all-user-actions-tabs.update.tab.feature.update-users')}
                     titleOrder={5}
                     subtitle={t('bulk-all-users-actions.modal.perform-actions-on-all-users')}

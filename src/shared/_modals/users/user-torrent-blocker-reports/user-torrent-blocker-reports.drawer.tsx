@@ -136,19 +136,12 @@ export const UserTorrentBlockerReportsModal = NiceModal.create((props: IProps) =
             size="500px"
             styles={{
                 body: {
-                    height: 'calc(100% - 60px)',
+                    height: 'calc(100% - 64px)',
                     display: 'flex',
                     flexDirection: 'column'
                 }
             }}
-            title={
-                <BaseOverlayHeader
-                    iconColor="red"
-                    IconComponent={TbFlame}
-                    iconVariant="soft"
-                    title={t('constants.tb-reports')}
-                />
-            }
+            title={<BaseOverlayHeader IconComponent={TbFlame} title={t('constants.tb-reports')} />}
         >
             {isLoading && <LoaderModalShared mih="80vh" />}
 

@@ -186,7 +186,6 @@ export const UserSubscriptionRequestsTable = (props: IProps) => {
                 sortStatus={sortStatus}
                 storeColumnsKey={CACHE_KEY}
                 striped
-                withColumnBorders
                 withRowBorders
                 withTableBorder
             />

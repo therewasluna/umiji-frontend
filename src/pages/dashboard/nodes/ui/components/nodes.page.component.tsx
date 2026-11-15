@@ -9,7 +9,6 @@ import { NodesTableWidget } from '@widgets/dashboard/nodes/nodes-table'
 import { motion } from 'motion/react'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { HiServer } from 'react-icons/hi'
 
 import { queryClient } from '@shared/api'
 import { nodesQueryKeys, useReorderNodes } from '@shared/api/hooks'
@@ -24,7 +23,7 @@ import {
 import { IProps } from './interfaces'
 
 export default function NodesPageComponent(props: IProps) {
-    const { nodes, isLoading, nodePlugins, nodeIntegrations } = props
+    const { nodes, isLoading, nodePlugins } = props
 
     const { t } = useTranslation()
 
@@ -87,19 +86,18 @@ export default function NodesPageComponent(props: IProps) {
         <Page title={t('constants.nodes')}>
             <Grid>
                 <Grid.Col span={12}>
-                    <Stack>
+                    <PageHeaderShared
+                        actions={
+                            <NodesHeaderActionButtonsFeature
+                                setViewMode={setNodesViewMode}
+                                viewMode={viewMode}
+                            />
+                        }
+                        description={t('page-descriptions.nodes')}
+                        title={t('constants.nodes')}
+                    />
+                    <Stack mb="lg">
                         <NodesRealtimeUsageMetrics isLoading={isLoading} nodes={nodes} />
-
-                        <PageHeaderShared
-                            actions={
-                                <NodesHeaderActionButtonsFeature
-                                    setViewMode={setNodesViewMode}
-                                    viewMode={viewMode}
-                                />
-                            }
-                            icon={<HiServer size={24} />}
-                            title={t('constants.nodes')}
-                        />
                     </Stack>
 
                     {isLoading ? (
@@ -119,11 +117,7 @@ export default function NodesPageComponent(props: IProps) {
                             />
                         </motion.div>
                     ) : (
-                        <NodesTableWidget
-                            nodes={nodes}
-                            nodePlugins={nodePlugins}
-                            nodeIntegrations={nodeIntegrations}
-                        />
+                        <NodesTableWidget nodes={nodes} nodePlugins={nodePlugins} />
                     )}
                 </Grid.Col>
             </Grid>

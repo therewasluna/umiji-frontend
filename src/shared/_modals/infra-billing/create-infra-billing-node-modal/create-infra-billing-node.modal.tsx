@@ -15,6 +15,7 @@ import { queryClient } from '@shared/api'
 import { QueryKeys, useCreateInfraBillingNode } from '@shared/api/hooks'
 import { SelectBillingNodeShared } from '@shared/ui/infra-billing/select-billing-node/select-billing-node.shared'
 import { SelectInfraProviderShared } from '@shared/ui/infra-billing/select-infra-provider/select-infra-provider.shared'
+import { ModalFooter } from '@shared/ui/modal-footer'
 import { BaseOverlayHeader } from '@shared/ui/overlays/base-overlay-header'
 import { handleFormErrors } from '@shared/utils/misc'
 import { toUtcDayISO } from '@shared/utils/time-utils'
@@ -112,9 +113,7 @@ export const CreateInfraBillingNodeModal = NiceModal.create(() => {
             size="md"
             title={
                 <BaseOverlayHeader
-                    iconColor="teal"
                     IconComponent={TbServer}
-                    iconVariant="soft"
                     title={t('common.field.billing-node')}
                 />
             }
@@ -212,11 +211,20 @@ export const CreateInfraBillingNodeModal = NiceModal.create(() => {
                         leftSection={<HiCalendar size="16px" />}
                         minDate={dayjs().subtract(1, 'day').toDate()}
                     />
-
-                    <Button loading={isCreateInfraBillingNodePending} type="submit" variant="soft">
+                </Stack>
+                <ModalFooter>
+                    <Button color="gray" onClick={hide} variant="soft">
+                        {t('common.action.cancel')}
+                    </Button>
+                    <Button
+                        color="teal"
+                        loading={isCreateInfraBillingNodePending}
+                        type="submit"
+                        variant="soft"
+                    >
                         {t('common.action.create')}
                     </Button>
-                </Stack>
+                </ModalFooter>
             </form>
         </Modal>
     )

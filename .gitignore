@@ -148,3 +148,7 @@ scripts/**
 public/assets/**
 # Packages shared between the Umiji repos are vendored as tarballs.
 !vendor/*.tgz
+
+# Design tool working files (mocks, review screenshots, product brief).
+.impeccable/
+PRODUCT.md

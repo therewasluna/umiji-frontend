@@ -75,9 +75,7 @@ export const ConnectionSetupScreen = (props: IProps) => {
         <SectionCard.Root w="75%" mx="auto">
             <SectionCard.Section>
                 <BaseOverlayHeader
-                    iconColor="cyan"
                     IconComponent={TbTerminal2}
-                    iconVariant="soft"
                     subtitle={t(
                         nodeKey.imported
                             ? 'node-ssh.key-description-imported'

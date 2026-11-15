@@ -4,14 +4,19 @@ import { TorrentBlockerStatsWidget } from '@widgets/dashboard/torrent-blocker-re
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 
-import { Page } from '@shared/ui'
+import { Page, PageHeaderShared } from '@shared/ui'
 
 export default function TorrentBlockerReportsPageComponent() {
     const { t } = useTranslation()
 
     return (
         <Page title={t('constants.tb-reports')}>
-            <Stack>
+            <PageHeaderShared
+                description={t('page-descriptions.tb-reports')}
+                title={t('constants.tb-reports')}
+            />
+
+            <Stack gap="xl">
                 <TorrentBlockerStatsWidget />
 
                 <motion.div

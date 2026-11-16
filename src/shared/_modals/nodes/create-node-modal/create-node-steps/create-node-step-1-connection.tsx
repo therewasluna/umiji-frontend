@@ -18,7 +18,7 @@ import {
 import { UseFormReturnType } from '@mantine/form'
 import { CreateNodeCommand } from '@umiji/backend-contract'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { PiArrowRight, PiTagDuotone } from 'react-icons/pi'
 import { SiDocker } from 'react-icons/si'
 import {
@@ -31,6 +31,7 @@ import {
     TbRocket,
     TbSettings,
     TbShieldLock,
+    TbTerminal2,
     TbWorld
 } from 'react-icons/tb'
 
@@ -43,6 +44,9 @@ import { TagInputPill } from '@shared/ui/tag-input-pill'
 import { CopyDockerComposeWidget } from './copy-docker-compose.widget'
 
 export type TCreateNodeMode = 'auto' | 'manual'
+
+const NODE_INSTALLER_COMMAND =
+    'bash <(curl -fsSL https://raw.githubusercontent.com/therewasluna/umiji/main/install.sh) node'
 
 export interface ISshLogin {
     password: string
@@ -146,11 +150,18 @@ export const CreateNodeStep1Connection = (props: IProps) => {
                     </Text>
                 ) : (
                     <Text c="dimmed" size="sm">
-                        {t('create-node-step-1-connection.copy-the')}{' '}
-                        <Code c="white" color="gray.8">
-                            docker-compose.yml
-                        </Code>{' '}
-                        {t('create-node-step-1-connection.content-for-the-umiji-node-below')}{' '}
+                        <Trans
+                            components={{
+                                code: (
+                                    <Code
+                                        c="white"
+                                        color="gray.8"
+                                        style={{ whiteSpace: 'nowrap' }}
+                                    />
+                                )
+                            }}
+                            i18nKey="create-node-step-1-connection.manual-description"
+                        />{' '}
                         <Anchor
                             fw="700"
                             href="https://github.com/therewasluna/umiji"
@@ -172,6 +183,15 @@ export const CreateNodeStep1Connection = (props: IProps) => {
                             leftSection={<TbCertificate size={16} />}
                             size="sm"
                             value={secretKey ?? ''}
+                        />
+                    )}
+
+                    {!isAuto && (
+                        <CopyableFieldShared
+                            label={t('create-node-step-1-connection.installer-command')}
+                            leftSection={<TbTerminal2 size={16} />}
+                            size="sm"
+                            value={NODE_INSTALLER_COMMAND}
                         />
                     )}
 

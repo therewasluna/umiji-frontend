@@ -9,8 +9,10 @@ npm ci
 npm run start:dev     # http://127.0.0.1:3333
 ```
 
-The panel image is built from [umiji-backend](https://github.com/therewasluna/umiji-backend) with
-`tools/build-image.sh`, which builds this frontend into it.
+The panel image, `ghcr.io/therewasluna/umiji-panel`, is built by GitHub Actions in
+[umiji-backend](https://github.com/therewasluna/umiji-backend), which builds this frontend's `main` into it. After a
+frontend-only change, run its **Panel image** workflow by hand. To build the image locally, see `tools/build-image.sh`
+there.
 
 ## License
 

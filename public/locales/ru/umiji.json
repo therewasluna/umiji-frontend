@@ -1102,8 +1102,6 @@
     }
   },
   "create-node-step-1-connection": {
-    "copy-the": "Скопируйте содержимое",
-    "content-for-the-umiji-node-below": "для ноды Umiji ниже.",
     "learn-more": "Подробнее.",
     "domain-or-ip": "Домен или IP",
     "additional-options": "Дополнительные настройки"

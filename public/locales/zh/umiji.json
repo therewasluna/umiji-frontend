@@ -1102,8 +1102,6 @@
     }
   },
   "create-node-step-1-connection": {
-    "copy-the": "复制",
-    "content-for-the-umiji-node-below": "以下是 Umiji 节点的内容。",
     "learn-more": "了解更多。",
     "domain-or-ip": "域名或IP",
     "additional-options": "附加参数"

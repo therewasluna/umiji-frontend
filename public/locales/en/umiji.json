@@ -1182,8 +1182,8 @@
     }
   },
   "create-node-step-1-connection": {
-    "copy-the": "Copy the",
-    "content-for-the-umiji-node-below": "content for the Umiji Node below.",
+    "manual-description": "Copy the secret key, then run the installer on the node server as root: it asks for the key and starts the node. Or copy <code>docker-compose.yml</code> and run it yourself.",
+    "installer-command": "Installer, for the node server",
     "learn-more": "Learn more.",
     "domain-or-ip": "Domain or IP",
     "additional-options": "Additional options",

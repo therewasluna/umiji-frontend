@@ -1189,8 +1189,8 @@
     }
   },
   "create-node-step-1-connection": {
-    "copy-the": "محتوای",
-    "content-for-the-umiji-node-below": "زیر را برای نود کپی کنید.",
+    "manual-description": "کلید مخفی را کپی کنید، بعد اسکریپت نصب را به‌عنوان root روی سرور نود اجرا کنید: کلید را می‌پرسد و نود را راه می‌اندازد. یا <code>docker-compose.yml</code> را کپی کنید و خودتان اجرایش کنید.",
+    "installer-command": "اسکریپت نصب، برای سرور نود",
     "learn-more": "اطلاعات بیشتر.",
     "domain-or-ip": "دامنه یا آیپی",
     "additional-options": "تنظیمات بیشتر",

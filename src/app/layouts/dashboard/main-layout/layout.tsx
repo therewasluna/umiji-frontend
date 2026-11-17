@@ -52,6 +52,7 @@ export function MainLayout() {
             stars={umijiInfo.starsCount || undefined}
             withGithub={!isMobile}
             withRecap={!isMobile}
+            withTelegram={!isMobile}
         />
     )
 

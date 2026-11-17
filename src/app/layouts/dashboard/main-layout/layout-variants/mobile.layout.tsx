@@ -31,6 +31,7 @@ export const MobileLayout = (props: IProps) => {
                             stars={umijiInfo.starsCount || undefined}
                             withLanguage={false}
                             withLogout={false}
+                            withTelegram
                             withVersion={false}
                         />
                     </Group>

@@ -25,9 +25,13 @@ export function VersionControl() {
     const [isNewVersionAvailable, isDev] = useMemo(() => {
         if (!umijiMetadata) return [false, false]
 
-        const currentVersion = umijiMetadata.version
-        const latest = umijiInfo.latestVersion || '0.0.0'
-        return [semver.gt(latest, currentVersion), umijiMetadata.git.backend.branch !== 'main']
+        // The repo's newest release can be a non-version tag (assets-1), and semver.gt throws on it.
+        const currentVersion = semver.valid(umijiMetadata.version)
+        const latest = semver.valid(umijiInfo.latestVersion)
+        return [
+            !!latest && !!currentVersion && semver.gt(latest, currentVersion),
+            umijiMetadata.git.backend.branch !== 'main'
+        ]
     }, [umijiInfo.latestVersion, umijiMetadata])
 
     if (isLoading || !umijiMetadata) {
